@@ -1,0 +1,38 @@
+{   
+    "name"            : "native5/native5-sdk-client-php",
+    "type"          : "library",
+    "description"     : "Native5 PHP Framework for building web applications.",
+    "keywords"        : ["templating", "logging", "security", "sessions"],
+    "homepage"        : "http://docs.native5.com",
+    "license"         : "proprietary",
+    "authors"         : [
+        {
+            "name"    : "Barada Sahu",
+            "email"   : "barry@native5.com"
+        },
+        {
+            "name"    : "Shamik Datta",
+            "email"   : "shamik@native5.com"
+        },
+        {
+            "name"    : "Bikas Vaibhav",
+            "email"   : "bikas@native5.com"
+        }
+    ],
+    "support"        : {
+            "email"   : "support@native5.com"
+    },
+    "require" : {
+            "native5/native5-sdk-common-php": "0.2.0",
+            "twig/twig": "1.*",
+            "monolog/monolog": "1.2.*",
+            "guzzle/guzzle": "*",
+            "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+            "psr-0": {
+                "Native5": "src/",
+                "Native5\\Tests": "tests/"
+            }
+    }
+}

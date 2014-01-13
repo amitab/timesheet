@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Native5 Sample App : Hello-World</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+        <link rel="stylesheet" href={{ resolvePath("main.css") }}>
+    </head>
+    <body>
+        <header class="ui-header"></header>
+        <div class="ui-body">
+            <form action="login" method="POST" class="ui-form">
+                <fieldset class="no-border">
+                    <label class="form-widget">User:</label>
+                    <input class="form-widget" type="text" value="" name="uname" id="uname" placeholder="Jay Arkanian" autocomplete="off" required />
+                </fieldset>
+                <fieldset class="no-border">
+                    <label class="form-widget">Password:</label>
+                    <input class="form-widget" type="password" value="" name="upass" id="upass" placeholder="******" autocomplete="off" required />
+                </fieldset>
+                <fieldset class="no-border">
+                    <button type="submit" class="form-widget form-button">Submit</button>
+                </fieldset>
+            </form>
+        </div>
+
+        <footer class="ui-footer align-right">Powered by Native5&copy;</footer>
+        
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src={{ resolvePath("klass.js") }}></script>
+        <script src={{ resolvePath("native5-sdk-ux-js.js") }}></script>
+        <script src={{ resolvePath("app.js") }}></script>
+
+    </body>
+</html>

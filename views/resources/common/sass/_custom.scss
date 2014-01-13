@@ -1,0 +1,20 @@
+$slate-grey : #404040;
+$button-color : rgb(21, 125, 251);
+$border-grey : #E8E8E8;
+$link-color : #B1B1B1;
+
+$orange : #FFCC5C;
+$red : #FF6F69;
+$blue : #77C4D3;
+$pahdera-green: #00A388;
+
+@mixin snap-animation($time) {
+    -webkit-transition: all $time cubic-bezier(0.785, 0.135, 0.150, 0.860);
+    -moz-transition: all $time cubic-bezier(0.785, 0.135, 0.150, 0.860);
+    -o-transition: all $time cubic-bezier(0.785, 0.135, 0.150, 0.860);
+    transition: all $time cubic-bezier(0.785, 0.135, 0.150, 0.860);
+}
+
+
+// Start
+

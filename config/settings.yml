@@ -1,0 +1,10 @@
+---
+app :
+    name        : zbdGs8Z2U1389602848 # Application context e.g. if you host your application at http://localhost/hello-world then hello-world is the application context.
+    logLevel    : info # Log Levels, supports levels, such as warn, info, trace, error, debug.
+    defaultGrade: D001 # Application wide fallback view in case device cannot be identified. Note, D001 defaults to desktop. See http://docs.native5.com/app.html#device-matrix for grade related details.
+api:
+    url         : https://api.native5.com/v1 # Native5 Hosted Services endpoint
+    sharedKey   : s087lu6nrn5v # Access key for your app. 
+    secretKey   : p8thtvjckc18bqrbvcp2lmlvq8 # Secret Token for your app.
+#environment : local # Uncomment when developing locally.

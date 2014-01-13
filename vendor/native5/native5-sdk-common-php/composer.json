@@ -1,0 +1,30 @@
+{   
+    "name"            : "native5/native5-sdk-common-php",
+    "type"          : "library",
+    "description"     : "Native5 PHP Framework commons library",
+    "keywords"        : ["core", "util", "services"],
+    "homepage"        : "http://docs.native5.com",
+    "license"         : "proprietary",
+    "authors"         : [
+    {
+        "name"    : "Barada Sahu",
+        "email"   : "barry@native5.com"
+    },
+    {
+        "name"    : "Shamik Datta",
+        "email"   : "shamik@native5.com"
+    }
+    ],
+    "support"        : {
+            "email"   : "support@native5.com"
+    },
+    "require" : {
+            "monolog/monolog": "1.2.*",
+            "phpunit/phpunit": "3.7.*"
+    },
+    "autoload": {
+            "psr-0": {
+                "Native5": "src"
+            }
+    }
+}

@@ -1,0 +1,7 @@
+logs/*
+cache/**/*
+vendor
+*.swp
+docs/generated/**/*
+docs/**
+composer.lock
