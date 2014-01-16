@@ -1,0 +1,13 @@
+<div class="header-item">
+                <ul>
+                    <li>
+                        <i class="fa fa-angle-left"></i>
+                    </li>
+                    <li class="logo">
+                        <img src={{ resolvePath("timesheet-logo.png") }} alt="" width="35">
+                    </li>
+                    <li>
+                        <h5>&nbsp; {{ items.title }}</h5>
+                    </li>
+                </ul>
+            </div>

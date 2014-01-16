@@ -1,0 +1,46 @@
+{% include 'head.html' %}
+
+    <div class="row">
+        <section class="profile">
+            
+            <div class="details">
+                <table border="0">
+                    <tr>
+                        <td class="user-image">
+                            <img class="image" src={{ resolvePath("pic.jpg") }} alt="">
+                        </td>
+                        <td class="user-details">
+                            <h4>John Doe</h4>
+                            <p>johndoe@gmail.com</p>
+                            <p><i class="fa fa-map-marker"></i>&nbsp;Kollam, Kerala</p>
+                            <div class="">
+                                <div class="small primary btn"><a href="#" >Edit Profile</a></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="work">
+                
+                <table border="0">
+                    <tr>
+                        <td>
+                            <div class="time">15</div>
+                            <p class="type">Projects</p>
+                        </td>
+                        <td>
+                            <div class="time">35</div>
+                            <p class="type">TimeSheets</p>
+                        </td>
+                        <td>
+                            <div class="time">125</div>
+                            <p class="type">Hours</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+        </section>
+    </div>
+
+{% include 'foot.html' %}

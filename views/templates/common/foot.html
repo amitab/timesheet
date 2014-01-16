@@ -1,89 +1,34 @@
 
-</div>
-<div id="sidebar">
+    </div>
     
+    <div id="sidebar" style="z-index: -2;">
+        <div class="nav-wrapper">
+            <div class="user">
+                <table border="0">
+                    <tr>
+                        <td class="user-image">
+                            <img class="image" src={{ resolvePath("pic.jpg") }} alt="">
+                        </td>
+                        <td class="user-details">
+                            <h5>John Doe</h5>
+                            <p>johndoe@gmail.com</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#" class="page-link"><i class="fa fa-repeat"></i>Overview</a>
+                    </li><li><a href="#" class="page-link"><i class="fa fa-edit"></i>Projects</a>
+                    </li><li><a href="#" class="page-link"><i class="fa fa-plus"></i>Add Entry</a>
+                    </li><li><a href="#" class="page-link"><i class="fa fa-puzzle-piece"></i>Timesheets</a>
+                    </li><li><a href="#" class="page-link"><i class="fa fa-user"></i>Profile</a>
+                    </li><li><a href="#" class="page-link"><i class="fa fa-sign-out"></i>Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
     
-    
-</div>
-	
-	<!-- Grab Google CDN's jQuery, fall back to local if offline -->
-	<!-- 2.0 for modern browsers, 1.10 for .oldie -->
-	<script>
-	var oldieCheck = Boolean(document.getElementsByTagName('html')[0].className.match(/\soldie\s/g));
-	if(!oldieCheck) {
-	document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"><\/script>');
-	} else {
-	document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"><\/script>');
-	}
-	</script>
-	<script>
-	if(!window.jQuery) {
-	if(!oldieCheck) {
-	  document.write('<script src="{{ resolvePath("js/libs/jquery-2.0.2.min.js") }}"><\/script>');
-	} else {
-	  document.write('<script src="{{ resolvePath("js/libs/jquery-1.10.1.min.js") }}"><\/script>');
-	}
-	}
-	</script>
-
-	<!--
-	Include gumby.js followed by UI modules followed by gumby.init.js
-	Or concatenate and minify into a single file -->
-	<script gumby-touch={{ resolvePath("js/libs") }} src={{ resolvePath("js/libs/gumby.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.retina.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.fixed.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.skiplink.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.toggleswitch.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.checkbox.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.radiobtn.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.tabs.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/gumby.navbar.js") }}></script>
-	<script src={{ resolvePath("js/libs/ui/jquery.validation.js") }}></script>
-	<script src={{ resolvePath("js/libs/gumby.init.js") }}></script>
-
-	<!--
-	Google's recommended deferred loading of JS
-	gumby.min.js contains gumby.js, all UI modules and gumby.init.js
-
-	Note: If you opt to use this method of defered loading,
-	ensure that any javascript essential to the initial
-	display of the page is included separately in a normal
-	script tag.
-
-	<script type="text/javascript">
-	function downloadJSAtOnload() {
-	var element = document.createElement("script");
-	element.src = "js/libs/gumby.min.js";
-	document.body.appendChild(element);
-	}
-	if (window.addEventListener)
-	window.addEventListener("load", downloadJSAtOnload, false);
-	else if (window.attachEvent)
-	window.attachEvent("onload", downloadJSAtOnload);
-	else window.onload = downloadJSAtOnload;
-	</script> -->
-
-	<script src={{ resolvePath("js/plugins.js") }}></script>
-	<script src={{ resolvePath("js/main.js") }}></script>
-
-	<!-- Change UA-XXXXX-X to be your site's ID -->
-	<!--<script>
-	window._gaq = [['_setAccount','UAXXXXXXXX1'],['_trackPageview'],['_trackPageLoadTime']];
-	Modernizr.load({
-	  load: ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js'
-	});
-	</script>-->
-
-	<!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
-	   chromium.org/developers/how-tos/chrome-frame-getting-started -->
-	<!--[if lt IE 7 ]>
-	<script src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
-	<script>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
-	<![endif]-->
-    
-    <!-- Loading custom js files -->    
-    <script src={{ resolvePath("native5.core.js") }} ></script>
-    <script src={{ resolvePath("app.js") }} ></script>
-    <script src={{ resolvePath("sidebar.js") }} ></script>
   </body>
 </html>

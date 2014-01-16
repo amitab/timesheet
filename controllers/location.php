@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class HomeController extends DefaultController
+class LocationController extends DefaultController
 {
 
 
@@ -60,10 +60,10 @@ class HomeController extends DefaultController
     public function _default($request)
     {
         global $logger;
-        $skeleton =  new TwigRenderer('auth.html');
+        $skeleton =  new TwigRenderer('location.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = false;
+        $auth = true;
         
         /*$subject = SecurityUtils::getSubject();
         if ($subject->isAuthenticated() === true) {

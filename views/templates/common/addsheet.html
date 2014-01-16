@@ -1,0 +1,129 @@
+{% include 'head.html' %}
+
+    <div class="row">
+        <section class="addsheet">
+            <div class="form-wrapper">
+                <div class="title">
+                    <h5>Add New Timesheet</h5>
+                </div>
+                
+                <form action="=" method="post" class="add-timesheet-form" id="add-timesheet">
+                    <div class="warnings"></div>
+                    <div class="field">
+                        <input class="input" type="text" placeholder="Project Name" name="project" />
+                    </div>
+                    <div class="field">
+                        <div class="picker">
+                            <select>
+                                <option value="#">Task Completed</option>
+                                <option>Task a</option>
+                                <option>Task b</option>
+                                <option>Task c</option>
+                                <option>Task d</option>
+                                <option>Task e</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="duration-picker">
+                        <div class="wrapper">
+                            <div class="duration">
+                                <div class="inc"><i class="fa fa-angle-up"></i></div>
+                                <div class="inn day">0</div>
+                                <div class="dec"><i class="fa fa-angle-down"></i></div>
+                            </div>
+                            <div class="duration">
+                                <div class="inc"><i class="fa fa-angle-up"></i></div>
+                                <div class="inn day">0</div>
+                                <div class="dec"><i class="fa fa-angle-down"></i></div>
+                            </div>
+                            <div class="duration">
+                                <div class="inc"><i class="fa fa-angle-up"></i></div>
+                                <div class="inn day">0</div>
+                                <div class="dec"><i class="fa fa-angle-down"></i></div>
+                            </div>
+                            <div class="duration">
+                                <div class="inc"><i class="fa fa-angle-up"></i></div>
+                                <div class="inn hour">0</div>
+                                <div class="dec"><i class="fa fa-angle-down"></i></div>
+                            </div>
+                            <div class="duration">
+                                <div class="inc"><i class="fa fa-angle-up"></i></div>
+                                <div class="inn hour">0</div>
+                                <div class="dec"><i class="fa fa-angle-down"></i></div>
+                            </div>
+                            <div class="duration">
+                                <div class="inc"><i class="fa fa-angle-up"></i></div>
+                                <div class="inn minute">0</div>
+                                <div class="dec"><i class="fa fa-angle-down"></i></div>
+                            </div>
+                            <div class="duration">
+                                <div class="inc"><i class="fa fa-angle-up"></i></div>
+                                <div class="inn minute">0</div>
+                                <div class="dec"><i class="fa fa-angle-down"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <textarea class="input textarea" placeholder="Description" name="description"></textarea>
+                    </div>
+                    <div class="field append">
+                        <input class="narrow input first-child" type="text" placeholder="Location" name="location" />
+                        <div class="medium info btn second-child">
+                        <a href="#" style="font-weight:light; ">Choose</a></div>
+                    </div>
+                    <table border="0" style="margin-top: 40px;">
+                        <tr>
+                            <td style="padding: 0;">
+                                <div class="medium secondary btn"><a href="#">Save Draft</a></div>
+                            </td>
+                            <td style="padding: 0;text-align: right;">
+                                <div class="medium primary btn"><a href="#" id="submit">Submit</a></div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+            
+        </section>
+    </div>
+    
+    <script>
+        $('.inc').click(function(){
+            var inn = $(this).parent().children('.inn');
+            var duration = parseInt(inn.text());
+            duration = (duration + 1) % 10;
+            
+            inn.text(duration);
+        });
+        $('.dec').click(function(){
+            var inn = $(this).parent().children('.inn');
+            var duration = parseInt(inn.text());
+            duration = (duration + (10 - 1)) % 10;
+            
+            inn.text(duration);
+        });
+        $('#submit').click(function(e){
+            var days = "";
+            var hours = "";
+            var minutes = "";
+            
+            $( ".day" ).each(function( index ) {
+                days += $( this ).text();
+            });
+            $( ".hour" ).each(function( index ) {
+                hours += $( this ).text();
+            });
+            $( ".minute" ).each(function( index ) {
+                minutes += $( this ).text();
+            });
+            
+            console.log("days : " + days);
+            console.log("hours : " + hours);
+            console.log("minutes : " + minutes);
+            
+            e.preventDefault();
+            return false;
+        });
+    </script>
+    
+{% include 'foot.html' %}
