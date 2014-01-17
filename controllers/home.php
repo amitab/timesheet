@@ -77,7 +77,6 @@ class HomeController extends DefaultController
 
     }//end _default()
 
-
 }//end class
 
 ?>

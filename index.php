@@ -26,6 +26,7 @@
  */
 
 require 'vendor/autoload.php';
+require 'lib/loader.php';
 
 use Native5\Application;
 use Native5\Route\HttpRequest;
