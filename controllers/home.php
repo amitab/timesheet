@@ -74,16 +74,8 @@ class HomeController extends DefaultController
     }//end _default()
 	
 	public function _test($request)
-    {
-		$userImpl = new UserDAOImpl();
-		$user = new \Timesheet\User\User();
-		$user->setUserName('Amitab');
-		$user->setUserMail('amitab.das@outlook.com');
-		$user->setUserLocation('Kr Puram, Bangalore');
-		$ids = $userImpl->createUser($user);
-        
+    {        
         global $logger;
-        $GLOBALS['logger']->info("Called");
         $skeleton =  new TwigRenderer('auth.html');
         $this->_response = new HttpResponse('none', $skeleton);
         

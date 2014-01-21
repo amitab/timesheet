@@ -1,6 +1,6 @@
 ---
 app :
-    name        : zbdGs8Z2U1389602848 # Application context e.g. if you host your application at http://localhost/hello-world then hello-world is the application context.
+    name        : timesheet # Application context e.g. if you host your application at http://localhost/hello-world then hello-world is the application context.
     logLevel    : info # Log Levels, supports levels, such as warn, info, trace, error, debug.
     defaultGrade: D001 # Application wide fallback view in case device cannot be identified. Note, D001 defaults to desktop. See http://docs.native5.com/app.html#device-matrix for grade related details.
 api:

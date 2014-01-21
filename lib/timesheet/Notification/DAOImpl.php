@@ -25,11 +25,13 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Notific
             ':notificationPriority' => $notificationDetails->getNotificationPriority(),
             ':notificationRead'  => $notificationDetails->getNotificationRead(),
         );
-        $userNotificationQuery = 'INSERT INTO `user_notification` (notification_id, to_user_id, from_user_id) ';
+        $notificationQuery = 'INSERT INTO `notification` (notification_body, notification_priority, notification_read) VALUES (:notificationBody, :notificationPriority, :notificationRead);';
+        $userNotificationQuery = 'INSERT INTO `user_notification` (notification_id, to_user_id, from_user_id) VALUES ';
         
         foreach($toUserIds as $toUserId) {
-            $userNotificationQuery .= '';
+            $userNotificationQuery .= '()';
         }
+        $userNotificationQuery .= ';';
         
         return $this->_executeObjectQuery('create new notification', $valArr, \Native5\Core\Database\DB::INSERT);
         
@@ -65,9 +67,9 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Notific
         return $this->_executeObjectQuery('find notifications to user', $valArr, \Native5\Core\Database\DB::SELECT);
     }
     
-    public function getNotificationsByPriority($priorityLevel) {
+    public function getNotificationsByPriority($notificationPriority) {
         $valArr = array(
-            ':priority' => $priorityLevel
+            ':notificationPriority' => $notificationPriority
         );
         return $this->_executeObjectQuery('find notifications by priority', $valArr, \Native5\Core\Database\DB::SELECT);
     }
@@ -97,10 +99,41 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Notific
             $results = array();
             foreach($temp_results as $res)
                 $results[] = \Timesheet\Group\Group::make($res); 
+            return $results;
         } else {
-            return true;
+            return $temp_results;
         }
 
-        return $results;
+	}
+	
+	private function _executeQuery($queryName, $parameterList, $queryType) {
+		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
+        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
+            return false;
+        
+        return $temp_results;
+	}
+	
+	private function _executeObjectQueryString($queryString, $parameterList, $queryType) {
+		$temp_results = parent::execQuery($queryString, $parameterList, $queryType);
+        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
+            return false;
+
+        if($queryType == \Native5\Core\Database\DB::SELECT) {
+            $results = array();
+            foreach($temp_results as $res)
+                $results[] = \Timesheet\Group\Group::make($res); 
+            return $results;
+        } else {
+            return $temp_results;
+        }
+	}
+	
+	private function _executeQueryString($queryString, $parameterList, $queryType) {
+		$temp_results = parent::execQuery($queryString, $parameterList, $queryType);
+        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
+            return false;
+        
+        return $temp_results;
 	}
 }

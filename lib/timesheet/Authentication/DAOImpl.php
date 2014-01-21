@@ -23,7 +23,7 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authent
         $valArr = array(
             ':userId' => $userId
         );
-        return $this->_executeQuery('get users authentication', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('get users authentication', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
 	public function createAuthentication($authenticationDetails) {
@@ -32,7 +32,7 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authent
             ':userId' => $authenticationDetails->getUserId(),
             ':password' => $authenticationDetails->getPassword()
         );
-        return $this->_executeQuery('create authentication', $valArr, \Native5\Core\Database\DB::INSERT);
+        return $this->_executeObjectQuery('create authentication', $valArr, \Native5\Core\Database\DB::INSERT);
 	}
 	
 	public function editAuthentication($authenticationDetails) {
@@ -41,12 +41,12 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authent
             ':password' => $authenticationDetails->getPassword(),
             ':groupId' => $authenticationDetails->getGroupId()
         );
-        return $this->_executeQuery('edit authentication', $valArr, \Native5\Core\Database\DB::UPDATE);
+        return $this->_executeObjectQuery('edit authentication', $valArr, \Native5\Core\Database\DB::UPDATE);
 	}
 	
 	// Executors
 	
-	private function _executeQuery($queryName, $parameterList, $queryType) {
+	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
 		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
         if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
             return false;
@@ -55,10 +55,16 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authent
             $results = array();
             foreach($temp_results as $res)
                 $results[] = \Timesheet\Authentication\Authentication::make($res); 
-        } else {
-            return true;
-        }
+        } 
 
         return $results;
+	}
+	
+	private function _executeQuery($queryName, $parameterList, $queryType) {
+		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
+        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
+            return false;
+        
+        return $temp_results;
 	}
 }

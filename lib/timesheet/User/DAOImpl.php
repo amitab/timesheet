@@ -122,9 +122,7 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\User\DA
 	// Executors
 	
 	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
-		
-		/*$GLOBALS['logger']->info("Exec query : ".$queryName.", Param list: ".print_r($parameterList, 1).", Backtrace : ".PHP_EOL.print_r(debug_backtrace(), 1));*/
-		
+		$classReference = \Timesheet\User\User;
 		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
         if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
             return false;
@@ -132,9 +130,11 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\User\DA
         if($queryType == \Native5\Core\Database\DB::SELECT) {
             $results = array();
             foreach($temp_results as $res)
-                $results[] = \Timesheet\User\User::make($res); 
-        } 
-        return $results;
+                $results[] = $classReference::make($res); 
+            return $results;
+        } else {
+            return $temp_results;
+        }
 	}
 	
 	private function _executeQuery($queryName, $parameterList, $queryType) {

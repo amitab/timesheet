@@ -23,7 +23,7 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Group\D
 	    $valArr = array(
             ':groupName' => $groupDetails->getGroupName()
         );
-        return $this->_executeQuery('create new group', $valArr, \Native5\Core\Database\DB::INSERT);
+        return $this->_executeObjectQuery('create new group', $valArr, \Native5\Core\Database\DB::INSERT);
 	}
 	
 	public function editGroup($groupDetails) {
@@ -32,26 +32,26 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Group\D
             ':groupName' => $groupDetails->getGroupName()
         );
         
-        return $this->_executeQuery('edit group', $valArr, \Native5\Core\Database\DB::UPDATE);
+        return $this->_executeObjectQuery('edit group', $valArr, \Native5\Core\Database\DB::UPDATE);
 	}
 	
 	public function deleteGroup($groupId) {
 	    $valArr = array(
             ':groupId' => $groupId
         );
-        return $this->_executeQuery('delete group', $valArr, \Native5\Core\Database\DB::DELETE);
+        return $this->_executeObjectQuery('delete group', $valArr, \Native5\Core\Database\DB::DELETE);
 	}
 	
 	public function getUsersGroup($userId) {
 	    $valArr = array(
             ':userId' => $userId
         );
-        return $this->_executeQuery('get group of user', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('get group of user', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
 	// Executors
 	
-	private function _executeQuery($queryName, $parameterList, $queryType) {
+	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
 		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
         if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
             return false;
@@ -60,10 +60,16 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Group\D
             $results = array();
             foreach($temp_results as $res)
                 $results[] = \Timesheet\Group\Group::make($res); 
-        } else {
-            return true;
-        }
+        } 
 
         return $results;
+	}
+	
+	private function _executeQuery($queryName, $parameterList, $queryType) {
+		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
+        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
+            return false;
+        
+        return $temp_results;
 	}
 }

@@ -69,18 +69,7 @@ class TestController extends DefaultController
 		$ids = $userImpl->createUser($user);
         
         global $logger;
-        $GLOBALS['logger']->info("Called");
-        $skeleton =  new TwigRenderer('auth.html');
-        $this->_response = new HttpResponse('none', $skeleton);
-        
-        $auth = false;
-        
-        $this->_response->setBody(array(
-            'title' => 'Login',
-            'auth' => $auth,
-            'ids' => $ids
-        ));
-
+        $GLOBALS['logger']->info('USER : ' . print_r($ids));
     }
 
 }//end class

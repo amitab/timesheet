@@ -20,49 +20,49 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
 	// Data Transaction Functions
 	
 	public function getAllProjects() {
-        return $this->_executeQuery('get all projects', null, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('get all projects', null, \Native5\Core\Database\DB::SELECT);
 	}
 	
     public function getProjectById($projectId) {
 		$valArr = array(
             ':projectId' => $projectId
         );
-        return $this->_executeQuery('find project by id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('find project by id', $valArr, \Native5\Core\Database\DB::SELECT);
 	} 
 	
     public function findProjectByName($projectName) {
 		$valArr = array(
             ':projectName' => $projectName
         );
-        return $this->_executeQuery('find project by name', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('find project by name', $valArr, \Native5\Core\Database\DB::SELECT);
 	} 
 	
     public function getProjectsInMonth($month) {
 		$valArr = array(
             ':month' => $month
         );
-        return $this->_executeQuery('find project created in month', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('find project created in month', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
     public function getProjectsInYear($year) {
 		$valArr = array(
             ':year' => $year
         );
-        return $this->_executeQuery('find project created in year', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('find project created in year', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
 	public function getProjectsHandledByUserId($userId) {
 		$valArr = array(
             ':userId' => $userId
         );
-        return $this->_executeQuery('get project handled by user id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('get project handled by user id', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
 	public function getProjectsCreatedByUserId($userId) {
 		$valArr = array(
             ':userId' => $userId
         );
-        return $this->_executeQuery('get project created by user id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('get project created by user id', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
 	
@@ -75,7 +75,7 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
             ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
             ':projectManagerId' => $projectDetails->getProjectManagerId()
         );
-        return $this->_executeQuery('create new project', $valArr, \Native5\Core\Database\DB::INSERT);
+        return $this->_executeObjectQuery('create new project', $valArr, \Native5\Core\Database\DB::INSERT);
 	}
 	
 	public function editProject($projectDetails) {
@@ -88,19 +88,19 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
             ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
             ':projectManagerId' => $projectDetails->getProjectManagerId()
         );
-        return $this->_executeQuery('edit project', $valArr, \Native5\Core\Database\DB::UPDATE);
+        return $this->_executeObjectQuery('edit project', $valArr, \Native5\Core\Database\DB::UPDATE);
 	}
 	
 	public function deleteProject($projectDetails) {
 	    $valArr = array(
             ':projectId' => $projectDetails->getProjectId()
         );
-        return $this->_executeQuery('delete project', $valArr, \Native5\Core\Database\DB::DELETE);
+        return $this->_executeObjectQuery('delete project', $valArr, \Native5\Core\Database\DB::DELETE);
 	}
 	
 	// Executors
 	
-	private function _executeQuery($queryName, $parameterList, $queryType) {
+	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
 		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
         if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
             return false;
@@ -109,10 +109,16 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
             $results = array();
             foreach($temp_results as $res)
                 $results[] = \Timesheet\Project\Project::make($res); 
-        } else {
-            return true;
-        }
+        } 
 
         return $results;
+	}
+	
+	private function _executeQuery($queryName, $parameterList, $queryType) {
+		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
+        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
+            return false;
+        
+        return $temp_results;
 	}
 }
