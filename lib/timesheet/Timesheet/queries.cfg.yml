@@ -8,10 +8,11 @@ find timesheets created in month : SELECT `timesheet`.* FROM `timesheet` WHERE E
 find timesheets created in year : SELECT `timesheet`.* FROM `timesheet` WHERE EXTRACT(YEAR FROM `timesheet`.`timesheet_start_time`) = :year;
 find timesheets created in month and week : SELECT `timesheet`.* from `timesheet` WHERE MONTH(`timesheet`.`timesheet_start_time`) = :month AND WEEK(`timesheet`.`timesheet_start_time`, 5) - WEEK(DATE_SUB(`timesheet`.`timesheet_start_time`, INTERVAL DAYOFMONTH(`timesheet`.`timesheet_start_time`) - 1 DAY), 5) + 1 = :week;
 
-get unmarked timesheets : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` = 0;
 get recently marked timesheets : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` != 0 ORDER BY `timesheet`.`timesheet_mark_time` DESC;
-get unmarked timesheets with offset : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` = 0 OFFSET :offset;
-get recently marked timesheets with offset : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` != 0 ORDER BY `timesheet`.`timesheet_mark_time` DESC OFFSET :offset;
+get recently marked timesheets with offset : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` != :status ORDER BY `timesheet`.`timesheet_mark_time` DESC OFFSET :offset;
+get timesheets with status : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` = :timesheetStatus LIMIT :limit OFFSET :offset;
+
+mark timesheet : UPDATE `timesheet` SET `timesheet`.`timesheet_status` = :timesheetStatus, `timesheet`.`timesheet_mark_time` = :timesheetMarkTime WHERE `timesheet`.`timesheet_id` = :timesheetId;
 
 create new timesheet : INSERT INTO `timesheet` (timesheet_start_time, timesheet_end_time, timesheet_description, timesheet_location, timesheet_task, timesheet_project_name, timesheet_status) VALUES (:timesheetStartTime, :timesheetEndTime, :timesheetDescription, :timesheetLocation, :timesheetTask, :timesheetProjectName, :timesheetStatus);
 edit timesheet : UPDATE `timesheet` SET timesheet_start_time = :timesheetStartTime, timesheet_end_time = :timesheetEndTime, timesheet_description = :timesheetDescription, timesheet_location = :timesheetLocation, timesheet_task = :timesheetTask, timesheet_project_name = :timesheetProjectName, timesheet_status = :timesheetStatus;

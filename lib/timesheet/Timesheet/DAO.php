@@ -16,7 +16,11 @@ interface DAO {
     public function getTimesheetsInMonth($month);
     public function getTimesheetsInYear($year);
     public function getTimesheetsInMonthWeek($month, $week);
-    public function getUnmarkedTimesheets($offset);
     public function getRecentlyMarkedTimesheets($offset);
+    public function getTimesheetsWithStatus($timesheetStatus, $limit, $offset);
+    
+    // project manager functions
+    
+    public function markTimesheet($status, $timesheetId, $timesheetMarkTime);
     
 }

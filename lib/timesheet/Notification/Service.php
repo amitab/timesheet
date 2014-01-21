@@ -15,7 +15,7 @@ class Service {
     private function __construct() {
         global $logger;
         $this->_data = array();
-        $this->_dao = new \Timesheet\User\DAOImpl();
+        $this->_dao = new \Timesheet\Notification\DAOImpl();
     }
 
     public static function getInstance() {

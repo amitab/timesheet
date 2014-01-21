@@ -2,7 +2,7 @@
 
 namespace Timesheet\Authentication;
 
-class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authentication\DAO {
+class DAOImpl extends \Database\DBService implements \Timesheet\Authentication\DAO {
 	const QUERIES_FILE = 'queries.cfg.yml';
 	
 	public function __construct(\Native5\Core\Database\DB $db = null) {
@@ -15,9 +15,10 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authent
 
         // Load the sql queries file
         parent::loadQueries(__DIR__.DIRECTORY_SEPARATOR.self::QUERIES_FILE);
+        parent::setObjectMaker('\Timesheet\Authentication\Authentication', 'make');
     }
 	
-	// Data Transaction Functions
+	// READ FUNCTIONS
 	
 	public function getUsersAuthentication($userId) {
         $valArr = array(
@@ -26,13 +27,20 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authent
         return $this->_executeObjectQuery('get users authentication', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
+	// WRITE FUNCTIONS
+	
 	public function createAuthentication($authenticationDetails) {
         $valArr = array(
             ':groupId' => $authenticationDetails->getGroupId(),
             ':userId' => $authenticationDetails->getUserId(),
             ':password' => $authenticationDetails->getPassword()
         );
-        return $this->_executeObjectQuery('create authentication', $valArr, \Native5\Core\Database\DB::INSERT);
+        
+        try {
+            return $this->_executeQuery('create authentication', $valArr, \Native5\Core\Database\DB::INSERT);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
 	
 	public function editAuthentication($authenticationDetails) {
@@ -41,30 +49,11 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Authent
             ':password' => $authenticationDetails->getPassword(),
             ':groupId' => $authenticationDetails->getGroupId()
         );
-        return $this->_executeObjectQuery('edit authentication', $valArr, \Native5\Core\Database\DB::UPDATE);
-	}
-	
-	// Executors
-	
-	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
-            return false;
-
-        if($queryType == \Native5\Core\Database\DB::SELECT) {
-            $results = array();
-            foreach($temp_results as $res)
-                $results[] = \Timesheet\Authentication\Authentication::make($res); 
-        } 
-
-        return $results;
-	}
-	
-	private function _executeQuery($queryName, $parameterList, $queryType) {
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
-            return false;
         
-        return $temp_results;
+        try {
+            return $this->_executeQuery('edit authentication', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
 }

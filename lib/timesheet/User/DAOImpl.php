@@ -2,7 +2,7 @@
 
 namespace Timesheet\User;
 
-class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\User\DAO {
+class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
 	const QUERIES_FILE = 'queries.cfg.yml';
 	
 	public function __construct(\Native5\Core\Database\DB $db = null) {
@@ -15,9 +15,11 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\User\DA
 
         // Load the sql queries file
         parent::loadQueries(__DIR__.DIRECTORY_SEPARATOR.self::QUERIES_FILE);
+        
+        parent::setObjectMaker('\Timesheet\User\User', 'make');
     }
 	
-	// Data Transaction Functions
+	// READ FUNCTIONS
 	
 	public function getAllUsers() {
         return $this->_executeObjectQuery('get all users', null, \Native5\Core\Database\DB::SELECT);
@@ -93,13 +95,20 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\User\DA
 	    }
 	}
 	
+	// WRITE FUNCTIONS
+	
 	public function createUser($userDetails) {
 	    $valArr = array(
             ':userName' => $userDetails->getUserName(),
             ':userMail' => $userDetails->getUserMail(),
             ':userLocation' => $userDetails->getUserLocation()
         );
-        return $this->_executeObjectQuery('create new user', $valArr, \Native5\Core\Database\DB::INSERT);
+        
+        try {
+            return $this->_executeQuery('create new user', $valArr, \Native5\Core\Database\DB::INSERT);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
 	
 	public function editUser($userDetails) {
@@ -110,39 +119,24 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\User\DA
             ':userLocation' => $userDetails->getUserLocation(),
             ':password' => $userDetails->getUserAuthentication()->getPassword()
         );
+        
+        try {
+            return $this->_executeQuery('edit user', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
 	
 	public function deleteUser($userId) {
 	    $valArr = array(
             ':userId' => $userId
         );
-        return $this->_executeObjectQuery('delete user', $valArr, \Native5\Core\Database\DB::DELETE);
-	}
-	
-	// Executors
-	
-	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
-		$classReference = \Timesheet\User\User;
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
+    
+        try {
+            return $this->_executeQuery('delete user', $valArr, \Native5\Core\Database\DB::DELETE);
+        } catch (Exception $e) {
             return false;
-
-        if($queryType == \Native5\Core\Database\DB::SELECT) {
-            $results = array();
-            foreach($temp_results as $res)
-                $results[] = $classReference::make($res); 
-            return $results;
-        } else {
-            return $temp_results;
         }
-	}
-	
-	private function _executeQuery($queryName, $parameterList, $queryType) {
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
-            return false;
-        
-        return $temp_results;
 	}
 	
 }

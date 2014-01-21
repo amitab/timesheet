@@ -18,5 +18,5 @@ interface DAO {
 	public function getUserTimesheetCount($userId);
 	public function getUserHourCount($userId);
 
-    //public function getAllUsersUnderGroup($groupId);
+    public function getUsersUnderGroup($group);
 }

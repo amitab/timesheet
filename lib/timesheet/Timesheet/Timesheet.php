@@ -13,6 +13,10 @@ class Timesheet {
     private $timesheetStatus;
     private $readableTimesheetStatus;
     private $timesheetWorkTime;
+    private $timesheetMarkTime;
+    
+    private $userId;
+    private $projectId;
     
     const UNMARKED = 0;
     const APPROVED = 1;
@@ -30,12 +34,20 @@ class Timesheet {
         $timesheet->setTimesheetProjectName($data['timesheet_project_name']);
         $timesheet->setTimesheetStatus($data['timesheet_status']);
         $timesheet->setTimesheetWorkTime($data['timesheet_work_time']);
+        $timesheet->setTimesheetMarkTime($data['timesheet_mark_time']);
         
         return $timesheet;
     }
     
     public function setTimesheetWorkTime($timesheetWorkTime) { $this->timesheetWorkTime = $timesheetWorkTime; }
     public function getTimesheetWorkTime() { return $this->timesheetWorkTime; }
+    public function setTimesheetMarkTime($timesheetMarkTime) { $this->timesheetMarkTime = $timesheetMarkTime; }
+    public function getTimesheetMarkTime() { return $this->timesheetMarkTime; }
+    
+    public function setUserId($userId) { $this->userId = $userId; }
+    public function getUserId() { return $this->userId; }
+    public function setProjectId($projectId) { $this->projectId = $projectId; }
+    public function getProjectId() { return $this->projectId; }
     
     public function setTimesheetId($timesheetId) { $this->timesheetId = $timesheetId; }
     public function getTimesheetId() { return $this->timesheetId; }
@@ -62,5 +74,6 @@ class Timesheet {
 	        $readableTimesheetStatus = 'Rejected';
 	    }
 	}
+	public function
 
 }

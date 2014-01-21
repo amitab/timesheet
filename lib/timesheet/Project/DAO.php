@@ -15,7 +15,11 @@ interface DAO {
     public function findProjectByName($projectName);
     public function getProjectsHandledByUserId($userId);
     public function getProjectsCreatedByUserId($userId);
-    public function getProjectsWithSalaryGreaterThan($salary);
-    public function getProjectsWithSalaryLessThan($salary);
+    public function getProjectsWithSalaryGreaterThan($projectSalary);
+    public function getProjectsWithSalaryLessThan($projectSalary);
+        
+    // admin functions
+        
+    public function addUsersToProject($projectId, $userIds);
         
 }

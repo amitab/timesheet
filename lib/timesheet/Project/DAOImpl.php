@@ -2,7 +2,7 @@
 
 namespace Timesheet\Project;
 
-class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project\DAO {
+class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
 	const QUERIES_FILE = 'queries.cfg.yml';
 	
 	public function __construct(\Native5\Core\Database\DB $db = null) {
@@ -15,9 +15,10 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
 
         // Load the sql queries file
         parent::loadQueries(__DIR__.DIRECTORY_SEPARATOR.self::QUERIES_FILE);
+        parent::setObjectMaker('\Timesheet\Project\Project', 'make');
     }
 	
-	// Data Transaction Functions
+	// READ FUNCTIONS
 	
 	public function getAllProjects() {
         return $this->_executeObjectQuery('get all projects', null, \Native5\Core\Database\DB::SELECT);
@@ -65,6 +66,21 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
         return $this->_executeObjectQuery('get project created by user id', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
+    public function getProjectsWithSalaryGreaterThan($projectSalary) {
+		$valArr = array(
+            ':projectSalary' => $projectSalary
+        );
+        return $this->_executeObjectQuery('get project with salary greater than', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
+    public function getProjectsWithSalaryLessThan($projectSalary) {
+		$valArr = array(
+            ':projectSalary' => $projectSalary
+        );
+        return $this->_executeObjectQuery('get project with salary less than', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
+	// WRITE FUNCTIONS
 	
 	public function createProject($projectDetails) {
 	    $valArr = array(
@@ -75,7 +91,12 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
             ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
             ':projectManagerId' => $projectDetails->getProjectManagerId()
         );
-        return $this->_executeObjectQuery('create new project', $valArr, \Native5\Core\Database\DB::INSERT);
+        
+        try {
+            return $this->_executeQuery('create new project', $valArr, \Native5\Core\Database\DB::INSERT);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
 	
 	public function editProject($projectDetails) {
@@ -88,37 +109,54 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Project
             ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
             ':projectManagerId' => $projectDetails->getProjectManagerId()
         );
-        return $this->_executeObjectQuery('edit project', $valArr, \Native5\Core\Database\DB::UPDATE);
+        
+        try {
+            return $this->_executeQuery('edit project', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
 	
 	public function deleteProject($projectDetails) {
 	    $valArr = array(
             ':projectId' => $projectDetails->getProjectId()
         );
-        return $this->_executeObjectQuery('delete project', $valArr, \Native5\Core\Database\DB::DELETE);
-	}
-	
-	// Executors
-	
-	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
-            return false;
-
-        if($queryType == \Native5\Core\Database\DB::SELECT) {
-            $results = array();
-            foreach($temp_results as $res)
-                $results[] = \Timesheet\Project\Project::make($res); 
-        } 
-
-        return $results;
-	}
-	
-	private function _executeQuery($queryName, $parameterList, $queryType) {
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
-            return false;
         
-        return $temp_results;
+        try {
+            return $this->_executeQuery('delete project', $valArr, \Native5\Core\Database\DB::DELETE);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
+	
+	// Admin Functions
+	
+	public function addUsersToProject($projectId, $userIds) {
+	    try {
+        
+            $this->db->beginTransaction();
+            
+            // SQL FOR INSERTING INTO USER_PROJECT TABLE (1:N RELATIONSHIP)
+            $sql = 'INSERT INTO `user_project` (project_id, user_id) VALUES ';
+            $valuesArray = array();
+            foreach($userIds as $userId) {
+                $valuesArray[] = '(' . $projectId . ', ' . $userId . ')';
+            }
+            $sql .= implode(', ', $valuesArray);
+            $sql .= ';';
+            
+            $notificationId = $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
+            
+            $this->db->commitTransaction();
+        
+        } catch (Exception $e) {
+            
+            $this->db->rollbackTransaction();
+            return false;
+            
+        }
+        
+        return true;
+	}
+	
 }

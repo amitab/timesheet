@@ -15,7 +15,7 @@ class Service {
     private function __construct() {
         global $logger;
         $this->_data = array();
-        $this->_dao = new \Timesheet\User\DAOImpl();
+        $this->_dao = new \Timesheet\Project\DAOImpl();
     }
 
     public static function getInstance() {
@@ -27,12 +27,44 @@ class Service {
 	
 	// The Cover
 	
-	public function getUserById($userId = null) {
-		if($userId == null) return false;
-		
-		$data = $_dao->getUserById($userId);
-		return $data;
-	}
-	
+	// write only functions
+    public function createProject($projectDetails) {
+        return $this->_dao->createProject($projectDetails);
+    }
+    public function editProject($projectId) {
+        return $this->_dao->editProject($projectDetails);
+    }
+    public function deleteProject($projectId) {
+        return $this->_dao->deleteProject($projectDetails);
+    }
+    
+    // read only functions
+    public function getAllProjects() {
+        return $this->_dao->getAllProjects();
+    }
+    public function getProjectById($id) {
+        return $this->_dao->getProjectById($id);
+    }
+    public function getProjectsInMonth($month) {
+        return $this->_dao->getProjectsInMonth($month);
+    }
+    public function getProjectsInYear($year) {
+        return $this->_dao->getProjectsInYear($year);
+    }
+    public function findProjectByName($projectName) {
+        return $this->_dao->findProjectByName($projectName);
+    }
+    public function getProjectsHandledByUserId($userId) {
+        return $this->_dao->getProjectsHandledByUserId($userId);
+    }
+    public function getProjectsCreatedByUserId($userId) {
+        return $this->_dao->getProjectsCreatedByUserId($userId);
+    }
+    public function getProjectsWithSalaryGreaterThan($projectSalary) {
+        return $this->_dao->getProjectsWithSalaryGreaterThan($projectSalary);
+    }
+    public function getProjectsWithSalaryLessThan($projectSalary) {
+        return $this->_dao->getProjectsWithSalaryLessThan($projectSalary);
+    }
 	
 }

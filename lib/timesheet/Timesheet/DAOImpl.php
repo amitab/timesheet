@@ -2,7 +2,7 @@
 
 namespace Timesheet\Timesheet;
 
-class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Timesheet\DAO {
+class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	const QUERIES_FILE = 'queries.cfg.yml';
 	
 	public function __construct(\Native5\Core\Database\DB $db = null) {
@@ -15,9 +15,10 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Timeshe
 
         // Load the sql queries file
         parent::loadQueries(__DIR__.DIRECTORY_SEPARATOR.self::QUERIES_FILE);
+        parent::setObjectMaker('\Timesheet\Timesheet\Timesheet', 'make');
     }
 	
-	// Data Transaction Functions
+	// READ FUNCTIONS
 	
 	public function getAllTimesheets() {
         return $this->_executeObjectQuery('get all timesheets', null, \Native5\Core\Database\DB::SELECT);
@@ -66,25 +67,12 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Timeshe
         return $this->_executeObjectQuery('find timesheets created in month and week', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
-	public function getUnmarkedTimesheets($offset = NULL) {
-	    if($offset == NULL) {
-	        
-            return $this->_executeObjectQuery('get unmarked timesheets', null, \Native5\Core\Database\DB::SELECT);
-	        
-	    } else {
-	        
-	        $valArr = array(
-                ':offset' => $offset,
-            );
-            return $this->_executeObjectQuery('get unmarked timesheets with offset', $valArr, \Native5\Core\Database\DB::SELECT);
-	        
-	    }
-	}
-	
 	public function getRecentlyMarkedTimesheets($offset = NULL) {
 	    if($offset == NULL) {
-	        
-            return $this->_executeObjectQuery('get recently marked timesheets', null, \Native5\Core\Database\DB::SELECT);
+	        $valArr = array(
+                ':status' => /Timesheet/Timesheet/UNMARKED,
+            );
+            return $this->_executeObjectQuery('get recently marked timesheets', $valArr, \Native5\Core\Database\DB::SELECT);
 	        
 	    } else {
 	        
@@ -96,6 +84,16 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Timeshe
 	    }
 	}
 	
+	public function getTimesheetsWithStatus($timesheetStatus, $offset, $limit) {
+	    $valArr = array(
+            ':timesheetStatus' => $timesheetStatus,
+            ':limit' => $limit,
+            ':offset' => $offset
+        );
+        return $this->_executeObjectQuery('get timesheets with status', $valArr, \Native5\Core\Database\DB::SELECT);
+	}
+	
+	// WRITE FUNCTIONS
 	
 	public function createTimesheet($timesheetDetails) {
 	    $valArr = array(
@@ -107,10 +105,35 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Timeshe
             ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
             ':timesheetStatus' => $timesheetDetails->getTimesheetStatus(),
         );
-        return $this->_executeObjectQuery('create new timesheet', $valArr, \Native5\Core\Database\DB::INSERT);
+        
+        try {
+            
+            $this->db->beginTransaction();
+            
+            // Need current insert ID
+            $timesheetId = $this->_executeObjectQuery('create new timesheet', $valArr, \Native5\Core\Database\DB::INSERT); 
+            
+            // Inserting into the association tables
+            $sql = 'INSERT INTO `user_timesheet` (timesheet_id, user_id) VALUES (' . 
+            $timesheetId . ', ' . $timesheetDetails->getUserId . ');';
+            $sql .= 'INSERT INTO `project_timesheet` (timesheet_id, project_id) ' .
+            'VALUES (' . $timesheetId . ', ' . $timesheetDetails->getProjectId . ');';
+            
+            $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
+            
+            $this->db->commitTransaction();
+            
+        } catch (Exception $e) {
+            
+            $this->db->rollbackTransaction();
+            return false;
+            
+        }
+        
+        return true;
 	}
 	
-	public function editUser($userDetails) {
+	public function editTimesheet($timesheetDetails) {
 	    $valArr = array(
             ':timesheetId' => $timesheetDetails->getTimesheetId(),
             ':timesheetStartTime' => $timesheetDetails->getTimesheetStartTime(),
@@ -122,39 +145,42 @@ class DAOImpl extends \Native5\Core\Database\DBDAO implements \Timesheet\Timeshe
             ':timesheetStatus' => $timesheetDetails->getTimesheetStatus(),
         );
         
-        // update password aswell!
-        
-        return $this->_executeObjectQuery('edit timesheet', $valArr, \Native5\Core\Database\DB::UPDATE);
+        try {
+            return $this->_executeQuery('edit timesheet', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (Exception $e) {
+            return false;
+        }
 	}
 	
-	public function deleteUser($userId) {
+	public function deleteTimesheet($timesheetId) {
 	    $valArr = array(
             ':timesheetId' => $timesheetId
         );
-        return $this->_executeObjectQuery('delete timesheet', $valArr, \Native5\Core\Database\DB::DELETE);
-	}
-	
-	// Executors
-	
-	private function _executeObjectQuery($queryName, $parameterList, $queryType) {
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
-            return false;
-
-        if($queryType == \Native5\Core\Database\DB::SELECT) {
-            $results = array();
-            foreach($temp_results as $res)
-                $results[] = \Timesheet\Timesheet\Timesheet::make($res); 
-        } 
-
-        return $results;
-	}
-	
-	private function _executeQuery($queryName, $parameterList, $queryType) {
-		$temp_results = parent::execQuery($queryName, $parameterList, $queryType);
-        if (empty($temp_results) || !isset($temp_results[0]) || empty($temp_results[0]))
-            return false;
         
-        return $temp_results;
+        try {
+            return $this->_executeQuery('delete timesheet', $valArr, \Native5\Core\Database\DB::DELETE);
+        } catch (Exception $e) {
+            return false;
+        }
+        
+        return $result;
 	}
+	
+	// project manager functions
+    
+    public function markTimesheet($status, $timesheetId, $timesheetMarkTime) {
+        $valArr = array(
+            ':status' => $status,
+            ':timesheetId' => $timesheetId,
+            ':timesheetMarkTime' => $timesheetMarkTime
+        );
+        
+        try {
+            return $this->_executeQuery('mark timesheet', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (Exception $e) {
+            return false;
+        }
+        
+        return $result;
+    }
 }

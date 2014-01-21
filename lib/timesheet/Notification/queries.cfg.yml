@@ -9,4 +9,6 @@ find notification count for user : SELECT DISTINCT COUNT(`notification`.*) FROM 
 
 delete notification by id : DELETE FROM `notification` WHERE `notification`.`notification_id` = :notificationId;
 
+create new notification : INSERT INTO `notification` (notification_body, notification_priority, notification_read) VALUES (:notificationBody, :notificationPriority, :notificationRead);
+
 ...

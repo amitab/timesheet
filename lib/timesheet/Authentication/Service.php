@@ -1,6 +1,6 @@
 <?php
 
-namespace Timesheet\Group;
+namespace Timesheet\Authentication;
 
 class Service {
 	private $_data;
@@ -15,7 +15,7 @@ class Service {
     private function __construct() {
         global $logger;
         $this->_data = array();
-        $this->_dao = new \Timesheet\User\DAOImpl();
+        $this->_dao = new \Timesheet\Authentication\DAOImpl();
     }
 
     public static function getInstance() {
@@ -27,12 +27,7 @@ class Service {
 	
 	// The Cover
 	
-	public function getUserById($userId = null) {
-		if($userId == null) return false;
-		
-		$data = $_dao->getUserById($userId);
-		return $data;
-	}
+	
 	
 	
 }
