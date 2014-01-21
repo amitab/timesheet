@@ -9,6 +9,7 @@ $(document).ready(function(){
     
     
     function closeMenu(){
+        menuIcon();
         $('#page-wrap').removeClass('active');
         $('#sidebar').removeClass('active');
         setTimeout(function(){ $('#sidebar').css('z-index','-100'); animation = false; },350);
@@ -17,6 +18,7 @@ $(document).ready(function(){
     }
     
     function openMenu(){
+        menuIcon();
         $('#sidebar').css('z-index','100');
         $('#page-wrap').addClass('active');
         $('#sidebar').addClass('active');
@@ -46,7 +48,12 @@ $(document).ready(function(){
         } //else open with accordion
     });
     
-    
+    function menuIcon() {
+        if($('.trigger').children('h5').children('i').hasClass('fa-bars'))
+            $('.trigger').children('h5').children('i').removeClass('fa-bars').addClass('fa-times');
+        else
+            $('.trigger').children('h5').children('i').removeClass('fa-times').addClass('fa-bars');
+    }
     
     // left: 37, up: 38, right: 39, down: 40,
     // spacebar: 32, pageup: 33, pagedown: 34, end: 35, home: 36
@@ -98,10 +105,11 @@ $(document).ready(function(){
     }
     
     
-    
-    $("#back").click(function() {
+    $('#back').click(function(e) {
+        e.preventDefault();
         history.back();
-    });
+    })
+    
     
     // Validate
     

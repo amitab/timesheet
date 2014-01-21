@@ -32,6 +32,7 @@ use Native5\Identity\UsernamePasswordToken;
 use Native5\Identity\AuthenticationException;
 use Native5\Identity\SecurityUtils;
 
+use Timesheet\User\DAOImpl as UserDAOImpl;
 /**
  * Home Controller
  *
@@ -65,17 +66,36 @@ class HomeController extends DefaultController
         
         $auth = false;
         
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Login',
             'auth' => $auth,
         ));
 
     }//end _default()
+	
+	public function _test($request)
+    {
+		$userImpl = new UserDAOImpl();
+		$user = new \Timesheet\User\User();
+		$user->setUserName('Amitab');
+		$user->setUserMail('amitab.das@outlook.com');
+		$user->setUserLocation('Kr Puram, Bangalore');
+		$ids = $userImpl->createUser($user);
+        
+        global $logger;
+        $GLOBALS['logger']->info("Called");
+        $skeleton =  new TwigRenderer('auth.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $auth = false;
+        
+        $this->_response->setBody(array(
+            'title' => 'Login',
+            'auth' => $auth,
+            'ids' => $ids
+        ));
+
+    }
 
 }//end class
 

@@ -1,7 +1,7 @@
 <?php
 define('TIMESHEET', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
-class AutoLoader {
+class Loader {
     protected static $paths = array(
         TIMESHEET ,
     );
@@ -12,7 +12,7 @@ class AutoLoader {
         }
     }
     public static function load($class) {
-        $classPath = $class . '.php'; // Do whatever logic here
+        $classPath = $class . '.php'; 
         foreach (self::$paths as $path) {
             if (is_file($path . $classPath)) {
                 require_once $path . $classPath;
@@ -21,6 +21,6 @@ class AutoLoader {
         }
     }
 }
-spl_autoload_register(array('AutoLoader', 'load'));
+spl_autoload_register(array('Loader', 'load'));
 
 ?>

@@ -59,8 +59,9 @@ class ProfileController extends DefaultController
      */
     public function _default($request)
     {
+        
         global $logger;
-        $skeleton =  new TwigRenderer('profile.html');
+        $skeleton =  new TwigRenderer('profile-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
         $auth = true;
@@ -73,10 +74,32 @@ class ProfileController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Profile',
             'auth' => $auth,
-        ));
+        )); 
+
 
     }//end _default()
+    
+    public function _edit_profile($request)
+    {
+        
+        global $logger;
+        $skeleton =  new TwigRenderer('editprofile.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $auth = true;
+        
+        /*$subject = SecurityUtils::getSubject();
+        if ($subject->isAuthenticated() === true) {
+            $this->_response->redirectTo('dashboard');
+        }*/
+        
+        $this->_response->setBody(array(
+            'title' => 'Edit Profile',
+            'auth' => $auth,
+        )); 
 
+
+    }
 
 }//end class
 

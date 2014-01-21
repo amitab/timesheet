@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c5df80e8a487fb4ecb5bc315fcaa1149",
+    "hash": "10303fced2e29944057027889cd18407",
     "packages": [
 
     ],
@@ -158,24 +158,28 @@
         },
         {
             "name": "native5/native5-sdk-client-php",
-            "version": "0.2.0",
+            "version": "dev-development",
             "source": {
                 "type": "git",
-                "url": "https://bitbucket.org/native5/native5-sdk-client-php.git",
-                "reference": "29e35a6c74137d491e3f0d03847528609b5f4bf3"
+                "url": "https://github.com/native5/native5-sdk-client-php.git",
+                "reference": "09f0d71fd36460f7595c7def8fef6ccd97c5789e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://bitbucket.org/native5/native5-sdk-client-php/get/29e35a6c74137d491e3f0d03847528609b5f4bf3.zip",
-                "reference": "29e35a6c74137d491e3f0d03847528609b5f4bf3",
+                "url": "https://api.github.com/repos/native5/native5-sdk-client-php/zipball/09f0d71fd36460f7595c7def8fef6ccd97c5789e",
+                "reference": "09f0d71fd36460f7595c7def8fef6ccd97c5789e",
                 "shasum": ""
             },
             "require": {
                 "guzzle/guzzle": "*",
                 "monolog/monolog": "1.2.*",
-                "native5/native5-sdk-common-php": "0.2.0",
                 "phpunit/phpunit": "3.7.*",
+                "symfony/yaml": "*.*",
+                "twig/extensions": "*.*",
                 "twig/twig": "1.*"
+            },
+            "require-dev": {
+                "native5/native5-sdk-common-php": "dev-development"
             },
             "type": "library",
             "autoload": {
@@ -202,38 +206,47 @@
                     "email": "bikas@native5.com"
                 }
             ],
-            "description": "Native5 PHP Framework for building web applications.",
+            "description": "Client SDK for Native5 Framework for building web applications.",
             "homepage": "http://docs.native5.com",
             "keywords": [
+                "events",
+                "framework",
                 "logging",
+                "scheduling",
                 "security",
                 "sessions",
                 "templating"
             ],
-            "time": "2013-11-07 10:50:08"
+            "time": "2014-01-17 22:07:17"
         },
         {
             "name": "native5/native5-sdk-common-php",
-            "version": "0.2.0",
+            "version": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https://github.com/native5/native5-sdk-common-php.git",
-                "reference": "59920522c7731e53374d524bcd4d57c95bd18193"
+                "reference": "43044af321bce4341d3b2a13a7c785d1661468a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/native5/native5-sdk-common-php/zipball/59920522c7731e53374d524bcd4d57c95bd18193",
-                "reference": "59920522c7731e53374d524bcd4d57c95bd18193",
+                "url": "https://api.github.com/repos/native5/native5-sdk-common-php/zipball/43044af321bce4341d3b2a13a7c785d1661468a9",
+                "reference": "43044af321bce4341d3b2a13a7c785d1661468a9",
                 "shasum": ""
             },
             "require": {
+                "guzzle/guzzle": "*",
                 "monolog/monolog": "1.2.*",
+                "phpunit/phpunit": "3.7.*",
+                "symfony/yaml": "*"
+            },
+            "require-dev": {
                 "phpunit/phpunit": "3.7.*"
             },
             "type": "library",
             "autoload": {
                 "psr-0": {
-                    "Native5": "src"
+                    "Native5": "src/",
+                    "Native5\\Tests": "tests/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -257,29 +270,31 @@
                 "services",
                 "util"
             ],
-            "time": "2013-11-06 05:40:39"
+            "time": "2014-01-18 10:13:38"
         },
         {
             "name": "native5/native5-sdk-services-php",
-            "version": "0.2.0",
+            "version": "dev-development",
             "source": {
                 "type": "git",
                 "url": "https://github.com/native5/native5-sdk-services-php.git",
-                "reference": "ba407d1f38a1e791430ddaec6642704a49e15240"
+                "reference": "862ec4cf4849e20636af1b317b8c4e2aa4e08082"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/native5/native5-sdk-services-php/zipball/ba407d1f38a1e791430ddaec6642704a49e15240",
-                "reference": "ba407d1f38a1e791430ddaec6642704a49e15240",
+                "url": "https://api.github.com/repos/native5/native5-sdk-services-php/zipball/862ec4cf4849e20636af1b317b8c4e2aa4e08082",
+                "reference": "862ec4cf4849e20636af1b317b8c4e2aa4e08082",
                 "shasum": ""
             },
             "require": {
                 "guzzle/guzzle": "*",
                 "monolog/monolog": "1.2.*",
-                "native5/native5-sdk-client-php": "0.2.0",
-                "native5/native5-sdk-common-php": "0.2.0",
                 "phpunit/phpunit": "3.7.*",
                 "twig/twig": "1.*"
+            },
+            "require-dev": {
+                "native5/native5-sdk-client-php": "dev-development",
+                "native5/native5-sdk-common-php": "dev-development"
             },
             "type": "library",
             "autoload": {
@@ -313,7 +328,7 @@
                 "jobs",
                 "messaging"
             ],
-            "time": "2013-11-06 08:51:39"
+            "time": "2014-01-16 17:05:42"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -561,16 +576,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "3.7.28",
+            "version": "3.7.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d"
+                "reference": "faeb2d9f15dc83830d2db5e4c67acf1d68c9b5ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
-                "reference": "3b97c8492bcafbabe6b6fbd2ab35f2f04d932a8d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/faeb2d9f15dc83830d2db5e4c67acf1d68c9b5ac",
+                "reference": "faeb2d9f15dc83830d2db5e4c67acf1d68c9b5ac",
                 "shasum": ""
             },
             "require": {
@@ -631,7 +646,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2013-10-17 07:27:40"
+            "time": "2014-01-15 06:46:38"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -784,6 +799,53 @@
             "time": "2013-12-28 08:12:03"
         },
         {
+            "name": "twig/extensions",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpot/Twig-extensions.git",
+                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpot/Twig-extensions/zipball/f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+                "reference": "f91a82ec225e5bb108e01a0f93c9be04f84dcfa0",
+                "shasum": ""
+            },
+            "require": {
+                "twig/twig": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Twig_Extensions_": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Common additional features for Twig that do not directly belong in core",
+            "homepage": "https://github.com/fabpot/Twig-extensions",
+            "keywords": [
+                "debug",
+                "i18n",
+                "text"
+            ],
+            "time": "2013-10-18 19:37:15"
+        },
+        {
             "name": "twig/twig",
             "version": "v1.15.0",
             "source": {
@@ -837,9 +899,11 @@
 
     ],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
+    "stability-flags": {
+        "native5/native5-sdk-client-php": 20,
+        "native5/native5-sdk-services-php": 20,
+        "native5/native5-sdk-common-php": 20
+    },
     "platform": [
 
     ],

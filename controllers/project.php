@@ -60,7 +60,7 @@ class ProjectController extends DefaultController
     public function _default($request)
     {
         global $logger;
-        $skeleton =  new TwigRenderer('projects.html');
+        $skeleton =  new TwigRenderer('projects-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
         $auth = true;
@@ -73,11 +73,12 @@ class ProjectController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Projects',
             'auth' => $auth,
-        ));
+        ));      
 
     }//end _default()
     
     public function _details($request) {
+        
         global $logger;
         $skeleton =  new TwigRenderer('projectdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
@@ -90,9 +91,9 @@ class ProjectController extends DefaultController
         }*/
         
         $this->_response->setBody(array(
-            'title' => 'Details',
+            'title' => 'Project Details',
             'auth' => $auth,
-        ));
+        ));  
     }
 
 

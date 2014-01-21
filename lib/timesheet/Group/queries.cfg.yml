@@ -1,0 +1,9 @@
+---
+
+create new group : INSERT INTO `group` (group_name) VALUES(:groupName);
+edit group : UPDATE `group` SET `group`.`group_name` = :groupName WHERE `group`.`group_id` = :groupId;
+delete group : DELETE FROM `group` WHERE `group`.`group_id` = :groupId;
+
+get group of user : SELECT `groups`.* FROM `groups`, `authentication`, `user` WHERE `groups`.`group_id` = `authentication`.`group_id` AND `user`.`user_id` = `authentication`.`user_id` AND `user`.`user_id` = :userId;
+
+...

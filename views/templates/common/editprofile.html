@@ -1,0 +1,45 @@
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="edit-profile">
+                
+                <div class="title">
+                    <h5>Edit Profile</h5>
+                </div>
+                <form action="=" method="post" class="timesheet-form">
+                    <div class="warnings"></div>
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="User Name" name="user_name" />
+                        <span class="adjoined"><i class="fa fa-user"></i></span>
+                    </div>
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="Email" name="email" />
+                        <span class="adjoined"><i class="fa fa-envelope"></i></span>
+                    </div>
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Location" name="location" />
+                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                    </div>
+                    <div class="append field">
+                        <input class="input" type="password" placeholder="Password" name="password" />
+                        <span class="adjoined"><i class="fa fa-lock"></i></span>
+                    </div>
+                    
+                    <table border="0" style="margin-top: 20px; ">
+                        <tr>
+                            <td style="padding: 0;">
+                                <div class="medium danger btn"><a href="#">Discard</a></div>
+                            </td>
+                            <td style="padding: 0;text-align: right;">
+                                <div class="medium primary btn"><a href="#" id="submit">Save</a></div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                                
+            </section>
+        </div>
+    </div>
+
+{% include 'foot.html' %}

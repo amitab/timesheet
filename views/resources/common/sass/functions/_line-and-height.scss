@@ -5,3 +5,11 @@
   height: $height;
   line-height: $height - 2;
 }
+
+@mixin line-height($height) {
+  line-height: $height - 2;
+}
+
+@mixin line-and-height-mod($height) {
+  height: $height;
+}

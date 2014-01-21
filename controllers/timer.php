@@ -73,7 +73,7 @@ class TimerController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Project a',
             'auth' => $auth,
-        ));
+        ));  
 
     }//end _default()
 

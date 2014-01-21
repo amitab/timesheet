@@ -1,0 +1,7 @@
+---
+
+get users authentication : SELECT `authentication`.* FROM `authentication` WHERE `authentication`.`user_id` = :userId;
+create authentication : INSERT INTO `authentication` (group_id, user_id, password) VALUES(:groupId, :userId, :password);
+edit authentication : UPDATE `authentication` SET `authentication`.`group_id` = :groupId, `authentication`.`password` = :password WHERE `authentication`.`user_id` = :userId;
+
+...

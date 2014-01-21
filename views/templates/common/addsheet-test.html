@@ -1,0 +1,62 @@
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="six columns centered">
+            <section class="add-timesheet">
+                
+                <div class="title">
+                    <h5>Add a new Timesheet</h5>
+                </div>
+                
+                <form action="=" method="post" class="timesheet-form">
+                    <div class="warnings"></div>
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="Project Name" name="project_name" />
+                        <span class="adjoined"><i class="fa fa-code"></i></span>
+                    </div>
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="Task completed" name="take_completed" />
+                        <span class="adjoined"><i class="fa fa-check-circle"></i></span>
+                    </div>
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Location" name="location" />
+                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                    </div>
+
+                    <div class="field">
+                        <label class="medium" for="start_date"><i class="fa fa-clock-o"></i>&nbsp;Start Time : </label>
+                        <input name="start_date" type="datetime-local" value="1996-12-19T16:39:57" readonly >
+                    </div>
+                    
+                    <div class="field">
+                        <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;End Time : </label>
+                        <input name="end_date" type="datetime-local" value="1996-12-19T16:39:57" >
+                    </div>
+                    
+                    <div class="field">
+                        <textarea class="input textarea" placeholder="Description" name="description"></textarea>
+                    </div>
+                    
+                    <table border="0" style="margin-top: 20px; ">
+                        <tr>
+                            <td style="padding: 0;">
+                                <div class="medium secondary btn"><a href="#">Save Draft</a></div>
+                            </td>
+                            <td style="padding: 0;text-align: right;">
+                                <div class="medium primary btn"><a href="#" id="submit">Submit</a></div>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+                
+            </section>
+        </div>
+    </div>
+    
+    <!--<script>
+        $(document).ready(function() {
+            $('.date').pickadate();
+        });
+    </script>-->
+
+{% include 'foot.html' %}

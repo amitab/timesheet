@@ -334,7 +334,7 @@
   100% {
     opacity: 0; } }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 1000px) {
     .flip-clock-wrapper {
         margin: 0em;
     }

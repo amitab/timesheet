@@ -32,17 +32,17 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
 	<link rel="stylesheet" href={{ resolvePath("css/gumby.css") }}>
-	<link rel="stylesheet" href={{ resolvePath("css/flipclock.css") }}>
 
 	<script src={{ resolvePath("modernizr.custom.js") }}></script>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    
 </head>
 
 <body>
     
 	<!-- Grab Google CDN's jQuery, fall back to local if offline -->
 	<!-- 2.0 for modern browsers, 1.10 for .oldie -->
-	<script>
+	<!--<script>
 	var oldieCheck = Boolean(document.getElementsByTagName('html')[0].className.match(/\soldie\s/g));
 	if(!oldieCheck) {
 	document.write('<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"><\/script>');
@@ -58,12 +58,12 @@
 	  document.write('<script src="{{ resolvePath("js/libs/jquery-1.10.1.min.js") }}"><\/script>');
 	}
 	}
-	</script>
+	</script>-->
 
 	<!--
 	Include gumby.js followed by UI modules followed by gumby.init.js
 	Or concatenate and minify into a single file -->
-	<script gumby-touch={{ resolvePath("js/libs") }} src={{ resolvePath("js/libs/gumby.js") }}></script>
+	<!--<script gumby-touch={{ resolvePath("js/libs") }} src={{ resolvePath("js/libs/gumby.js") }}></script>
 	<script src={{ resolvePath("js/libs/ui/gumby.retina.js") }}></script>
 	<script src={{ resolvePath("js/libs/ui/gumby.fixed.js") }}></script>
 	<script src={{ resolvePath("js/libs/ui/gumby.skiplink.js") }}></script>
@@ -73,7 +73,7 @@
 	<script src={{ resolvePath("js/libs/ui/gumby.tabs.js") }}></script>
 	<script src={{ resolvePath("js/libs/ui/gumby.navbar.js") }}></script>
 	<script src={{ resolvePath("js/libs/ui/jquery.validation.js") }}></script>
-	<script src={{ resolvePath("js/libs/gumby.init.js") }}></script>
+	<script src={{ resolvePath("js/libs/gumby.init.js") }}></script>-->
 
 	<!--
 	Google's recommended deferred loading of JS
@@ -97,8 +97,8 @@
 	else window.onload = downloadJSAtOnload;
 	</script> -->
 
-	<script src={{ resolvePath("js/plugins.js") }}></script>
-	<script src={{ resolvePath("js/main.js") }}></script>
+	<!--<script src={{ resolvePath("js/plugins.js") }}></script>
+	<script src={{ resolvePath("js/main.js") }}></script>-->
 
 	<!-- Change UA-XXXXX-X to be your site's ID -->
 	<!--<script>
@@ -122,7 +122,7 @@
     
     {% if items.auth == true %}
     <div id="header">
-        <div class="row">
+        <div class="">
             <div class="header-item">
                 
                 <div class="item">
@@ -133,11 +133,11 @@
                 </div>
                 <div class="item title">
                     <h5>&nbsp;{{ items.title }}</h5>
-                    <p>&nbsp;&nbsp;johndoe@gmail.com</p>
+                    <p class="very-small">&nbsp;&nbsp;johndoe@gmail.com</p>
                 </div>
             </div>
-            <div class="header-item">
-                <h5><i class="fa fa-bars trigger"></i></h5>
+            <div class="header-item trigger" style="height: 68px;">
+                <h5><i class="fa fa-bars"></i></h5>
             </div>
         </div>
     </div>

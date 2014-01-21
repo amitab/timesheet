@@ -66,11 +66,12 @@ form {
     padding: 0 10px;
     background: #fff;
     border: 1px solid darken($default-color, 10%);
-    @include line-and-height(height-calc($norm));
+    @include line-and-height-mod(height-calc($norm));
     @include font-size($norm);
     @include border-radius(4px);
+    @include box-shadow(inset 0px 2px 6px -5px #888888);
     &.search {
-      @include line-and-height(height-calc($norm));
+      @include line-and-height-mod(height-calc($norm));
       @include shape(oval);
       padding-right: 0;
     }
@@ -122,16 +123,6 @@ label + {
 
 .prepend input,
 .prepend .input,
-.append input,
-.append .input {
-  display: inline-block;
-  max-width: 100%;
-  margin-right: 0;
-  margin-left: 0;
-}
-
-.prepend input,
-.prepend .input,
 .prepend.append input:last-child,
 .append *:last-child {
   @include border-radius(0px $button-radius $button-radius 0);
@@ -152,6 +143,38 @@ label + {
   margin-left: -1px;
 }
 
+// Responsive adjoined by amitab
+
+textarea {
+    padding: 10px!important;
+    height: 100px!important;
+}
+
+.append .input, .prepend .input {
+    width: 84%
+}
+.append .btn, .prepend .btn , .adjoined {
+    width: 16%;
+    @include box-shadow(inset 0px 2px 6px -5px #888888);
+}
+.append .input, .prepend .adjoined {
+    border-right: 0!important;
+}
+.prepend .input, .append .adjoined {
+    border-left: 0!important;
+}
+
+@include respond(portrait-phones + 1) {
+    .append .input, .prepend .input {
+        width: 90%
+    }
+    .append .btn, .prepend .btn , .adjoined {
+        width: 10%;
+    }
+}
+
+// end responsive adjoined
+
 .prepend .adjoined, .append .adjoined, .prepend .btn, .append .btn {
   position: relative;
   display: inline-block;
@@ -165,14 +188,23 @@ label + {
 }
 
 .prepend .adjoined, .append .adjoined  {
-  padding: 0 10px 0 10px;
-  background: $default-color;
+  padding: 0 0px 0 10px;
   border: 1px solid darken($default-color, 10%);
   font-family: $font-family;
   font-weight: $font-weight-semibold;
-  color: $body-font-color;
   @include font-size($norm);
   @include line-and-height(height-calc($norm));
+  
+	text-align: right;
+	//padding-right: 10px;
+	color: #d8d8d8;
+	background: white;
+}
+
+.adjoined i.fa {
+	width: 40px;
+	text-align: center;
+	margin-left: -6px;
 }
 
 .prepend .adjoined, .prepend .btn {

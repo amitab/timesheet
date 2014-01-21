@@ -58,7 +58,7 @@ class TimesheetsController extends DefaultController
      * @return void
      */
     public function _default($request)
-    {
+    { 
         global $logger;
         $skeleton =  new TwigRenderer('timesheets.html');
         $this->_response = new HttpResponse('none', $skeleton);
@@ -73,11 +73,12 @@ class TimesheetsController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Timesheets',
             'auth' => $auth,
-        ));
+        ));  
 
     }//end _default()
     
     public function _details($request) {
+        
         global $logger;
         $skeleton =  new TwigRenderer('timesheetdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
@@ -92,7 +93,7 @@ class TimesheetsController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Timesheet Details',
             'auth' => $auth,
-        ));
+        )); 
     }
 
 

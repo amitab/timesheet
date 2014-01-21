@@ -1,0 +1,24 @@
+---
+find user by id : SELECT `user`.* FROM `user` where `user`.`user_id` = :userId;
+find user by name : SELECT `user`.* FROM `user` where `user`.`user_name` LIKE :userName;
+get all users : SELECT `user`.* FROM `user`;
+get all users under project id : SELECT `user`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `project`.`project_id` = :projectId;
+get all users under project name : SELECT `user`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `project`.`project_name` LIKE :projectName;
+
+get number of projects : SELECT COUNT(*) as `project_count` from `user_project` WHERE `user_project`.`user_id` = :userId;
+get number of timesheets : SELECT COUNT(*) as `timesheet_count` from `user_timesheet` WHERE `user_timesheet`.`user_id` = :userId;
+get number of hours : SELECT TIMESTAMPDIFF(HOUR,`timesheet`.`timesheet_start_time` , `timesheet`.`timesheet_end_time`) AS `hour_count` FROM `timesheet`, `user_timesheet` WHERE `user_timesheet`.`timesheet_id` = `timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
+
+create new user : INSERT INTO `user` (user_name, user_email, user_location) VALUES (:userName, :userMail, :userLocation);
+edit user : START TRANSACTION; UPDATE `user` SET `user`.`user_name` = :userName, `user`.`user_email` = :userMail, `user`.`user_location` = :userLocation WHERE `user`.`user_id` = :userId; UPDATE `authentication` SET `authentication`.`password` = :password WHERE `authentication`.`user_id` = :userId; COMMIT;
+delete user : DELETE FROM `user` WHERE `user`.`user_id` = :userId;
+
+get handled projects : SELECT `project`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `user`.`user_id` = :userId;
+get created projects : SELECT `project`.* FROM `project` WHERE `project`.`project_manager_id` = :managerId;
+find user group : SELECT `group`.* FROM `group`, `authentication` WHERE `authentication`.`group_id` = `group`.`group_id` AND  `authentication`.`user_id` = :userId;
+
+
+find users under group name : SELECT `user`.* FROM `group`, `user`, `authentication` WHERE `authentication`.`user_id` = `user`.`user_id` AND `group`.`group_id` = `authentication`.`group_id` AND `group`.`group_name` LIKE :groupName;
+find users under group id : SELECT `user`.* FROM `group`, `user`, `authentication` WHERE `authentication`.`user_id` = `user`.`user_id` AND `group`.`group_id` = `authentication`.`group_id` AND `group`.`group_id` = :groupId;
+
+...

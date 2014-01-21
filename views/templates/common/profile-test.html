@@ -1,0 +1,55 @@
+{% include 'head.html' %}
+
+
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="dashboard">
+                
+                <div class="display-picture">
+                    <img src={{ resolvePath("pic.jpg") }} alt="" class="image">
+                </div>
+                <div class="details">
+                    <h4>John Doe</h4>
+                    <p class="small">johndoe@gmail.com</p>
+                    <p class="small"><i class="fa fa-map-marker"></i>&nbsp;Kollam, Kerala</p>
+                </div>
+                <div class="stats">
+                    <table>
+                        <tr>
+                            <td>
+                                <p class="time">15</p>
+                                <p class="type">Projects</p>
+                            </td>
+                            <td>
+                                <p class="time">35</p>
+                                <p class="type">Timesheets</p>
+                            </td>
+                            <td>
+                                <p class="time">127</p>
+                                <p class="type">Hours</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="options" style="padding: 10px;">
+					<table>
+                        <tr>
+                            <td style="padding:0;">
+                                <div class="medium primary btn">
+                                    <a href="profile/edit_profile" style="font-size: 14px;" >Edit Profile</a>
+                                </div>
+                            </td>
+							<td style="text-align: right;padding:0;">
+                                <div class="medium secondary btn" style="position: relative;">
+								<p class="notifications small">1</p>
+								<a href="#" style="font-size: 14px;" >Notifications</a></div>
+							</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+
+{% include 'foot.html' %}

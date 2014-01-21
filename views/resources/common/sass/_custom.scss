@@ -3,12 +3,14 @@
 @import "compass/css3/transform";
 @import "compass/css3/border-radius";
 @import "compass/css3/user-interface";
+@import "compass/css3/text-shadow";
 
-$slate-grey : #404040;
-$button-color : rgb(21, 125, 251);
-$border-grey : #E8E8E8;
-$link-color : #B1B1B1;
+$slate-grey: #404040;
+$button-color: rgb(21, 125, 251);
+$border-grey: #E8E8E8;
+$link-color: #B1B1B1;
 $body-color: #f1f1f1;
+$corvoda-blue: #4cc2e4;
 
 $orange : #FFCC5C;
 $red : #FF6F69;
@@ -39,12 +41,33 @@ $snap-animation : cubic-bezier(0.785, 0.135, 0.150, 0.860);
 
 // table resets
 
+.btn {
+    @include font-size(14px);
+    @include box-shadow(inset 0 -2px rgba(0,0,0,0.1),0 1px rgba(0,0,0,0.05));
+    @include border-radius(2px);
+    font-weight: 300;
+}
+.btn:active {
+    @include box-shadow(inset 0 0px rgba(0,0,0,0),0 0px rgba(0,0,0,0));
+}
+
+.btn.disabled {
+    background: #ECECEC!important;
+    border: 1px solid #BEBEBE!important;
+    cursor: default;
+    a {
+        cursor: not-allowed;
+        @include user-select(none);
+    }
+}
+
 table {
     border: 0;
     margin: 0;
     background-color: inherit;
-    td {
+    tr td {
         border: 0!important;
+        vertical-align: middle;
     }
 }
 
@@ -52,6 +75,10 @@ table {
 
 body {
     background: $body-color;
+}
+
+#header, body {
+	min-width: 320px;
 }
 
 li {
@@ -62,6 +89,204 @@ section {
     @include card-shadow();
     padding: 10px;
     background: white;
+}
+
+h5.no-padding {
+    padding: 0;
+}
+
+@include respond(all-phones) {
+    .input, .adjoined, .btn, p, td, th, a.small, input {
+        font-size: 14px!important;
+    }
+}
+
+img.image.round {
+    @include border-radius(50%);
+    margin: 0;
+}
+
+label.medium {
+    font-size: 14px!important;
+}
+
+// edit profile
+
+section.edit-profile {
+    margin: 5% 0;
+    border-top: 4px solid $orange;
+    .title {
+        margin-bottom: 10px;
+        text-align: center;
+        h5 {
+            font-weight: bolder;
+        }
+    }
+    
+}
+
+// add timesheet
+
+section.add-timesheet {
+    margin: 5% 0;
+    border-top: 4px solid $gumby-blue;
+    .title {
+        margin-bottom: 10px;
+        text-align: center;
+        h5 {
+            font-weight: bolder;
+        }
+    }
+    .field.inline > * {
+        display: inline-block;
+        width: auto;
+        vertical-align: text-bottom;
+    }
+    label {
+        margin-right: 10px; 
+        margin-left: 4px;
+        margin-bottom: 4px;
+        color: darken($border-grey, 20%);
+    }
+    input {
+        border: 1px solid #d8d8d8;
+        padding: 6px 10px;
+        -webkit-border-radius: 4px;
+        -moz-border-radius: 4px;
+        -ms-border-radius: 4px;
+        -o-border-radius: 4px;
+        border-radius: 4px;
+        margin-bottom: 6px;
+    }
+}
+
+// projects list, notifications list, messages list
+
+section.projects-list, section.notifications-list, section.message-list {
+    margin: 5% 0;
+    padding: 0;
+    li.project-list-item, li.notifications-list-item, li.message-list-item {
+        padding: 0;
+        .wrapper {
+            padding: 1rem;
+            border-bottom: 1px solid $border-grey;
+            table.content-heading, table  {
+                //margin-bottom: 10px;
+                td {
+                    padding: 0;
+                }
+            }
+            .detail {
+                .time-alloted {
+                    span {
+                        font-weight: bolder;
+                    }
+                    color: darken($border-grey, 20%);
+                }
+            }
+        }
+    }
+    li.message-list-item {
+        p.date {
+            color: darken($border-grey, 20%);
+        }
+        p.snippet {
+            @include hidden(portrait-phones);
+        }
+        .content-heading img.image.round {
+        }
+    }
+    li.notifications-list-item {
+        table {
+            td {
+                padding: 0;
+            }
+        }
+        .status i {
+            font-size: 16px;
+        }
+        .status i.fa-check-circle {
+            color: rgb(110, 201, 110);
+        }
+        .status i.fa-exclamation-circle {
+            color: rgb(223, 110, 110);
+        }
+        .time {
+            color: darken($border-grey, 20%);
+        }
+    }
+}
+
+// dashboard
+
+@media (max-width: 769px) and (min-width: 500px) {
+    .card.columns {
+        width: 70%!important;
+        margin: 0 auto!important;
+        float: none!important;
+    }
+}
+
+section.dashboard {
+    margin: 5% 0;
+    //padding: 0 0 10px 0;
+    padding: 10px 0;
+    border-top: 4px solid $orange;
+    .display-picture {
+        text-align: center;
+        .image {
+            @include border-radius(50%);
+            width: 100px;
+            margin-bottom: 0px;
+        }
+    }
+    .details {
+        text-align: center;
+        p {
+            font-size: 12px;
+            color: darken($border-grey, 20%);
+            text-align: center;
+        }
+    }
+    .stats {
+        padding: 10px 0;
+        td {
+            border: 1px solid $border-grey!important;
+            width: 33.3333%;
+            p {
+                text-align: center;
+            }
+            
+            p.time {
+                font-weight: bold;
+            }
+            p.type {
+                font-size: 12px;
+            }
+        }
+        td:first-child {
+            border-left: 0!important;
+            padding: 10px 10px 10px 0px;
+        }
+        td:last-child {
+            border-right: 0!important;
+            padding: 10px 0px 10px 10px;
+        }
+    }
+	.options {
+		.notifications {
+			@include user-select(none);
+			position: absolute;
+			right: -8px;
+			top: -10px;
+			background: #FF6F42;
+			color: white;
+			padding: 2px 8px;
+			font-size: 10px;
+            @include border-radius(50%);
+			@include single-box-shadow(rgba(darken($border-grey, 60%), 0.2), 0px, 0px, 1px, 1px, false);
+		}
+	}
 }
 
 // timesheet details
@@ -84,7 +309,6 @@ section.timesheet-details {
         padding-left: 5px;
     }
     td, th {
-        font-size: 14px;
         padding: 6px;
     }
 }
@@ -93,7 +317,7 @@ section.timesheet-details {
 
 section.project-details {
     margin: 5% 0;
-    border-top: 4px solid $red;
+    border-top: 4px solid $gumby-blue;
     .title {
         margin-bottom: 10px;
         text-align: center;
@@ -102,6 +326,7 @@ section.project-details {
         }
     }
     .wrapper {
+        margin-bottom: 15px;
         h6 {
             color: darken($border-grey, 20%);
             font-weight: bolder;
@@ -110,12 +335,12 @@ section.project-details {
             padding-left: 5px;
         }
         td, th {
-            font-size: 14px;
             padding: 6px;
         }
     }
 }
 
+/*
 // add past sheet
 
 section.addsheet {
@@ -233,6 +458,7 @@ section.addsheet {
         }
     }
 }
+*/
 
 // overview
 
@@ -256,7 +482,6 @@ section.overview {
             p.day-name {
                 color: white;
                 margin: 0;
-                font-size: 14px;
                 span {
                     font-weight: bold;
                 }
@@ -264,12 +489,6 @@ section.overview {
         }
         tr.item-row {
             border-bottom: 1px solid $border-grey;
-            td {
-                p {
-                    font-size: 14px;
-                    margin: 0;
-                }
-            }
             td:nth-child(even) p {
                 text-align: right;
             }
@@ -290,24 +509,44 @@ section.overview {
 
 div.timer {
     padding-bottom: 30px;
-    margin-top: 1rem;
     text-align: center;
+    .clock .duration {
+        margin-right: 15px;
+        position: relative;
+        margin-top: 30px;
+        display: inline-block;
+        width: auto;
+        .inn {
+            font-size: 80px;
+            line-height: 80px;
+            font-weight: 100;
+        }
+    }
+    .clock .duration:last-child {
+        margin-right: 0px;
+    }
+    .clock .duration:after {
+        position: absolute;
+        content: ":";
+        font-size: 60px;
+        top: 22px;
+        right: -18px;
+    }
+    .clock .duration:last-child:after {
+        content: "";
+    }
 }
 
 section.timer {
-    padding: 20px;
+    padding-bottom: 20px;
+    padding-top: 10px;
     border-top: 4px solid $pahdera-green;
     h4 {
-        font-weight: bold;
-    }
-    h6 {
-        color: darken($border-grey, 20%);
-        font-weight: bold;
-        text-align: center;
+        font-weight: 100;
+        margin-bottom: 6px;
     }
     p.about {
         font-style: italic;
-        font-size: 14px;
     }
     p.instruction {
         font-size: 12px;
@@ -319,20 +558,19 @@ section.timer {
         text-align: center;
         a {
             font-weight: lighter;
-            font-size: 14px;
         }
     }
 }
 
 // profile
 
+/*
 section.profile {
     margin: 15% 0;
     border-top: 4px solid $pahdera-green;
     p {
         @include font-size(12px);
         color: darken($border-grey, 20%);
-        margin: 0;
     }
     .work {
         td {
@@ -345,9 +583,6 @@ section.profile {
                 font-weight: bold;
             }
             @media screen and (min-width: 500px) {
-                .type {
-                   font-size: 14px;
-                }
                 .time {
                    font-size: 22px
                 }
@@ -361,12 +596,17 @@ section.profile {
         }
         .user-image {
             text-align: center;
+            @include respond(portrait-phones) {
+                text-align: left;
+            }
+            //text-align: center;
             .image {
                 @include border-radius(50%);
             }
         }
     }
 }
+*/
 
 // login
 
@@ -407,19 +647,11 @@ section.profile {
             }
         }
     }
-
-    .prepend.field, .append.field {
-        padding-right: 36px!important;
-        
-        span.adjoined {
-            width: 36px!important;
-            text-align: center;
-        }
-    }
 }
 
 // timesheet
 
+/*
 .timesheet {
     @include single-box-shadow(rgba(darken($border-grey, 60%), 0.1), 0px, 0px, 8px, 2px, false);
 }
@@ -440,7 +672,7 @@ li.timesheet-item {
         }
         .status-item:nth-child(odd) {
             a {
-                font-size: 18px;
+                font-size: 18px!important;
             }
         }
         .status-item:nth-child(even) {
@@ -451,10 +683,7 @@ li.timesheet-item {
         }
     }
     .detail {
-        padding-left: 2px;
         p {
-            margin: 0;
-            @include font-size(12px);
             span {
                 font-weight: bolder;
             }
@@ -464,6 +693,7 @@ li.timesheet-item {
         }
     }
 }
+*/
 
 // Sidebar anim
 
@@ -494,13 +724,12 @@ li.timesheet-item {
             margin-bottom: 70px;
         }
         .user {
-            table {
-                margin-bottom: -20px;
-            }
+			margin-top: 15px;
             .user-image {
                 padding: 0 0 0 10px;
                 .image {
                     @include border-radius(50%);
+                    margin: 0;
                 }
             }
         
@@ -508,7 +737,6 @@ li.timesheet-item {
                 color: white;
             }
             p {
-                margin: 0;
                 @include font-size(12px);
                 color: darken($border-grey, 5%);
             }
@@ -523,7 +751,6 @@ li.timesheet-item {
                 color: darken($border-grey, 5%);
                 display: block;
                 padding: 1rem;
-                font-size: 14px;
                 i {
                     @include font-size(14px);
                     padding-right: 1rem; 
@@ -545,6 +772,7 @@ li.timesheet-item {
 
 // header
 #header {
+    @include user-select(none);
     z-index: 400;
 	-webkit-box-shadow: 0px 0px 8px 1px rgba(50, 50, 50, 0.49);
 	-moz-box-shadow:    0px 0px 8px 1px rgba(50, 50, 50, 0.49);
@@ -553,13 +781,13 @@ li.timesheet-item {
     width: 100%;
     @include card-shadow();
     background: $slate-grey;
-    padding: 1rem 0;
+    //padding: 1rem 0;
 
     .header-item {
         display: inline-block;
         width: auto;
         color: white;
-        
+        padding: 1rem;
         .item {
             display: inline-block;
             vertical-align: top;
@@ -577,14 +805,13 @@ li.timesheet-item {
                 @include respond(all-phones) {
                     white-space: nowrap;
                     text-overflow: ellipsis;
-                    width: 100px;
                     display: block;
                     overflow: hidden;
+                    width: 150px;
                 }
-            }
-            p {
-                margin: 0;
-                font-size: 10px;
+				@include respond(portrait-phones) {
+                    width: 100px;
+				}
             }
         }
         h5 {
@@ -601,6 +828,9 @@ li.timesheet-item {
     .trigger {
         cursor: pointer;
     }
+	.trigger:active {
+		@include box-shadow(inset 3px 0px 12px 4px rgba(50, 50, 50, 0.6));
+	}
 }
 
 #page-wrap {

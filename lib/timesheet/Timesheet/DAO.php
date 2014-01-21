@@ -13,6 +13,10 @@ interface DAO {
     public function getTimesheetsUnderProjectId($projectId);
     public function getTimesheetsUnderProjectName($projectName);
     public function getAllTimesheets();
-    public function getTimesheetsInWeek($week);
+    public function getTimesheetsInMonth($month);
+    public function getTimesheetsInYear($year);
+    public function getTimesheetsInMonthWeek($month, $week);
+    public function getUnmarkedTimesheets($offset);
+    public function getRecentlyMarkedTimesheets($offset);
     
 }

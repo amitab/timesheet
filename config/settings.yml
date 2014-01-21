@@ -8,3 +8,10 @@ api:
     sharedKey   : s087lu6nrn5v # Access key for your app. 
     secretKey   : p8thtvjckc18bqrbvcp2lmlvq8 # Secret Token for your app.
 #environment : local # Uncomment when developing locally.
+database:
+    type        : mysql
+    host        : "127.0.0.1"
+    port        : 3306
+    user        : root
+    password    : mydatabase
+    name        : timesheet

@@ -3,9 +3,9 @@
     "description": "Sample Application on Native5 Platform",
     "license" : "MIT",
     "require-dev": {
-        "native5/native5-sdk-client-php": "0.2.0",
-        "native5/native5-sdk-services-php": "0.2.0",
-        "native5/native5-sdk-common-php": "0.2.0"
+        "native5/native5-sdk-client-php": "dev-development",
+        "native5/native5-sdk-services-php": "dev-development",
+        "native5/native5-sdk-common-php": "dev-development"
     },
      "autoload": {
         "psr-0": {

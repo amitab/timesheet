@@ -1,0 +1,12 @@
+---
+
+find notification by id : SELECT `notification`.* FROM `notification` WHERE `notification`.`notification_id` = :notificationId;
+find notifications from user : SELECT DISTINCT `notification`.* FROM `notification`, `user_notification` WHERE `notification`.`notification_id` = `user_notification`.`notification_id` AND `user_notification`.`from_user_id` = :userId;
+find notifications to user : SELECT DISTINCT `notification`.* FROM `notification`, `user_notification` WHERE `notification`.`notification_id` = `user_notification`.`notification_id` AND `user_notification`.`to_user_id` = :userId;
+find notifications by priority : SELECT `notification`.* FROM `notification` WHERE `notification`.`notification_priority` = :Notificationpriority;
+
+find notification count for user : SELECT DISTINCT COUNT(`notification`.*) FROM `notification`, `user_notification` WHERE `notification`.`notification_id` = `user_notification`.`notification_id` AND `user_notification`.`to_user_id` = :userId;
+
+delete notification by id : DELETE FROM `notification` WHERE `notification`.`notification_id` = :notificationId;
+
+...
