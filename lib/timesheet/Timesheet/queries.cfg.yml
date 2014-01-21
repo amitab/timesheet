@@ -18,4 +18,7 @@ create new timesheet : INSERT INTO `timesheet` (timesheet_start_time, timesheet_
 edit timesheet : UPDATE `timesheet` SET timesheet_start_time = :timesheetStartTime, timesheet_end_time = :timesheetEndTime, timesheet_description = :timesheetDescription, timesheet_location = :timesheetLocation, timesheet_task = :timesheetTask, timesheet_project_name = :timesheetProjectName, timesheet_status = :timesheetStatus;
 delete timesheet : DELETE FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
 
+get timesheet work time : SELECT `timesheet`.`timesheet_work_time` AS `work_time` FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
+get timesheet pause time : SELECT TIMESTAMPDIFF(HOUR, `timesheet`.`timesheet_start_time`, `timesheet`.`timesheet_end_time`) - `timesheet`.`timesheet_work_time` AS `pause_time`  FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
+
 ...

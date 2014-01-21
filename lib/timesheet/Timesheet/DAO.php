@@ -19,6 +19,10 @@ interface DAO {
     public function getRecentlyMarkedTimesheets($offset);
     public function getTimesheetsWithStatus($timesheetStatus, $limit, $offset);
     
+    // These Times are in hours
+    public function getTimesheetWorkTime($timesheetId);
+    public function getTimesheetPauseTime($timesheetId);
+    
     // project manager functions
     
     public function markTimesheet($status, $timesheetId, $timesheetMarkTime);

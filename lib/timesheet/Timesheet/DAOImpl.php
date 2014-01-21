@@ -93,6 +93,24 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         return $this->_executeObjectQuery('get timesheets with status', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
+    public function getTimesheetWorkTime($timesheetId) {
+	    $valArr = array(
+            ':timesheetId' => $timesheetId,
+        );
+        
+        $data = $this->_executeQuery('get timesheet work time', $valArr, \Native5\Core\Database\DB::SELECT);
+        if($data == false) return false;
+        else return $data[0]['work_time'];
+    }
+    public function getTimesheetPauseTime($timesheetId) {
+	    $valArr = array(
+            ':timesheetId' => $timesheetId,
+        );
+        $data = $this->_executeQuery('get timesheet pause time', $valArr, \Native5\Core\Database\DB::SELECT);
+        if($data == false) return false;
+        else return $data[0]['pause_time'];
+    }
+	
 	// WRITE FUNCTIONS
 	
 	public function createTimesheet($timesheetDetails) {

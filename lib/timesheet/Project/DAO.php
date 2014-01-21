@@ -17,6 +17,7 @@ interface DAO {
     public function getProjectsCreatedByUserId($userId);
     public function getProjectsWithSalaryGreaterThan($projectSalary);
     public function getProjectsWithSalaryLessThan($projectSalary);
+    public function getProjectOfTimesheet($timesheetId);
         
     // admin functions
         

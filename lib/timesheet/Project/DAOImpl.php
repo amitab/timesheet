@@ -80,6 +80,13 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         return $this->_executeObjectQuery('get project with salary less than', $valArr, \Native5\Core\Database\DB::SELECT);
     }
     
+    public function getProjectOfTimesheet($timesheetId) {
+		$valArr = array(
+            ':timesheetId' => $timesheetId
+        );
+        return $this->_executeObjectQuery('get project of timesheet', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
 	// WRITE FUNCTIONS
 	
 	public function createProject($projectDetails) {

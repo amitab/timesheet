@@ -19,4 +19,6 @@ delete project : DELETE FROM `project` WHERE `project`.`project_id` = :projectId
 get project with salary greater than : SELECT `project`.* FROM `project` WHERE `project`.`project_salary` >= :projectSalary;
 get project with salary less than : SELECT `project`.* FROM `project` WHERE `project`.`project_salary` <= :projectSalary;
 
+get project of timesheet : SELECT `timesheet`.* FROM `timesheet`, `project`, `project_timesheet` WHERE `timesheet`.`timesheet_id` = `project_timesheet`.`timesheet_id` AND `project`.`project_id` = `project_timesheet`.`project_id` AND `timesheet`.`timesheet_id` = :timesheetId;
+
 ...
