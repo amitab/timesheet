@@ -38,7 +38,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Authentication\D
         
         try {
             return $this->_executeQuery('create authentication', $valArr, \Native5\Core\Database\DB::INSERT);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -52,7 +52,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Authentication\D
         
         try {
             return $this->_executeQuery('edit authentication', $valArr, \Native5\Core\Database\DB::UPDATE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}

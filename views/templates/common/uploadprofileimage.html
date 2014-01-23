@@ -1,0 +1,22 @@
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="edit-profile">
+                
+                <div class="title">
+                    <h5>Upload Image</h5>
+                </div>
+                <form enctype="multipart/form-data" action="" method="post" class="upload-image-form">
+                    <div class="warnings"></div>
+                    <div class="file" style="text-align: center; margin: 1rem 0;">
+                        <input type="file" size="10" name="user_image" value="">   
+                    </div>
+                    <div class="submit" style="text-align: center;">
+                        <div class="medium primary btn"><a href="#" id="submit">Upload</a></div>
+                    </div>                        
+            </section>
+        </div>
+    </div>
+
+{% include 'foot.html' %}

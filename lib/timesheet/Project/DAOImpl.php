@@ -96,12 +96,13 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             ':projectStatus' => $projectDetails->getProjectStatus(),
             ':projectTimeAlloted' => $projectDetails->getProjectTimeAlloted(),
             ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
-            ':projectManagerId' => $projectDetails->getProjectManagerId()
+            ':projectManagerId' => $projectDetails->getProjectManagerId(),
+            ':projectSalary' =>$projectDetails->getProjectSalary(),
         );
         
         try {
             return $this->_executeQuery('create new project', $valArr, \Native5\Core\Database\DB::INSERT);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -119,7 +120,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         
         try {
             return $this->_executeQuery('edit project', $valArr, \Native5\Core\Database\DB::UPDATE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -131,7 +132,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         
         try {
             return $this->_executeQuery('delete project', $valArr, \Native5\Core\Database\DB::DELETE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -152,16 +153,18 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             $sql .= implode(', ', $valuesArray);
             $sql .= ';';
             
-            $notificationId = $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
+            parent::tableHasPrimaryKey(false);
+            
+            $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
             
             $this->db->commitTransaction();
         
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             
             $this->db->rollbackTransaction();
             return false;
             
-        }
+        } 
         
         return true;
 	}

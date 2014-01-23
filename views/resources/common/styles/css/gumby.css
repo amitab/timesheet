@@ -1702,6 +1702,8 @@ table.rounded thead th, table.rounded thead td, table.rounded caption + tbody tr
 
 .ie9 .radio.checked i, .ie9 .checkbox.checked i { top: 0; }
 
+ul { margin-bottom: 0 !important; }
+
 .btn { font-size: 14px; font-size: 0.875rem; -webkit-box-shadow: inset 0 -2px rgba(0, 0, 0, 0.1), 0 1px rgba(0, 0, 0, 0.05); -moz-box-shadow: inset 0 -2px rgba(0, 0, 0, 0.1), 0 1px rgba(0, 0, 0, 0.05); box-shadow: inset 0 -2px rgba(0, 0, 0, 0.1), 0 1px rgba(0, 0, 0, 0.05); -webkit-border-radius: 2px; -moz-border-radius: 2px; -ms-border-radius: 2px; -o-border-radius: 2px; border-radius: 2px; font-weight: 300; }
 
 .btn:active { -webkit-box-shadow: inset 0 0px rgba(0, 0, 0, 0), 0 0px rgba(0, 0, 0, 0); -moz-box-shadow: inset 0 0px rgba(0, 0, 0, 0), 0 0px rgba(0, 0, 0, 0); box-shadow: inset 0 0px rgba(0, 0, 0, 0), 0 0px rgba(0, 0, 0, 0); }
@@ -1714,48 +1716,76 @@ table tr td { border: 0 !important; vertical-align: middle; }
 
 body { background: #f1f1f1; }
 
-#header, body { min-width: 320px; }
-
 li { list-style: none !important; }
 
-section { padding: 10px; background: white; }
+section { margin: 5% 0; position: relative; padding: 10px; background: white; margin-bottom: 10px; overflow: hidden; }
 @media only screen and (min-width: 768px) and (max-width: 1139px) { section { -webkit-box-shadow: 0px 0px 8px 2px rgba(79, 79, 79, 0.1); -moz-box-shadow: 0px 0px 8px 2px rgba(79, 79, 79, 0.1); box-shadow: 0px 0px 8px 2px rgba(79, 79, 79, 0.1); } }
 @media only screen and (min-width: 768px) { section { -webkit-box-shadow: 0px 0px 8px 2px rgba(79, 79, 79, 0.1); -moz-box-shadow: 0px 0px 8px 2px rgba(79, 79, 79, 0.1); box-shadow: 0px 0px 8px 2px rgba(79, 79, 79, 0.1); } }
+section label { margin-right: 10px; margin-left: 4px; margin-bottom: 4px; color: #b5b5b5; }
+section .title { margin-bottom: 10px; text-align: center; }
+section .title h5 { font-weight: bolder; }
 
 h5.no-padding { padding: 0; }
+
+h5.left-padding { padding-left: 10px; }
 
 @media only screen and (max-width: 767px) { .input, .adjoined, .btn, p, td, th, a.small, input { font-size: 14px !important; } }
 img.image.round { -webkit-border-radius: 50%; -moz-border-radius: 50%; -ms-border-radius: 50%; -o-border-radius: 50%; border-radius: 50%; margin: 0; }
 
 label.medium { font-size: 14px !important; }
 
-section.edit-profile { margin: 5% 0; border-top: 4px solid #ffcc5c; }
-section.edit-profile .title { margin-bottom: 10px; text-align: center; }
-section.edit-profile .title h5 { font-weight: bolder; }
+div.inline-menu-trigger { position: absolute; font-size: 14px; color: #c2c2c2; z-index: 100; top: 10px; right: 0px; }
+div.inline-menu-trigger i { padding: 0.4rem 0.8rem; cursor: pointer; }
 
-section.add-timesheet { margin: 5% 0; border-top: 4px solid #3085d6; }
-section.add-timesheet .title { margin-bottom: 10px; text-align: center; }
-section.add-timesheet .title h5 { font-weight: bolder; }
+div.inline-menu { position: absolute; width: 150px; background: inherit; z-index: 100; top: 10px; right: 28px; -webkit-box-shadow: 0px 0px 4px 1px rgba(79, 79, 79, 0.1); -moz-box-shadow: 0px 0px 4px 1px rgba(79, 79, 79, 0.1); box-shadow: 0px 0px 4px 1px rgba(79, 79, 79, 0.1); }
+div.inline-menu ul { margin-bottom: 0; }
+div.inline-menu ul li { padding: 0px; border-bottom: 1px solid #f1f1f1; }
+div.inline-menu ul li a { font-size: 14px !important; display: block; padding: 2px 10px; }
+div.inline-menu ul li:last-child { border: 0; }
+
+div.inline-menu.hidden { display: none; z-index: -200; }
+
+/* move from / to  */
+@-webkit-keyframes moveFromRight { from { -webkit-transform: translateX(80%); opacity: 0; } }
+
+@-moz-keyframes moveFromRight { from { -moz-transform: translateX(80%); opacity: 0; } }
+
+@keyframes moveFromRight { from { transform: translateX(80%); opacity: 0; } }
+
+/* move from / to  */
+div.inline-menu { -webkit-animation: moveFromRight 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86) both; -moz-animation: moveFromRight 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86) both; animation: moveFromRight 0.2s cubic-bezier(0.785, 0.135, 0.15, 0.86) both; }
+
+section.new-profile { border-top: 4px solid #00a388; }
+
+section.edit-profile { border-top: 4px solid #ffcc5c; }
+
+section.new-project { border-top: 4px solid #00a388; }
+section.new-project input { border: 1px solid #d8d8d8; padding: 6px 10px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -ms-border-radius: 4px; -o-border-radius: 4px; border-radius: 4px; margin-bottom: 6px; }
+
+section.search-section { border-top: 4px solid #00a388; }
+
+section.add-timesheet { border-top: 4px solid #3085d6; }
 section.add-timesheet .field.inline > * { display: inline-block; width: auto; vertical-align: text-bottom; }
-section.add-timesheet label { margin-right: 10px; margin-left: 4px; margin-bottom: 4px; color: #b5b5b5; }
 section.add-timesheet input { border: 1px solid #d8d8d8; padding: 6px 10px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -ms-border-radius: 4px; -o-border-radius: 4px; border-radius: 4px; margin-bottom: 6px; }
 
-section.projects-list, section.notifications-list, section.message-list { margin: 5% 0; padding: 0; }
-section.projects-list li.project-list-item, section.projects-list li.notifications-list-item, section.projects-list li.message-list-item, section.notifications-list li.project-list-item, section.notifications-list li.notifications-list-item, section.notifications-list li.message-list-item, section.message-list li.project-list-item, section.message-list li.notifications-list-item, section.message-list li.message-list-item { padding: 0; }
-section.projects-list li.project-list-item .wrapper, section.projects-list li.notifications-list-item .wrapper, section.projects-list li.message-list-item .wrapper, section.notifications-list li.project-list-item .wrapper, section.notifications-list li.notifications-list-item .wrapper, section.notifications-list li.message-list-item .wrapper, section.message-list li.project-list-item .wrapper, section.message-list li.notifications-list-item .wrapper, section.message-list li.message-list-item .wrapper { padding: 1rem; border-bottom: 1px solid #e8e8e8; }
-section.projects-list li.project-list-item .wrapper table.content-heading td, section.projects-list li.project-list-item .wrapper table td, section.projects-list li.notifications-list-item .wrapper table.content-heading td, section.projects-list li.notifications-list-item .wrapper table td, section.projects-list li.message-list-item .wrapper table.content-heading td, section.projects-list li.message-list-item .wrapper table td, section.notifications-list li.project-list-item .wrapper table.content-heading td, section.notifications-list li.project-list-item .wrapper table td, section.notifications-list li.notifications-list-item .wrapper table.content-heading td, section.notifications-list li.notifications-list-item .wrapper table td, section.notifications-list li.message-list-item .wrapper table.content-heading td, section.notifications-list li.message-list-item .wrapper table td, section.message-list li.project-list-item .wrapper table.content-heading td, section.message-list li.project-list-item .wrapper table td, section.message-list li.notifications-list-item .wrapper table.content-heading td, section.message-list li.notifications-list-item .wrapper table td, section.message-list li.message-list-item .wrapper table.content-heading td, section.message-list li.message-list-item .wrapper table td { padding: 0; }
-section.projects-list li.project-list-item .wrapper .detail .time-alloted, section.projects-list li.notifications-list-item .wrapper .detail .time-alloted, section.projects-list li.message-list-item .wrapper .detail .time-alloted, section.notifications-list li.project-list-item .wrapper .detail .time-alloted, section.notifications-list li.notifications-list-item .wrapper .detail .time-alloted, section.notifications-list li.message-list-item .wrapper .detail .time-alloted, section.message-list li.project-list-item .wrapper .detail .time-alloted, section.message-list li.notifications-list-item .wrapper .detail .time-alloted, section.message-list li.message-list-item .wrapper .detail .time-alloted { color: #b5b5b5; }
-section.projects-list li.project-list-item .wrapper .detail .time-alloted span, section.projects-list li.notifications-list-item .wrapper .detail .time-alloted span, section.projects-list li.message-list-item .wrapper .detail .time-alloted span, section.notifications-list li.project-list-item .wrapper .detail .time-alloted span, section.notifications-list li.notifications-list-item .wrapper .detail .time-alloted span, section.notifications-list li.message-list-item .wrapper .detail .time-alloted span, section.message-list li.project-list-item .wrapper .detail .time-alloted span, section.message-list li.notifications-list-item .wrapper .detail .time-alloted span, section.message-list li.message-list-item .wrapper .detail .time-alloted span { font-weight: bolder; }
-section.projects-list li.message-list-item p.date, section.notifications-list li.message-list-item p.date, section.message-list li.message-list-item p.date { color: #b5b5b5; }
-@media only screen and (max-width: 320px) { section.projects-list li.message-list-item p.snippet, section.notifications-list li.message-list-item p.snippet, section.message-list li.message-list-item p.snippet { display: none !important; } }
-section.projects-list li.notifications-list-item table td, section.notifications-list li.notifications-list-item table td, section.message-list li.notifications-list-item table td { padding: 0; }
-section.projects-list li.notifications-list-item .status i, section.notifications-list li.notifications-list-item .status i, section.message-list li.notifications-list-item .status i { font-size: 16px; }
-section.projects-list li.notifications-list-item .status i.fa-check-circle, section.notifications-list li.notifications-list-item .status i.fa-check-circle, section.message-list li.notifications-list-item .status i.fa-check-circle { color: #6ec96e; }
-section.projects-list li.notifications-list-item .status i.fa-exclamation-circle, section.notifications-list li.notifications-list-item .status i.fa-exclamation-circle, section.message-list li.notifications-list-item .status i.fa-exclamation-circle { color: #df6e6e; }
-section.projects-list li.notifications-list-item .time, section.notifications-list li.notifications-list-item .time, section.message-list li.notifications-list-item .time { color: #b5b5b5; }
+section.projects-list, section.notifications-list, section.message-list, section.list { padding: 0; }
+section.projects-list ul.empty-list:before, section.notifications-list ul.empty-list:before, section.message-list ul.empty-list:before, section.list ul.empty-list:before { content: "NONE"; padding-left: 10px; }
+section.projects-list li.project-list-item, section.projects-list li.notifications-list-item, section.projects-list li.message-list-item, section.projects-list li.list-item, section.notifications-list li.project-list-item, section.notifications-list li.notifications-list-item, section.notifications-list li.message-list-item, section.notifications-list li.list-item, section.message-list li.project-list-item, section.message-list li.notifications-list-item, section.message-list li.message-list-item, section.message-list li.list-item, section.list li.project-list-item, section.list li.notifications-list-item, section.list li.message-list-item, section.list li.list-item { padding: 0; }
+section.projects-list li.project-list-item .wrapper, section.projects-list li.notifications-list-item .wrapper, section.projects-list li.message-list-item .wrapper, section.projects-list li.list-item .wrapper, section.notifications-list li.project-list-item .wrapper, section.notifications-list li.notifications-list-item .wrapper, section.notifications-list li.message-list-item .wrapper, section.notifications-list li.list-item .wrapper, section.message-list li.project-list-item .wrapper, section.message-list li.notifications-list-item .wrapper, section.message-list li.message-list-item .wrapper, section.message-list li.list-item .wrapper, section.list li.project-list-item .wrapper, section.list li.notifications-list-item .wrapper, section.list li.message-list-item .wrapper, section.list li.list-item .wrapper { padding: 1rem; border-bottom: 1px solid #e8e8e8; }
+section.projects-list li.project-list-item .wrapper table.content-heading td, section.projects-list li.project-list-item .wrapper table td, section.projects-list li.notifications-list-item .wrapper table.content-heading td, section.projects-list li.notifications-list-item .wrapper table td, section.projects-list li.message-list-item .wrapper table.content-heading td, section.projects-list li.message-list-item .wrapper table td, section.projects-list li.list-item .wrapper table.content-heading td, section.projects-list li.list-item .wrapper table td, section.notifications-list li.project-list-item .wrapper table.content-heading td, section.notifications-list li.project-list-item .wrapper table td, section.notifications-list li.notifications-list-item .wrapper table.content-heading td, section.notifications-list li.notifications-list-item .wrapper table td, section.notifications-list li.message-list-item .wrapper table.content-heading td, section.notifications-list li.message-list-item .wrapper table td, section.notifications-list li.list-item .wrapper table.content-heading td, section.notifications-list li.list-item .wrapper table td, section.message-list li.project-list-item .wrapper table.content-heading td, section.message-list li.project-list-item .wrapper table td, section.message-list li.notifications-list-item .wrapper table.content-heading td, section.message-list li.notifications-list-item .wrapper table td, section.message-list li.message-list-item .wrapper table.content-heading td, section.message-list li.message-list-item .wrapper table td, section.message-list li.list-item .wrapper table.content-heading td, section.message-list li.list-item .wrapper table td, section.list li.project-list-item .wrapper table.content-heading td, section.list li.project-list-item .wrapper table td, section.list li.notifications-list-item .wrapper table.content-heading td, section.list li.notifications-list-item .wrapper table td, section.list li.message-list-item .wrapper table.content-heading td, section.list li.message-list-item .wrapper table td, section.list li.list-item .wrapper table.content-heading td, section.list li.list-item .wrapper table td { padding: 0; }
+section.projects-list li.project-list-item .wrapper .detail .time-alloted, section.projects-list li.notifications-list-item .wrapper .detail .time-alloted, section.projects-list li.message-list-item .wrapper .detail .time-alloted, section.projects-list li.list-item .wrapper .detail .time-alloted, section.notifications-list li.project-list-item .wrapper .detail .time-alloted, section.notifications-list li.notifications-list-item .wrapper .detail .time-alloted, section.notifications-list li.message-list-item .wrapper .detail .time-alloted, section.notifications-list li.list-item .wrapper .detail .time-alloted, section.message-list li.project-list-item .wrapper .detail .time-alloted, section.message-list li.notifications-list-item .wrapper .detail .time-alloted, section.message-list li.message-list-item .wrapper .detail .time-alloted, section.message-list li.list-item .wrapper .detail .time-alloted, section.list li.project-list-item .wrapper .detail .time-alloted, section.list li.notifications-list-item .wrapper .detail .time-alloted, section.list li.message-list-item .wrapper .detail .time-alloted, section.list li.list-item .wrapper .detail .time-alloted { color: #b5b5b5; }
+section.projects-list li.project-list-item .wrapper .detail .time-alloted span, section.projects-list li.notifications-list-item .wrapper .detail .time-alloted span, section.projects-list li.message-list-item .wrapper .detail .time-alloted span, section.projects-list li.list-item .wrapper .detail .time-alloted span, section.notifications-list li.project-list-item .wrapper .detail .time-alloted span, section.notifications-list li.notifications-list-item .wrapper .detail .time-alloted span, section.notifications-list li.message-list-item .wrapper .detail .time-alloted span, section.notifications-list li.list-item .wrapper .detail .time-alloted span, section.message-list li.project-list-item .wrapper .detail .time-alloted span, section.message-list li.notifications-list-item .wrapper .detail .time-alloted span, section.message-list li.message-list-item .wrapper .detail .time-alloted span, section.message-list li.list-item .wrapper .detail .time-alloted span, section.list li.project-list-item .wrapper .detail .time-alloted span, section.list li.notifications-list-item .wrapper .detail .time-alloted span, section.list li.message-list-item .wrapper .detail .time-alloted span, section.list li.list-item .wrapper .detail .time-alloted span { font-weight: bolder; }
+section.projects-list li.list-item .check-input, section.notifications-list li.list-item .check-input, section.message-list li.list-item .check-input, section.list li.list-item .check-input { text-align: right; }
+section.projects-list li.message-list-item p.date, section.notifications-list li.message-list-item p.date, section.message-list li.message-list-item p.date, section.list li.message-list-item p.date { color: #b5b5b5; }
+@media only screen and (max-width: 320px) { section.projects-list li.message-list-item p.snippet, section.notifications-list li.message-list-item p.snippet, section.message-list li.message-list-item p.snippet, section.list li.message-list-item p.snippet { display: none !important; } }
+section.projects-list li.notifications-list-item table td, section.notifications-list li.notifications-list-item table td, section.message-list li.notifications-list-item table td, section.list li.notifications-list-item table td { padding: 0; }
+section.projects-list li.notifications-list-item .status i, section.notifications-list li.notifications-list-item .status i, section.message-list li.notifications-list-item .status i, section.list li.notifications-list-item .status i { font-size: 16px; }
+section.projects-list li.notifications-list-item .status i.fa-check-circle, section.notifications-list li.notifications-list-item .status i.fa-check-circle, section.message-list li.notifications-list-item .status i.fa-check-circle, section.list li.notifications-list-item .status i.fa-check-circle { color: #6ec96e; }
+section.projects-list li.notifications-list-item .status i.fa-exclamation-circle, section.notifications-list li.notifications-list-item .status i.fa-exclamation-circle, section.message-list li.notifications-list-item .status i.fa-exclamation-circle, section.list li.notifications-list-item .status i.fa-exclamation-circle { color: #df6e6e; }
+section.projects-list li.notifications-list-item .time, section.notifications-list li.notifications-list-item .time, section.message-list li.notifications-list-item .time, section.list li.notifications-list-item .time { color: #b5b5b5; }
 
 @media (max-width: 769px) and (min-width: 500px) { .card.columns { width: 70% !important; margin: 0 auto !important; float: none !important; } }
-section.dashboard { margin: 5% 0; padding: 10px 0; border-top: 4px solid #ffcc5c; }
+section.dashboard { padding: 10px 0; border-top: 4px solid #ffcc5c; }
 section.dashboard .display-picture { text-align: center; }
 section.dashboard .display-picture .image { -webkit-border-radius: 50%; -moz-border-radius: 50%; -ms-border-radius: 50%; -o-border-radius: 50%; border-radius: 50%; width: 100px; margin-bottom: 0px; }
 section.dashboard .details { text-align: center; }
@@ -1769,20 +1799,16 @@ section.dashboard .stats td:first-child { border-left: 0 !important; padding: 10
 section.dashboard .stats td:last-child { border-right: 0 !important; padding: 10px 0px 10px 10px; }
 section.dashboard .options .notifications { -webkit-user-select: none; -moz-user-select: none; user-select: none; position: absolute; right: -8px; top: -10px; background: #FF6F42; color: white; padding: 2px 8px; font-size: 10px; -webkit-border-radius: 50%; -moz-border-radius: 50%; -ms-border-radius: 50%; -o-border-radius: 50%; border-radius: 50%; -webkit-box-shadow: 0px 0px 1px 1px rgba(79, 79, 79, 0.2); -moz-box-shadow: 0px 0px 1px 1px rgba(79, 79, 79, 0.2); box-shadow: 0px 0px 1px 1px rgba(79, 79, 79, 0.2); }
 
-section.timesheet-details { margin: 5% 0; border-top: 4px solid #3085d6; }
-section.timesheet-details .title { margin-bottom: 10px; text-align: center; }
-section.timesheet-details .title h5 { font-weight: bold; }
+section.timesheet-details { border-top: 4px solid #3085d6; }
 section.timesheet-details h6 { color: #b5b5b5; font-weight: bolder; border-bottom: 1px solid #e8e8e8; margin-bottom: 10px; padding-left: 5px; }
 section.timesheet-details td, section.timesheet-details th { padding: 6px; }
 
-section.project-details { margin: 5% 0; border-top: 4px solid #3085d6; }
-section.project-details .title { margin-bottom: 10px; text-align: center; }
-section.project-details .title h5 { font-weight: bold; }
+section.project-details { border-top: 4px solid #3085d6; }
 section.project-details .wrapper { margin-bottom: 15px; }
 section.project-details .wrapper h6 { color: #b5b5b5; font-weight: bolder; border-bottom: 1px solid #e8e8e8; margin-bottom: 10px; padding-left: 5px; }
 section.project-details .wrapper td, section.project-details .wrapper th { padding: 6px; }
 
-section.overview { margin: 5% 0; border-top: 4px solid #3085d6; }
+section.overview { border-top: 4px solid #3085d6; }
 section.overview h6 { color: #b5b5b5; font-weight: bold; text-align: center; margin-bottom: 10px; }
 section.overview .day { margin-bottom: 3px; }
 section.overview .day tr.head-row { background: #3085d6; color: white; }

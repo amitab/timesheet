@@ -1,0 +1,42 @@
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="new-profile">
+                
+                <div class="title">
+                    <h5>Sign Up</h5>
+                </div>
+                <form action="=" method="post" class="new-user-form">
+                    <div class="warnings"></div>
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="User Name" name="user_name" />
+                        <span class="adjoined"><i class="fa fa-user"></i></span>
+                    </div>
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="Email" name="email" />
+                        <span class="adjoined"><i class="fa fa-envelope"></i></span>
+                    </div>
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" />
+                        <span class="adjoined"><i class="fa fa-phone"></i></span>
+                    </div>
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Location" name="location" />
+                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                    </div>
+                    <div class="append field">
+                        <input class="input" type="password" placeholder="Password" name="password" />
+                        <span class="adjoined"><i class="fa fa-lock"></i></span>
+                    </div>
+                    
+                    <div class="submit" style="text-align: center;">
+                        <div class="medium secondary btn"><a href="#" id="submit">Sign Up</a></div>
+                    </div>
+                </form>
+                         
+            </section>
+        </div>
+    </div>
+
+{% include 'foot.html' %}

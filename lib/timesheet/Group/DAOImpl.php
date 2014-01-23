@@ -27,7 +27,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Group\DAO {
         
         try {
             return $this->_executeQuery('create new group', $valArr, \Native5\Core\Database\DB::INSERT);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -40,7 +40,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Group\DAO {
         
         try {
             return $this->_executeQuery('edit group', $valArr, \Native5\Core\Database\DB::UPDATE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -52,7 +52,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Group\DAO {
         
         try {
             return $this->_executeQuery('delete group', $valArr, \Native5\Core\Database\DB::DELETE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}

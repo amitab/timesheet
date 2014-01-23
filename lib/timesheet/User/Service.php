@@ -27,40 +27,67 @@ class Service {
 	
 	// The Cover
 	
+    public function createUser($userDetails) {
+        return $this->_dao->createUser($userDetails);
+    }
+    public function editUser($userDetails) {
+        return $this->_dao->editUser($userDetails);
+    }
+    public function deleteUser($userId) {
+        return $this->_dao->deleteUser($userId);
+    }
+    public function editUserPassword($userId, $password) {
+        return $this->_dao->editUserPassword($userId, $password);
+    }
+	
+	
+	
 	public function getUserById($userId) {
-		$data = $_dao->getUserById($userId);
+		$data = $this->_dao->getUserById($userId);
 		return $data;
 	}
 	
 	public function getUserStats($userId) {
 	    $data = array(
-	        'timesheets' => $_dao->getUserTimesheetCount($userId),
-	        'projects' => $_dao->getUserProjectCount($userId),
-	        'hours' => $_dao->getUserHourCount($userId)
+	        'timesheets' => $this->_dao->getUserTimesheetCount($userId),
+	        'projects' => $this->_dao->getUserProjectCount($userId),
+	        'hours' => $this->_dao->getUserHourCount($userId)
 	    );
 	    return $data;
 	}
 	
 	public function getAllUsers() {
-	    return $_dao->getAllUsers();
+	    return $this->_dao->getAllUsers();
 	}
     public function getUsersUnderProjectId($projectId) {
-        return $_dao->getUsersUnderProjectId($projectId);
+        return $this->_dao->getUsersUnderProjectId($projectId);
     }
     public function getUsersUnderProjectName($projectName) {
-        return $_dao->getUsersUnderProjectName($projectName);
+        return $this->_dao->getUsersUnderProjectName($projectName);
     }
     public function getUserByName($userName) {
-        return $_dao->getUserByName($userName);
+        return $this->_dao->getUserByName($userName);
     }
 	public function getUserProjectCount($userId) {
-	    return $_dao->getUserProjectCount($userId);
+	    return $this->_dao->getUserProjectCount($userId);
 	}
 	public function getUserTimesheetCount($userId) {
-	    return $_dao->getUserTimesheetCount($userId);
+	    return $this->_dao->getUserTimesheetCount($userId);
 	}
 	public function getUserHourCount($userId) {
-	    return $_dao->getUserHourCount($userId);
+	    return $this->_dao->getUserHourCount($userId);
 	}
+    public function getUsersUnderGroup($group) {
+	    return $this->_dao->getUsersUnderGroup($group);
+    }
+    public function getUserByNameExcept($userName, $userIds) {
+        return $this->_dao->getUserByNameExcept($userName, $userIds);
+    }
 	
+    public function getUserByPhoneNumber($userPhoneNumber) {
+        return $this->_dao->getUserByPhoneNumber($userPhoneNumber);
+    }
+    public function getUserImageUrl($userId) {
+        return $this->_dao->getUserImageUrl($userId);
+    }
 }

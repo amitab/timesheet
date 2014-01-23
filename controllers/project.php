@@ -93,7 +93,59 @@ class ProjectController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Project Details',
             'auth' => $auth,
+            'is_admin' => true,
+            'is_employee' => false
         ));  
+    }
+    
+    public function _create_new($request) {
+        
+        global $logger;
+        $skeleton =  new TwigRenderer('createproject.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $auth = true;
+        
+        $this->_response->setBody(array(
+            'title' => 'New Project',
+            'auth' => $auth,
+        ));  
+    }
+    
+    public function _add_users($request) {
+        
+        global $logger;
+        $skeleton =  new TwigRenderer('adduserstoproject.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $auth = true;
+        
+        $this->_response->setBody(array(
+            'title' => 'Add People',
+            'auth' => $auth,
+        ));  
+    }
+    
+    public function _search_to_add($request) {
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        
+        $userService = \Timesheet\User\Service::getInstance();
+        $query = $request->getParam('q');
+        $ids = $request->getParam('ids');
+        
+        if (!isset($ids[0]) || empty($ids[0]) || empty($ids)) {
+            $data = $userService->getUserByName($query);
+        } else {
+            $data = $userService->getUserByNameExcept($query, $ids);
+        }
+        
+        $data = \Database\Converter::getArray($data);
+        $logger->info(print_r($data,1));
+        $this->_response->setBody(array(
+            'users' => $data,
+            'image_location' => UPLOADS . 'user_images\\'
+        ));
     }
 
 

@@ -7,7 +7,7 @@
                 <div class="title">
                     <h5>Edit Profile</h5>
                 </div>
-                <form action="=" method="post" class="timesheet-form">
+                <form action="=" method="post" class="edit-profile-form">
                     <div class="warnings"></div>
                     <div class="append field">
                         <input class="input" type="text" placeholder="User Name" name="user_name" />
@@ -22,22 +22,24 @@
                         <span class="adjoined"><i class="fa fa-map-marker"></i></span>
                     </div>
                     <div class="append field">
-                        <input class="input" type="password" placeholder="Password" name="password" />
+                        <input class="input" type="password" placeholder="Current Password" name="current_password" />
                         <span class="adjoined"><i class="fa fa-lock"></i></span>
                     </div>
                     
-                    <table border="0" style="margin-top: 20px; ">
-                        <tr>
-                            <td style="padding: 0;">
-                                <div class="medium danger btn"><a href="#">Discard</a></div>
-                            </td>
-                            <td style="padding: 0;text-align: right;">
-                                <div class="medium primary btn"><a href="#" id="submit">Save</a></div>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="submit" style="text-align: center;">
+                        <div class="medium primary btn"><a href="#" id="submit">Save Changes</a></div>
+                    </div>
                 </form>
-                                
+                
+                <div class="inline-menu-trigger">
+                    <i class="fa fa-ellipsis-v"></i>
+                </div>
+                <div class="inline-menu hidden">
+                    <ul>
+                        <li><a href="">Edit Password</a></li>
+                        <li><a href="">Change Image</a></li>
+                    </ul>
+                </div>          
             </section>
         </div>
     </div>

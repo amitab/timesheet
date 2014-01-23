@@ -73,18 +73,17 @@ class HomeController extends DefaultController
 
     }//end _default()
 	
-	public function _test($request)
+	public function _signup($request)
     {        
         global $logger;
-        $skeleton =  new TwigRenderer('auth.html');
+        $skeleton =  new TwigRenderer('signup.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
         $auth = false;
         
         $this->_response->setBody(array(
-            'title' => 'Login',
-            'auth' => $auth,
-            'ids' => $ids
+            'title' => 'Sign Up',
+            'auth' => $auth
         ));
 
     }

@@ -24,7 +24,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
         $valArr = array(
             ':notificationBody' => $notificationDetails->getNotificationBody(),
             ':notificationPriority' => $notificationDetails->getNotificationPriority(),
-            ':notificationRead'  => $notificationDetails->getNotificationRead(),
+            ':notificationRead'  => 0,
         );
         
         try {
@@ -42,16 +42,18 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
             $sql .= implode(', ', $valuesArray);
             $sql .= ';';
             
-            $notificationId = $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
+            parent::tableHasPrimaryKey(false);
+            $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
             
             $this->db->commitTransaction();
         
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            $GLOBALS['logger']->info('Exception : ' . $e->getMessage());
             
             $this->db->rollbackTransaction();
             return false;
             
-        }
+        } 
         
         return true;
         
@@ -64,7 +66,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
         
         try {
             return $this->_executeQuery('delete notification by id', $valArr, \Native5\Core\Database\DB::DELETE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
     }

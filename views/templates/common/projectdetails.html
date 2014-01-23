@@ -62,11 +62,26 @@
                     </div>
                 </div>
             </div>
-            <div id="timer-control" style="text-align: center; margin-bottom: 30px;">
-                <div class="medium primary btn">
-                    <a href="#" id="timer-button">Start a New Timesheet</a>
+            
+            {% if items.is_employee == true %}
+            
+                <div id="timer-control" style="text-align: center; margin-bottom: 30px;">
+                    <div class="medium primary btn">
+                        <a href="#" id="timer-button">Start a New Timesheet</a>
+                    </div>
                 </div>
-            </div>
+            
+            {% endif %}
+            {% if items.is_admin == true %}
+            
+                <div id="admin-control" style="text-align: center; margin-bottom: 30px;">
+                    <div class="medium primary btn">
+                        <a href="#" id="add-user-button">Add Users</a>
+                    </div>
+                </div>
+                
+            {% endif %}
+            
         </section>
     </div>
     

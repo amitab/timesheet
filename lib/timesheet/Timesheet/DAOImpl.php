@@ -137,16 +137,18 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
             $sql .= 'INSERT INTO `project_timesheet` (timesheet_id, project_id) ' .
             'VALUES (' . $timesheetId . ', ' . $timesheetDetails->getProjectId . ');';
             
+            parent::tableHasPrimaryKey(false);
+            
             $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
             
             $this->db->commitTransaction();
             
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             
             $this->db->rollbackTransaction();
             return false;
             
-        }
+        } 
         
         return true;
 	}
@@ -165,7 +167,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         
         try {
             return $this->_executeQuery('edit timesheet', $valArr, \Native5\Core\Database\DB::UPDATE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -177,7 +179,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         
         try {
             return $this->_executeQuery('delete timesheet', $valArr, \Native5\Core\Database\DB::DELETE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
         
@@ -195,7 +197,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         
         try {
             return $this->_executeQuery('mark timesheet', $valArr, \Native5\Core\Database\DB::UPDATE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
         

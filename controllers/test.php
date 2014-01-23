@@ -32,7 +32,7 @@ use Native5\Identity\UsernamePasswordToken;
 use Native5\Identity\AuthenticationException;
 use Native5\Identity\SecurityUtils;
 
-use Timesheet\User\DAOImpl as UserDAOImpl;
+use Timesheet\User\Service as UserService;
 /**
  * Home Controller
  *
@@ -61,15 +61,19 @@ class TestController extends DefaultController
 	
 	public function _default($request)
     {
-		$userImpl = new UserDAOImpl();
-		$user = new \Timesheet\User\User();
-		$user->setUserName('Amitab');
-		$user->setUserMail('amitab.das@outlook.com');
-		$user->setUserLocation('Kr Puram, Bangalore');
-		$ids = $userImpl->createUser($user);
-        
         global $logger;
-        $GLOBALS['logger']->info('USER : ' . print_r($ids));
+        $this->_response = new HttpResponse('json');
+        
+        $userService = \Timesheet\User\Service::getInstance();
+        $query = $request->getParam('q');
+        $data = $userService->getUserByName('%a%');
+        
+        $data = \Database\Converter::getArray($data);
+        $logger->info(print_r($data, 1));
+        
+        $this->_response->setBody(array(
+            'users' => $data
+        ));
     }
 
 }//end class

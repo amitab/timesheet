@@ -1,0 +1,37 @@
+{% include 'head.html' %}
+    
+    <!--    Must set value of checkboxes to the userids -->
+    <!--    Keep project id hidden here -->
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="search-section">
+                <div class="title">
+                    <h5>Find Users</h5>
+                </div>
+                {% include 'search.html' %}
+            </section>
+            
+            <h5 class="padding-left">Search Results : </h5>
+            
+            <section class="list" id="search-results">
+                <ul class="empty-list">
+                </ul>
+            </section>
+            
+            <h5 class="padding-left">You have selected : </h5>
+            
+            <section class="list" id="selected-users">
+                <ul class="empty-list">
+                    
+                </ul>
+            </section>
+            <div class="submit" style="margin: 1rem 0; text-align: center;">
+                <div class="medium primary btn"><a href="#" id="submit">Add Users</a></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("addUsersToProject.js") }} ></script>
+    
+{% include 'foot.html' %}

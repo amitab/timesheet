@@ -9,8 +9,11 @@ get number of projects : SELECT COUNT(*) as `project_count` from `user_project` 
 get number of timesheets : SELECT COUNT(*) as `timesheet_count` from `user_timesheet` WHERE `user_timesheet`.`user_id` = :userId;
 get number of hours : SELECT TIMESTAMPDIFF(HOUR,`timesheet`.`timesheet_start_time` , `timesheet`.`timesheet_end_time`) AS `hour_count` FROM `timesheet`, `user_timesheet` WHERE `user_timesheet`.`timesheet_id` = `timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
 
-create new user : INSERT INTO `user` (user_name, user_email, user_location) VALUES (:userName, :userMail, :userLocation);
-edit user : START TRANSACTION; UPDATE `user` SET `user`.`user_name` = :userName, `user`.`user_email` = :userMail, `user`.`user_location` = :userLocation WHERE `user`.`user_id` = :userId; UPDATE `authentication` SET `authentication`.`password` = :password WHERE `authentication`.`user_id` = :userId; COMMIT;
+create new user : INSERT INTO `user` (user_name, user_email, user_location, user_phone_number, user_image_url, user_sex) VALUES (:userName, :userMail, :userLocation, :userPhoneNumber, :userImageUrl, :userSex);
+
+edit user : UPDATE `user` SET `user`.`user_name` = :userName, `user`.`user_email` = :userMail, `user`.`user_location` = :userLocation, `user`.`user_phone_number` = :user_phone_number, `user`.`user_image_url` = :userPhoneNumber, `user`.`user_sex` = :userSex WHERE `user`.`user_id` = :userId; 
+
+edit user password : UPDATE `authentication` SET `authentication`.`password` = :password WHERE `authentication`.`user_id` = :userId;
 delete user : DELETE FROM `user` WHERE `user`.`user_id` = :userId;
 
 get handled projects : SELECT `project`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `user`.`user_id` = :userId;
@@ -20,5 +23,8 @@ find user group : SELECT `group`.* FROM `group`, `authentication` WHERE `authent
 
 find users under group name : SELECT `user`.* FROM `group`, `user`, `authentication` WHERE `authentication`.`user_id` = `user`.`user_id` AND `group`.`group_id` = `authentication`.`group_id` AND `group`.`group_name` LIKE :groupName;
 find users under group id : SELECT `user`.* FROM `group`, `user`, `authentication` WHERE `authentication`.`user_id` = `user`.`user_id` AND `group`.`group_id` = `authentication`.`group_id` AND `group`.`group_id` = :groupId;
+
+find user by phone number : SELECT `user`.* FROM `user` WHERE `user`.`user_phone_number` = :userPhoneNumber;
+find user image url : SELECT `user`.`user_image_url` as `image_url` FROM `user` WHERE `user`.`user_id` = :userId;
 
 ...

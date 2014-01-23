@@ -30,10 +30,7 @@
 	<meta itemprop="image" content="">
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-
 	<link rel="stylesheet" href={{ resolvePath("css/gumby.css") }}>
-
-	<script src={{ resolvePath("modernizr.custom.js") }}></script>
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     
 </head>
@@ -60,6 +57,8 @@
 	}
 	</script>
 
+	<script src={{ resolvePath("modernizr.custom.js") }}></script>
+	<script src={{ resolvePath("require.js") }} ></script>
 	<!--
 	Include gumby.js followed by UI modules followed by gumby.init.js
 	Or concatenate and minify into a single file -->
@@ -116,8 +115,6 @@
 	<![endif]-->
     
     <!-- Loading custom js files -->    
-    <script src={{ resolvePath("native5.core.js") }} ></script>
-    <script src={{ resolvePath("app.js") }} ></script>
     <script src={{ resolvePath("sidebar.js") }} ></script>
     
     {% if items.auth == true %}

@@ -10,7 +10,7 @@ find project by name : SELECT `project`.* FROM `project` WHERE `project`.`projec
 find project created in month : SELECT `project`.* FROM `project` WHERE EXTRACT(MONTH FROM `project`.`project_created_date`) = :month;
 find project created in year : SELECT `project`.* FROM `project` WHERE EXTRACT(YEAR FROM `project`.`project_created_date`) = :year;
 
-create new project : INSERT INTO `project` (project_name, project_description, project_status, project_time_alloted, project_created_date, project_manager_id) VALUES(:projectName, :projectDescription, :projectStatus, :projectTimeAlloted, :projectCreatedDate, :projectManagerId);
+create new project : INSERT INTO `project` (project_name, project_description, project_status, project_time_alloted, project_created_date, project_manager_id, project_salary) VALUES(:projectName, :projectDescription, :projectStatus, :projectTimeAlloted, :projectCreatedDate, :projectManagerId, :projectSalary);
 
 edit project : UPDATE `project` SET project_name = :projectName, project_description = :projectDescription, project_status = :projectStatus, project_time_alloted = :projectTimeAlloted, project_created_date = :projectCreatedDate, project_manager_id = :projectManagerId WHERE `project`.`project_id` = :projectId;
 

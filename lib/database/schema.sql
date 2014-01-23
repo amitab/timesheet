@@ -1,8 +1,11 @@
 CREATE TABLE user(
 	user_id INT(20) PRIMARY KEY AUTO_INCREMENT,
 	user_name VARCHAR(100),
+	user_sex CHAR(1),
 	user_email VARCHAR(100),
-	user_location VARCHAR(255)
+	user_location VARCHAR(255),
+    user_phone_number VARCHAR(13),
+    user_image_url VARCHAR(255)
 );
 
 CREATE TABLE project(

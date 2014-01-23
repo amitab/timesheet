@@ -74,6 +74,7 @@ class ProfileController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Profile',
             'auth' => $auth,
+            'dp' => UPLOADS . 'user_images\default.jpg'
         )); 
 
 
@@ -98,7 +99,37 @@ class ProfileController extends DefaultController
             'auth' => $auth,
         )); 
 
-
+    }
+    
+    public function _upload_image($request) {
+        global $logger;
+        
+        $skeleton =  new TwigRenderer('uploadprofileimage.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        if($request->getParam('user_image') != null) {
+            $logger->info('user_image : ' . $request->getParam('user_image'));
+        }
+        
+        $auth = true;
+        $this->_response->setBody(array(
+            'title' => 'Upload Image',
+            'auth' => $auth,
+        )); 
+    }
+    
+    public function _change_password($request) {
+        global $logger;
+        
+        $skeleton =  new TwigRenderer('change-password.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $auth = true;
+        
+        $this->_response->setBody(array(
+            'title' => 'Change Password',
+            'auth' => $auth,
+        ));
     }
 
 }//end class

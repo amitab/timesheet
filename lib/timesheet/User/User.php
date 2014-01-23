@@ -6,10 +6,10 @@ class User {
     private $userId;
     private $userName;
     private $userLocation;
-    private $userProjects;
-    private $userTimeSheets;
     private $userMail;
-    private $userAuthentication;
+    private $userPhoneNumber;
+    private $userImageUrl;
+    private $userSex;
     
 	public static function make($data) {
 		$user = new self();
@@ -17,6 +17,9 @@ class User {
 		$user->setUserName($data['user_name']);
 		$user->setUserLocation($data['user_location']);
 		$user->setUserMail($data['user_email']);
+		$user->setUserPhoneNumber($data['user_phone_number']);
+		$user->setUserImageUrl($data['user_image_url']);
+		$user->setUserSex($data['user_sex']);
 		return $user;
 	}
 	
@@ -26,14 +29,15 @@ class User {
     public function getUserName() { return $this->userName; }
     public function setUserLocation($userLocation) { $this->userLocation = $userLocation; }
     public function getUserLocation() { return $this->userLocation; }
-    public function setUserProjects($userProjects) { $this->userProjects = $userProjects; }
-    public function getUserProjects() { return $this->userProjects; }
-    public function setUserTimesheets($userTimesheets) { $this->userTimesheets = $userTimesheets; }
-    public function getUserTimesheets() { return $this->userTimesheets; }
     public function setUserMail($userMail) { $this->userMail = $userMail; }
     public function getUserMail() { return $this->userMail; }
-    public function setUserAuthentication($userAuthentication) { $this->userAuthentication = $userAuthentication; }
-    public function getUserAuthentication() { return $this->userAuthentication; }
+    
+    public function setUserPhoneNumber($userPhoneNumber) { $this->userPhoneNumber = $userPhoneNumber; }
+    public function getUserPhoneNumber() { return $this->userPhoneNumber; }
+    public function setUserImageUrl($userImageUrl) { $this->userImageUrl = $userImageUrl; }
+    public function getUserImageUrl() { return $this->userImageUrl; }
+    public function setUserSex($userSex) { $this->userSex = $userSex; }
+    public function getUserSex() { return $this->userSex; }
     
     // validation
     

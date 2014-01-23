@@ -39,6 +39,10 @@ $snap-animation : cubic-bezier(0.785, 0.135, 0.150, 0.860);
     }
 }
 
+ul {
+    margin-bottom: 0!important;
+}
+
 // table resets
 
 .btn {
@@ -78,7 +82,6 @@ body {
 }
 
 #header, body {
-	min-width: 320px;
 }
 
 li {
@@ -86,13 +89,34 @@ li {
 }
 
 section {
+    margin: 5% 0;
     @include card-shadow();
+    position: relative;
     padding: 10px;
     background: white;
+    label {
+        margin-right: 10px; 
+        margin-left: 4px;
+        margin-bottom: 4px;
+        color: darken($border-grey, 20%);
+    }
+    margin-bottom: 10px;
+    overflow: hidden;
+    .title {
+        margin-bottom: 10px;
+        text-align: center;
+        h5 {
+            font-weight: bolder;
+        }
+    }
 }
 
 h5.no-padding {
     padding: 0;
+}
+
+h5.left-padding {
+    padding-left: 10px;
 }
 
 @include respond(all-phones) {
@@ -110,62 +134,133 @@ label.medium {
     font-size: 14px!important;
 }
 
+// inline menu
+
+div.inline-menu-trigger {
+    position: absolute;
+    font-size: 14px;
+    color: darken($border-grey, 15%);
+    z-index: 100;
+    top: 10px;
+    right: 0px;
+    i {
+        padding: 0.4rem 0.8rem;
+        cursor: pointer;
+    }
+}
+
+div.inline-menu {
+    position: absolute;
+    width: 150px;
+    background: inherit;
+    z-index: 100;
+    top: 10px;
+    right: 28px;
+    @include single-box-shadow(rgba(darken($border-grey, 60%), 0.1), 0px, 0px, 4px, 1px, false);
+    ul {
+        margin-bottom: 0;
+        li {
+            padding: 0px;
+            border-bottom: 1px solid #f1f1f1;
+            a {
+                font-size: 14px!important;
+                display: block;
+                padding: 2px 10px;
+            }
+        }
+        li:last-child {
+            border: 0;
+        }
+    }
+}
+
+div.inline-menu.hidden {
+    display: none;
+    z-index: -200;
+}
+
+// inline menu anim
+
+/* move from / to  */
+
+@-webkit-keyframes moveFromRight {
+	from { -webkit-transform: translateX(80%); opacity: 0; }
+}
+@-moz-keyframes moveFromRight {
+	from { -moz-transform: translateX(80%); opacity: 0; }
+}
+@keyframes moveFromRight {
+	from { transform: translateX(80%); opacity: 0; }
+}
+/* move from / to  */
+
+div.inline-menu {
+	-webkit-animation: moveFromRight .2s $snap-animation both;
+	-moz-animation: moveFromRight .2s $snap-animation both;
+	animation: moveFromRight .2s $snap-animation both;
+}
+
+section.new-profile {
+    
+    border-top: 4px solid $pahdera-green;
+}
+
 // edit profile
 
 section.edit-profile {
-    margin: 5% 0;
+    
     border-top: 4px solid $orange;
-    .title {
-        margin-bottom: 10px;
-        text-align: center;
-        h5 {
-            font-weight: bolder;
-        }
+}
+
+// new project
+
+section.new-project {
+    
+    border-top: 4px solid $pahdera-green;
+    input {
+        border: 1px solid #d8d8d8;
+        padding: 6px 10px;
+        @include border-radius(4px);
+        margin-bottom: 6px;
     }
+}
+
+// add users to project
+
+section.search-section {
+    
+    border-top: 4px solid $pahdera-green;
     
 }
 
 // add timesheet
 
 section.add-timesheet {
-    margin: 5% 0;
+    
     border-top: 4px solid $gumby-blue;
-    .title {
-        margin-bottom: 10px;
-        text-align: center;
-        h5 {
-            font-weight: bolder;
-        }
-    }
     .field.inline > * {
         display: inline-block;
         width: auto;
         vertical-align: text-bottom;
     }
-    label {
-        margin-right: 10px; 
-        margin-left: 4px;
-        margin-bottom: 4px;
-        color: darken($border-grey, 20%);
-    }
     input {
         border: 1px solid #d8d8d8;
         padding: 6px 10px;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
-        -ms-border-radius: 4px;
-        -o-border-radius: 4px;
-        border-radius: 4px;
+        @include border-radius(4px);
         margin-bottom: 6px;
     }
 }
 
 // projects list, notifications list, messages list
 
-section.projects-list, section.notifications-list, section.message-list {
-    margin: 5% 0;
+section.projects-list, section.notifications-list, section.message-list, section.list {
+    
     padding: 0;
-    li.project-list-item, li.notifications-list-item, li.message-list-item {
+    ul.empty-list:before {
+        content: "NONE";
+        padding-left: 10px;
+    }
+    li.project-list-item, li.notifications-list-item, li.message-list-item, li.list-item {
         padding: 0;
         .wrapper {
             padding: 1rem;
@@ -184,6 +279,11 @@ section.projects-list, section.notifications-list, section.message-list {
                     color: darken($border-grey, 20%);
                 }
             }
+        }
+    }
+    li.list-item {
+        .check-input {
+            text-align: right;
         }
     }
     li.message-list-item {
@@ -228,7 +328,7 @@ section.projects-list, section.notifications-list, section.message-list {
 }
 
 section.dashboard {
-    margin: 5% 0;
+    
     //padding: 0 0 10px 0;
     padding: 10px 0;
     border-top: 4px solid $orange;
@@ -292,15 +392,8 @@ section.dashboard {
 // timesheet details
 
 section.timesheet-details {
-    margin: 5% 0;
+    
     border-top: 4px solid $gumby-blue;
-    .title {
-        margin-bottom: 10px;
-        text-align: center;
-        h5 {
-            font-weight: bold;
-        }
-    }
     h6 {
         color: darken($border-grey, 20%);
         font-weight: bolder;
@@ -316,15 +409,8 @@ section.timesheet-details {
 // project details
 
 section.project-details {
-    margin: 5% 0;
+    
     border-top: 4px solid $gumby-blue;
-    .title {
-        margin-bottom: 10px;
-        text-align: center;
-        h5 {
-            font-weight: bold;
-        }
-    }
     .wrapper {
         margin-bottom: 15px;
         h6 {
@@ -344,7 +430,7 @@ section.project-details {
 // add past sheet
 
 section.addsheet {
-    margin: 5% 0;
+    
     border-top: 4px solid $orange;
     
     .title {
@@ -463,7 +549,7 @@ section.addsheet {
 // overview
 
 section.overview {
-    margin: 5% 0;
+    
     border-top: 4px solid $gumby-blue;
     h6 {
         color: darken($border-grey, 20%);

@@ -29,7 +29,8 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
 		$valArr = array(
             ':userId' => $userId
         );
-        return $this->_executeObjectQuery('find user by id', $valArr, \Native5\Core\Database\DB::SELECT);
+        $data = $this->_executeObjectQuery('find user by id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data;
 	} 
 	
     public function getUserByName($userName) {
@@ -39,6 +40,18 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
         return $this->_executeObjectQuery('find user by name', $valArr, \Native5\Core\Database\DB::SELECT);
 	} 
 	
+    public function getUserByNameExcept($userName, $userIds) {
+        $valArr = array(
+            ':userName' => $userName
+        );
+        
+        $sql = 'SELECT `user`.* FROM `user` WHERE `user`.`user_name` LIKE :userName AND `user`.`user_id` NOT IN(';
+        $sql .= implode(', ', $userIds);
+        $sql .= ');';
+        
+        return $this->_executeObjectQueryString($sql, $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
     public function getUsersUnderProjectId($projectId) {
 		$valArr = array(
             ':projectId' => $projectId
@@ -94,6 +107,21 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
 	    
 	    }
 	}
+    
+    public function getUserByPhoneNumber($userPhoneNumber) {
+        $valArr = array(
+            ':userPhoneNumber' => $userPhoneNumber
+        );
+        return $this->_executeObjectQuery('find user by phone number', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
+    public function getUserImageUrl($userId) {
+        $valArr = array(
+            ':userId' => $userId
+        );
+        $data = $this->_executeQuery('find user image url', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['image_url'];
+    }
 	
 	// WRITE FUNCTIONS
 	
@@ -101,12 +129,15 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
 	    $valArr = array(
             ':userName' => $userDetails->getUserName(),
             ':userMail' => $userDetails->getUserMail(),
-            ':userLocation' => $userDetails->getUserLocation()
+            ':userLocation' => $userDetails->getUserLocation(),
+            ':userPhoneNumber' => $userDetails->getUserPhoneNumber(),
+            ':userImageUrl' => $userDetails->getUserImageUrl(),
+            ':userSex' => $userDetails->getUserSex()
         );
         
         try {
             return $this->_executeQuery('create new user', $valArr, \Native5\Core\Database\DB::INSERT);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -117,12 +148,26 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
             ':userName' => $userDetails->getUserName(),
             ':userMail' => $userDetails->getUserMail(),
             ':userLocation' => $userDetails->getUserLocation(),
-            ':password' => $userDetails->getUserAuthentication()->getPassword()
+            ':userPhoneNumber' => $userDetails->getUserPhoneNumber(),
+            ':userSex' => $userDetails->getUserSex()
         );
         
         try {
             return $this->_executeQuery('edit user', $valArr, \Native5\Core\Database\DB::UPDATE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
+            return false;
+        }
+	}
+	
+	public function editUserPassword($userId, $password) {
+	    $userArr = array(
+            ':userId' => $userId,
+            ':password' => $password,
+        );
+        
+        try {
+            return $this->_executeQuery('edit user password', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (\Exception $e) {
             return false;
         }
 	}
@@ -134,7 +179,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
     
         try {
             return $this->_executeQuery('delete user', $valArr, \Native5\Core\Database\DB::DELETE);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
         }
 	}
