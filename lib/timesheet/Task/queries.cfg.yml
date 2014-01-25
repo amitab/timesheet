@@ -1,0 +1,14 @@
+---
+
+find all tasks of timesheet : SELECT `task`.* FROM `task` WHERE `task`.`task_timesheet_id` = :timesheetId;
+find task by id : SELECT `task`.* FROM `task` WHERE `task`.`task_id` = :taskId;
+find task by name : SELECT `task`.* FROM `task` WHERE `task`.`task_name` LIKE :taskName;
+find task by name under project : SELECT `task`.* FROM `task`, `timesheet`, `project_timesheet` WHERE `task`.`task_timesheet_id` = `timesheet`.`timesheet_id` AND `project_timesheet`.`timesheet_id` = `timesheet`.`timesheet_id` AND `project_timesheet`.`project_id` = :projectId;
+find task by name under timesheet : SELECT `task`.* FROM `task`, `timesheet` WHERE `task`.`task_timesheet_id` = :timesheetId; 
+
+create new task : INSERT INTO `task` (task_name, task_notes, task_start_time, task_end_time, task_timesheet_id, task_work_time, task_location) VALUES (:taskName, :taskNotes, :taskStartTime, :taskEndTime, :taskTimesheetId, :taskWorkTime, :taskLocation);
+
+delete task : DELETE FROM `task` WHERE `task`.`task_id` = :taskId;
+edit task : UPDATE `task` SET `task`.`task_name` = :taskName , `task`.`task_notes` = :taskNotes, `task`.`task_start_time` = :taskStartTime, `task`.`task_end_time` = :taskEndTime, `task`.`task_timesheet_id` = :taskTimesheetId, `task`.`task_location` = :taskLocation WHERE `task`.`task_id` = :taskId, `task`.`task_work_time` = :taskWorkTime;
+
+...

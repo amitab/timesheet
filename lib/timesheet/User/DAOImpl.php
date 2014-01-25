@@ -184,4 +184,35 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
         }
 	}
 	
+	public function uploadUserImage($imageUrl, $userId) {
+        $valArr = array(
+            ':userId' => $userId,
+            ':imageUrl' => $imageUrl
+        );
+    
+        try {
+            return $this->_executeQuery('update user image', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+    
+    public function removeUserImage($userId) {
+        $valArr = array(
+            ':userId' => $userId,
+            ':imageUrl' => 'default.jpg'
+        );
+        
+        $data = $this->_executeQuery('select user image url', $valArr, \Native5\Core\Database\DB::SELECT);
+        if(!$data) { return false; }
+        
+        unlink(UPLOAD_PATH . $data[0]['user_image_url']);
+        
+        try {
+            return $this->_executeQuery('update user image', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+	
 }

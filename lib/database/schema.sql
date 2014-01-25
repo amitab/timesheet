@@ -23,14 +23,22 @@ CREATE TABLE project(
 
 CREATE TABLE timesheet(
 	timesheet_id INT(20) PRIMARY KEY AUTO_INCREMENT,
-	timesheet_work_time DOUBLE,
-	timesheet_start_time DATETIME,
-	timesheet_end_time DATETIME,
 	timesheet_mark_time DATETIME,
-	timesheet_location VARCHAR(255),
-	timesheet_task VARCHAR(100),
+    timesheet_date DATE,
 	timesheet_project_name VARCHAR(100),
-	timesheet_description VARCHAR(255)
+    timesheet_status INT(1)
+);
+
+CREATE TABLE task(
+    task_id INT(20) PRIMARY KEY AUTO_INCREMENT,
+    task_name VARCHAR(255),
+    task_notes VARCHAR(255),
+    task_timesheet_id INT(20),
+	task_start_time DATETIME,
+	task_end_time DATETIME,
+	task_work_time FLOAT,
+    task_location VARCHAR(255),
+    FOREIGN KEY(task_timesheet_id) REFERENCES timesheet(timesheet_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE groups(

@@ -39,6 +39,10 @@ class Service {
     }
     
     // read only functions
+    public function searchByNameUnderUserId($projectName, $userId) {
+        return $this->_dao->searchByNameUnderUserId($projectName, $userId);
+    }
+    
     public function getAllProjects() {
         return $this->_dao->getAllProjects();
     }

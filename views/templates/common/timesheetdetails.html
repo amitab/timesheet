@@ -34,22 +34,33 @@
                 </div>
             </div>
             <div id="timesheet-control" style="margin-bottom: 30px;">
-                <table border="0" style="margin-top: 40px;">
-                    <tr>
-                        <td style="">
-                            <div class="medium secondary btn">
-                                <a href="#" id="timer-button">Edit Timesheet</a>
-                            </div>
-                        </td>
-                        <td style="text-align: right;">
-                            <div class="medium danger btn">
-                                <a href="#" id="timer-button">Delete Timesheet</a>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                <form action={{ resolvePath("addsheet") }} method="post">
+                    <input type="hidden" name="timesheetId" value="12" />
+                    <table border="0" style="margin-top: 40px;">
+                        <tr>
+                            <td style="">
+                                <div class="medium secondary btn">
+                                    <a href = "#" id="edit-button">Edit Timesheet</a>
+                                </div>
+                            </td>
+                            <td style="text-align: right;">
+                                <div class="medium danger btn">
+                                    <a href="timesheets\\delete_timesheet" id="delete-button">Delete Timesheet</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>    
+                </form>
             </div>
         </section>
     </div>
+    
+    <script>
+        $(document).ready(function() {
+            $('#edit-button').click(function() {
+                $(this).closest('form').submit();
+            });
+        });
+    </script>
     
 {% include 'foot.html' %}

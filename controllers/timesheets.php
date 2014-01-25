@@ -63,39 +63,49 @@ class TimesheetsController extends DefaultController
         $skeleton =  new TwigRenderer('timesheets.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Timesheets',
-            'auth' => $auth,
+            'search' =>true,
         ));  
 
     }//end _default()
     
-    public function _details($request) {
+    /*public function _details($request) {
         
         global $logger;
         $skeleton =  new TwigRenderer('timesheetdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Timesheet Details',
-            'auth' => $auth,
+        )); 
+    }*/
+    
+    public function _details($request) {
+        global $logger;
+        $skeleton =  new TwigRenderer('addsheet-test.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $title = 'Jan 2014, Week 1';
+        
+        $this->_response->setBody(array(
+            'title' => $title,
+            'add_task' => true,
+            'edit' => $edit
         )); 
     }
-
+    
+    public function _new_task($request)
+    {
+        global $logger;
+        $skeleton =  new TwigRenderer('newtask.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $this->_response->setBody(array(
+            'title' => 'New Task',
+            'form_save' => true,
+        )); 
+    }
 
 }//end class
 

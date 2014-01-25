@@ -64,17 +64,9 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('profile-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Profile',
-            'auth' => $auth,
-            'dp' => UPLOADS . 'user_images\default.jpg'
+            'dp' => UPLOADS . 'user_images/default.jpg',
         )); 
 
 
@@ -87,34 +79,61 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('editprofile.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
+        if($request->getParam('user_name') != null) {
+            $logger->log($request->getParam('user_name'));
+        }
         
         $this->_response->setBody(array(
             'title' => 'Edit Profile',
-            'auth' => $auth,
+            'inline_menu' => true
         )); 
 
     }
     
     public function _upload_image($request) {
         global $logger;
+        $warnings = array();
+        $successful = array();
         
         $skeleton =  new TwigRenderer('uploadprofileimage.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        if($request->getParam('user_image') != null) {
-            $logger->info('user_image : ' . $request->getParam('user_image'));
+        if(isset($_FILES['user_image'])) {
+                
+            try {
+                $uploader = new \Database\Upload();
+                $uploader->uploadPath = UPLOAD_PATH;
+                $uploader->arrayName = 'user_image';
+                $uploader->maxFileSize = 10000000;
+                
+                // For Resizing
+                $uploader->thumbUploadPath = THUMB_UPLOAD_PATH;
+                $uploader->crop = true;
+                $uploader->width = 100;
+                $uploader->height = 100;
+                
+                $newFileName = $uploader->upload();
+                
+                $image_path = IMAGE_PATH . $newFileName;
+                
+                // Update database with new pic name. Delete this pic if database update fails.
+                // unlink($uploader->uploadPath . $newFileName);
+                
+                $successful[] = 'Image has been updated';
+                
+            } catch (\Exception $e) {
+                $warnings[] = $e->getMessage();
+                $image_path = IMAGE_PATH . 'pic.jpg'; // Show default pic
+            }
+        } else {
+            $image_path = IMAGE_PATH . 'pic.jpg'; // Show default pic
         }
         
-        $auth = true;
         $this->_response->setBody(array(
             'title' => 'Upload Image',
-            'auth' => $auth,
+            'image_path' => $image_path,
+            'warnings' => $warnings,
+            'successful' => $successful,
         )); 
     }
     
@@ -124,11 +143,8 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('change-password.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
         $this->_response->setBody(array(
             'title' => 'Change Password',
-            'auth' => $auth,
         ));
     }
 

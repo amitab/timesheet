@@ -27,4 +27,7 @@ find users under group id : SELECT `user`.* FROM `group`, `user`, `authenticatio
 find user by phone number : SELECT `user`.* FROM `user` WHERE `user`.`user_phone_number` = :userPhoneNumber;
 find user image url : SELECT `user`.`user_image_url` as `image_url` FROM `user` WHERE `user`.`user_id` = :userId;
 
+update user image : UPDATE `user` SET `user`.`user_image_url` = :imageUrl WHERE `user`.`user_id` = :userId;
+select user image url : SELECT `user`.`user_image_url` AS `user_image_url` FROM `user` WHERE `user`.`user_id` = :userId;
+
 ...

@@ -64,16 +64,8 @@ class NotificationsController extends DefaultController
         $skeleton =  new TwigRenderer('notifications.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Notifications',
-            'auth' => $auth,
         )); 
 
 

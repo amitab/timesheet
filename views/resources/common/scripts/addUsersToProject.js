@@ -9,24 +9,41 @@ var app = (function (app, native5) {
     
     $(document).ready(function() {
         
+        var colour = ['#4cc2e4', '#FFCC5C', '#FF6F69', '#77C4D3', '#00A388', '#3085d6'];
+        
+        function getColor() {
+           return colour[Math.floor(Math.random() * colour.length)];
+        }
+        
         function getData(args, url) {
             var service =  new native5.core.Service(url, app.config);
-        
             service.configureHandlers(
                 function(data) {
                     // set the data in $('#search-results > ul'). But first create List elements.
-                    var listItem;
+                    var listItem = '';
                     $('#search-results > ul').html('');
                     $.each(data.message.users, function(key, value) {
-                        listItem = '<li class="list-item" style="border-left: 4px solid green;">';
+                        
+                        var matcher = value.userMail.match(/@+.+/);
+                        var domain = matcher[0];
+                        var mail = value.userMail.substring(0,matcher.index);
+                        if(mail.length > 10) {
+                            var extract = mail.substring(0,10) + '...';
+                        } else {
+                            var extract = mail;
+                        }
+                        
+                        listItem += '<li userid="' + value.userId + '" class="list-item" style="border-left: 4px solid ' + getColor() + ';">';
                         listItem += '<div class="wrapper">';
-                        listItem += '<table><tr><td><div class="display-picture" style="margin-bottom: -8px;">';
-                        listItem += '<img src="' + data.message.image_location + value.userImageUrl + '" alt="" class="image round" width="50">';
-                        listItem += '</div></td><td style="text-align: center;">';
-                        listItem += '<h5 style="padding-top: 0;">' + value.userName + '</h5>';
-                        listItem += '</td><td class="check-input"><input class="check" name="checkbox" value="' + value.userId + '" type="checkbox"></td></tr></table></div></li>';
-                        $('#search-results > ul').append(listItem);
+                        listItem += '<table><tr><td><div class="display-picture">';
+                        listItem += '<img src="' + data.message.image_location + value.userImageUrl 
+                                 + '" alt="" class="image round" width="50">';
+                        listItem += '</div></td><td>';
+                        listItem += '<h5>' + value.userName + '</h5><p class="small">' + extract + domain
+                                 + '&nbsp;&nbsp;<i class="fa fa-envelope"></i></p>';
+                        listItem += '</td></tr></table></div></li>';
                     });
+                    $('#search-results > ul').append(listItem);
                     emptyListChecker();
                 },
                 function(err) {
@@ -53,29 +70,54 @@ var app = (function (app, native5) {
         
         $('#search-button').click(function(e){
             e.preventDefault();
-            var query = '%' + $('#search-box').val() + '%';
-            // Search using ajax
-            var args = {};
-            args.q = query;
-            args.ids = [];
-            $('#selected-users input:checkbox').each(function(index) {
-                args.ids.push(parseInt($(this).attr('value')));
-            });
-            var url = 'project/search_to_add';
-            getData(args, url);
+            var searchBox = $($(this).attr('href'));
+            
+            if(searchBox.val().length <= 0) {
+                if(searchBox.hasClass('closed')) {
+                    openSearchBox(searchBox);
+                } else {
+                    closeSearchBox(searchBox);
+                }
+            }
+            
+            else {
+               var query = '%' + $('#search-box').val() + '%';
+                // Search using ajax
+                var args = {};
+                args.q = query;
+                args.ids = [];
+                $('#selected-users li').each(function(index) {
+                    args.ids.push(parseInt($(this).attr('userid')));
+                });
+                var url = 'project/search_to_add';
+                getData(args, url); 
+            }
+            
         });
-        $(document).on('click', '.check' ,function(e) {
+        
+        $(document).on('click', '.list-item' ,function(e) {
             
-            var parent = $(this).closest('li.list-item');
-            parent.remove();
-            
-            if($(this).is(':checked')) {
-                $('#selected-users > ul').append(parent);
+            var parent = $(this).closest('section');
+            var item = $(this);
+            item.remove();
+            if(parent.is('#search-results')) {
+                $('#selected-users > ul').append(item);
             } else {
-                // Redo Search using ajax
+                $('#search-results > ul').append(item);
             }
             emptyListChecker();
         });  
+        
+        function openSearchBox(searchBox) {
+            searchBox.removeClass('closed');
+            $('div.header-item:first').addClass('fade-out');
+        }
+        
+        function closeSearchBox(searchBox) {
+            searchBox.addClass('closed');
+            $('#search-box').val('');
+            $('div.header-item:first').removeClass('fade-out');
+        }
         
     });
     

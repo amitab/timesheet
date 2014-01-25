@@ -63,16 +63,9 @@ class ProjectController extends DefaultController
         $skeleton =  new TwigRenderer('projects-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Projects',
-            'auth' => $auth,
+            'search' =>true,
         ));      
 
     }//end _default()
@@ -83,16 +76,8 @@ class ProjectController extends DefaultController
         $skeleton =  new TwigRenderer('projectdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Project Details',
-            'auth' => $auth,
             'is_admin' => true,
             'is_employee' => false
         ));  
@@ -104,11 +89,8 @@ class ProjectController extends DefaultController
         $skeleton =  new TwigRenderer('createproject.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
         $this->_response->setBody(array(
             'title' => 'New Project',
-            'auth' => $auth,
         ));  
     }
     
@@ -118,17 +100,19 @@ class ProjectController extends DefaultController
         $skeleton =  new TwigRenderer('adduserstoproject.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
         $this->_response->setBody(array(
             'title' => 'Add People',
-            'auth' => $auth,
+            'search' =>true,
         ));  
     }
     
     public function _search_to_add($request) {
         global $logger;
         $this->_response = new HttpResponse('json');
+        
+        if ($request->getParam('q') == null ) {
+            return;
+        }
         
         $userService = \Timesheet\User\Service::getInstance();
         $query = $request->getParam('q');
@@ -144,7 +128,31 @@ class ProjectController extends DefaultController
         $logger->info(print_r($data,1));
         $this->_response->setBody(array(
             'users' => $data,
-            'image_location' => UPLOADS . 'user_images\\'
+            'image_location' => IMAGE_PATH
+        ));
+    }
+    
+    public function _search($request) {
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        
+        if ($request->getParam('q') == null ) {
+            return;
+        }
+        
+        $query = $request->getParam('q');
+        $userId = 13;
+        $projectService = \Timesheet\Project\Service::getInstance();
+        
+        if(!empty($query))
+            $data = $projectService->searchByNameUnderUserId($query, $userId);
+        else
+            $data = $projectService->getProjectsHandledByUserId($userId);
+        
+        $data = \Database\Converter::getArray($data);
+        
+        $this->_response->setBody(array(
+            'projects' => $data,
         ));
     }
 

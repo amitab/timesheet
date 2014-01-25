@@ -8,8 +8,8 @@ interface DAO {
     public function editUser($userDetails);
     public function deleteUser($userId);
     public function editUserPassword($userId, $password);
-    /*public function uploadUserImage($imageUrl);
-    public function removeUserImage($imageUrl);*/
+    public function uploadUserImage($imageUrl, $userId);
+    public function removeUserImage($userId);
 
     // read only functions
     public function getAllUsers();

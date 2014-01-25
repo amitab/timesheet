@@ -27,6 +27,18 @@ $(document).ready(function(){
         setTimeout(function(){ animation = false; },350);
     }
     
+    function openInlineMenu(inlineMenu) {
+        animation = true;
+        inlineMenu.removeClass('hidden').addClass('moving-in');
+        setTimeout(function(){ inlineMenu.removeClass('moving-in'); animation = false; },350);
+    }
+    
+    function closeInlineMenu(inlineMenu) {
+        animation = true;
+        inlineMenu.addClass('moving-out');
+        setTimeout(function(){ inlineMenu.addClass('hidden').removeClass('moving-out'); animation = false; },350);
+    }
+    
     $(document).on(clickevent, '#page-wrap', function(event) {
         event.stopImmediatePropagation();
         if($('#page-wrap').hasClass('active')) {
@@ -35,7 +47,15 @@ $(document).ready(function(){
                 animation = true;
                 closeMenu();
             } 
-        } //else this is not supposed to fire
+        } 
+        if(!$('#search-box').hasClass('closed')) {
+            $('#search-box').addClass('closed');
+            $('#search-box').val('');
+            $('div.header-item:first').removeClass('fade-out');
+        }
+        if(!$('.inline-menu').hasClass('hidden')) {
+            $('.inline-menu').addClass('hidden');
+        }
     });
     
     $(document).on(clickevent, '.trigger', function(event) {
@@ -47,17 +67,25 @@ $(document).ready(function(){
                 closeMenu();
             }
             else openMenu();
-        } //else open with accordion
+        } 
     });
     
-    $(document).on('click', '.inline-menu-trigger', function(e) {
+    $(document).on(clickevent, '.inline-menu-trigger', function(e) {
         e.preventDefault();
-        var inlineMenu = $(this).next('.inline-menu');
+        if(animation) return false;
+        var inlineMenu = $($(this).attr('menu'));
         if(inlineMenu.hasClass('hidden')) {
-            inlineMenu.removeClass('hidden');
+            openInlineMenu(inlineMenu);
         } else {
-            inlineMenu.addClass('hidden');
+            closeInlineMenu(inlineMenu);
         }
+    });
+    
+    $(document).on(clickevent, '.remove-section', function(e) {
+        e.preventDefault();
+        var section = $(this).closest('section');
+        section.addClass('moving-out');
+        setTimeout(function(){ section.remove(); },400);
     });
     
     function menuIcon() {
@@ -121,29 +149,16 @@ $(document).ready(function(){
         e.preventDefault();
         history.back();
     })
-    
-    
-    // Validate
-    
-    function isValidEmailAddress(emailAddress) {
-        var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
-        return pattern.test(emailAddress);
-    };
-    
-    $('#login-button').click(function(){
-        var email = document.getElementById('email').value;
-        
-        if( !isValidEmailAddress( email ) ) {
-            $('#email').parent().addClass('warning');
-            return false;
-        } else {
-            document.getElementById('login').submit();
-        }
-        
-    });
+
     
     $('#submit').click(function(){
         $(this).closest('form').submit();
+    });
+    
+    $(document).on(clickevent, '#save-form', function(e) {
+        e.preventDefault();
+        var form = $($(this).attr('target'));
+        form.submit();
     });
     
 });

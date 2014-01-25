@@ -62,18 +62,17 @@ class TestController extends DefaultController
 	public function _default($request)
     {
         global $logger;
-        $this->_response = new HttpResponse('json');
+        $taskImpl = new \Timesheet\Task\DAOImpl();
+        $task = new \Timesheet\Task\Task();
+        $task->setTaskName('task a');
+        $task->setTaskNotes('This was fun.');
+        $task->setTaskStartTime("2012-07-08 11:14:15");
+        $task->setTaskEndTime("2012-07-08 12:18:54");
+        $task->setTaskTimesheetId(1);
         
-        $userService = \Timesheet\User\Service::getInstance();
-        $query = $request->getParam('q');
-        $data = $userService->getUserByName('%a%');
+        $id = $taskImpl->createTask($task);
+        $logger->info(print_r($id, 1));
         
-        $data = \Database\Converter::getArray($data);
-        $logger->info(print_r($data, 1));
-        
-        $this->_response->setBody(array(
-            'users' => $data
-        ));
     }
 
 }//end class

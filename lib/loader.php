@@ -1,6 +1,5 @@
 <?php
 define('TIMESHEET', dirname(__FILE__) . DIRECTORY_SEPARATOR);
-define('UPLOADS', '..' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR. 'uploads' . DIRECTORY_SEPARATOR);
 
 class Loader {
     protected static $paths = array(

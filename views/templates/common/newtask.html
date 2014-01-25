@@ -1,0 +1,40 @@
+
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="new-task">
+                
+                <form action="" method="post">
+                    <input type="hidden" value="">
+                    <div class="title">
+                        <h5>New Task</h5>
+                    </div>
+                    <div class="field append">
+                        <input class="input" type="text" placeholder="Task Name" name="task" />
+                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                    </div>
+                    
+                    <div class="field">
+                        <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;Start Time : </label>
+                        <input name="start_date" type="datetime-local" value="1996-12-19T16:39:57" >
+                    </div>
+                    <div class="field">
+                        <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;End Time : </label>
+                        <input name="end_date" type="datetime-local" value="1996-12-19T16:39:57" >
+                    </div>
+                    <div class="field">
+                        <textarea class="input textarea" placeholder="Notes" name="description"></textarea>
+                    </div>
+                        
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Location" name="location" />
+                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                    </div>
+                </form>
+                
+            </section>
+        </div>
+    </div>
+    
+{% include 'foot.html' %}

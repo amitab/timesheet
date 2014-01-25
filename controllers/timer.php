@@ -63,16 +63,8 @@ class TimerController extends DefaultController
         $skeleton =  new TwigRenderer('timer.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
-        }*/
-        
         $this->_response->setBody(array(
             'title' => 'Project a',
-            'auth' => $auth,
         ));  
 
     }//end _default()

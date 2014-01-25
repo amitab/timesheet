@@ -9,7 +9,7 @@ $slate-grey: #404040;
 $button-color: rgb(21, 125, 251);
 $border-grey: #E8E8E8;
 $link-color: #B1B1B1;
-$body-color: #f1f1f1;
+$body-color: #f8f8f8;
 $corvoda-blue: #4cc2e4;
 
 $orange : #FFCC5C;
@@ -30,6 +30,26 @@ $snap-animation : cubic-bezier(0.785, 0.135, 0.150, 0.860);
     transition: all $time $snap-animation;
 }
 
+@-webkit-keyframes moveToRight { 
+    to { -webkit-transform: translateX(200%); }
+}
+@-moz-keyframes moveToRight { 
+    to { -moz-transform: translateX(200%); }
+}
+@keyframes moveToRight { 
+    to { transform: translateX(200%); }
+}
+
+@mixin move-out-right($time) {
+    -webkit-animation: moveToRight $time ease-in-out both;
+	-moz-animation: moveToRight $time ease-in-out both;
+	animation: moveToRight $time ease-in-out both;
+}
+
+.moving-out {
+    @include move-out-right(0.4s);
+}
+
 @mixin card-shadow() {
     @include respond(tablets) { 
         @include single-box-shadow(rgba(darken($border-grey, 60%), 0.1), 0px, 0px, 8px, 2px, false);
@@ -37,6 +57,10 @@ $snap-animation : cubic-bezier(0.785, 0.135, 0.150, 0.860);
     @include respond(desktop) { 
         @include single-box-shadow(rgba(darken($border-grey, 60%), 0.1), 0px, 0px, 8px, 2px, false);
     }
+    @include respond(all-phones) {
+        border: 1px solid $border-grey;
+    }
+    /*@include single-box-shadow(rgba(darken($border-grey, 60%), 0.1), 0px, 0px, 8px, 2px, false);*/
 }
 
 ul {
@@ -44,6 +68,19 @@ ul {
 }
 
 // table resets
+
+table.summary {
+    thead {
+        background: inherit;
+        color: $slate-grey;
+        th {
+            border-bottom: 1px solid #e5e5e5;
+        }
+    }
+    tr td:first-child {
+        font-weight: normal;
+    }
+}
 
 .btn {
     @include font-size(14px);
@@ -89,7 +126,8 @@ li {
 }
 
 section {
-    margin: 5% 0;
+    @include border-radius(4px);
+    margin: 8% 0;
     @include card-shadow();
     position: relative;
     padding: 10px;
@@ -106,8 +144,25 @@ section {
         margin-bottom: 10px;
         text-align: center;
         h5 {
-            font-weight: bolder;
+            font-weight: bold;
+            color: darken($border-grey, 20%);
         }
+    }
+    .display-picture {
+        text-align: center;
+        .image {
+            @include border-radius(50%);
+            width: 100px;
+            margin-bottom: 0px;
+        }
+    }
+    div.corner-icon {
+        position: absolute;
+        font-size: 20px;
+    }
+    div.corner-icon.top-right {
+        top: 4px;
+        right: 10px;
     }
 }
 
@@ -120,9 +175,13 @@ h5.left-padding {
 }
 
 @include respond(all-phones) {
-    .input, .adjoined, .btn, p, td, th, a.small, input {
+    .input, .adjoined, .btn, p, td, th, a.small, input, i.fa {
         font-size: 14px!important;
     }
+}
+
+i.fa {
+    font-size: 16px;
 }
 
 img.image.round {
@@ -136,36 +195,36 @@ label.medium {
 
 // inline menu
 
-div.inline-menu-trigger {
+/*div.inline-menu-trigger {
     position: absolute;
-    font-size: 14px;
+    font-size: 24px;
     color: darken($border-grey, 15%);
     z-index: 100;
-    top: 10px;
+    top: 8px;
     right: 0px;
     i {
         padding: 0.4rem 0.8rem;
         cursor: pointer;
     }
-}
+}*/
 
 div.inline-menu {
+    background: $slate-grey;
     position: absolute;
-    width: 150px;
-    background: inherit;
+    width: 200px;
     z-index: 100;
-    top: 10px;
-    right: 28px;
+    top: 70px;
+    right: 2px;
     @include single-box-shadow(rgba(darken($border-grey, 60%), 0.1), 0px, 0px, 4px, 1px, false);
     ul {
         margin-bottom: 0;
         li {
             padding: 0px;
-            border-bottom: 1px solid #f1f1f1;
+            border-bottom: 1px solid #616161;
             a {
-                font-size: 14px!important;
                 display: block;
-                padding: 2px 10px;
+                padding: 8px 12px;
+                color: #f3f3f3;
             }
         }
         li:last-child {
@@ -194,7 +253,7 @@ div.inline-menu.hidden {
 }
 /* move from / to  */
 
-div.inline-menu {
+div.inline-menu.moving-in {
 	-webkit-animation: moveFromRight .2s $snap-animation both;
 	-moz-animation: moveFromRight .2s $snap-animation both;
 	animation: moveFromRight .2s $snap-animation both;
@@ -205,10 +264,15 @@ section.new-profile {
     border-top: 4px solid $pahdera-green;
 }
 
+// new task
+
+section.new-task {
+    border-top: 4px solid $corvoda-blue;
+}
+
 // edit profile
 
 section.edit-profile {
-    
     border-top: 4px solid $orange;
 }
 
@@ -223,14 +287,6 @@ section.new-project {
         @include border-radius(4px);
         margin-bottom: 6px;
     }
-}
-
-// add users to project
-
-section.search-section {
-    
-    border-top: 4px solid $pahdera-green;
-    
 }
 
 // add timesheet
@@ -250,15 +306,51 @@ section.add-timesheet {
         margin-bottom: 6px;
     }
 }
+section.task {
+    input {
+        border: 1px solid #d8d8d8;
+        padding: 6px 10px;
+        @include border-radius(4px);
+        margin-bottom: 6px;
+    }
+}
 
-// projects list, notifications list, messages list
+// projects list, notifications list, messages list, search-list
+
+section#search-results, section#selected-users {
+    margin: 10px 0;
+    li td { 
+        width: 33.3333%;
+    }
+}
+
+section#search-results li td:nth-child(1), section#selected-users li td:nth-child(1) {
+    div.display-picture {
+        margin-bottom: -8px;
+    }
+    width: 15%;
+}
+section#search-results li td:nth-child(2), section#selected-users li td:nth-child(2) {
+    text-align: right;
+    h5 {
+        padding-top: 0;
+    }
+    p {
+        @include hidden(portrait-phones);
+        text-align: right;
+        color: darken($border-grey, 20%);
+        float: right;
+    }
+}
 
 section.projects-list, section.notifications-list, section.message-list, section.list {
     
     padding: 0;
     ul.empty-list:before {
-        content: "NONE";
-        padding-left: 10px;
+        content: "No Results";
+        color: darken($border-grey, 20%);
+        display: block;
+        padding: 10px;
     }
     li.project-list-item, li.notifications-list-item, li.message-list-item, li.list-item {
         padding: 0;
@@ -280,6 +372,10 @@ section.projects-list, section.notifications-list, section.message-list, section
                 }
             }
         }
+    }
+    li.list-item td .display-picture {
+        text-align: left;
+        width: 50px;
     }
     li.list-item {
         .check-input {
@@ -332,14 +428,7 @@ section.dashboard {
     //padding: 0 0 10px 0;
     padding: 10px 0;
     border-top: 4px solid $orange;
-    .display-picture {
-        text-align: center;
-        .image {
-            @include border-radius(50%);
-            width: 100px;
-            margin-bottom: 0px;
-        }
-    }
+    
     .details {
         text-align: center;
         p {
@@ -425,126 +514,6 @@ section.project-details {
         }
     }
 }
-
-/*
-// add past sheet
-
-section.addsheet {
-    
-    border-top: 4px solid $orange;
-    
-    .title {
-        margin-bottom: 10px;
-        text-align: center;
-        h5 {
-            color: darken($border-grey, 20%);
-            font-weight: bolder;
-        }
-    }
-    
-    #add-timesheet {
-        .first-child {
-            width: 60%;
-        }
-        .second-child {
-            width: 40%;
-        }
-        
-        @media screen and (min-width: 480px) {
-            .first-child {
-                width: 80%;
-            }
-            .second-child {
-                width: 20%;
-            }
-        }
-    }
-    
-    .duration-picker {
-        @include user-select(none);
-        .wrapper {
-            text-align: center;
-        }
-    }
-    .duration:nth-child(odd), .duration:nth-child(3) {
-        margin-right: 20px;
-    }
-    .duration:nth-child(1), .duration:last-child {
-        margin-right: 0px;
-    }   
-    .duration {
-        margin-bottom: 30px;
-        position: relative;
-        display: inline-block;
-        width: auto;
-        .inc, .dec {
-            font-size: 30px;
-            padding: 0.6rem 1rem;
-            background: #f1f1f1;
-            cursor: pointer;
-        }
-        .dec {
-            margin-top: 10px;
-        }
-        .inc {
-            margin-bottom: 10px;
-        }
-        .inn {
-            font-size: 60px;
-            font-weight: bolder;
-            line-height: 80px;
-        }
-    }
-    .duration:nth-child(odd):after {
-        content: ":";
-        position: absolute;
-        top: 50%;
-        font-size: 40px;
-        margin-top: -15px;
-        right: -20px;
-    }
-    .duration:nth-child(1):after {
-        content: "";
-    }
-    .duration:last-child:after {
-        content: "";
-    }
-    
-    @media screen and (max-width: 560px) {
-        
-        .duration:nth-child(odd):after {
-            font-size: 25px;
-            right: -10px;
-        }
-        .duration:nth-child(odd), .duration:nth-child(3) {
-            margin-right: 10px;
-        }
-        .duration:last-child, .duration:nth-child(1) {
-            margin-right: 0px;
-        }  
-        .duration {
-            display: inline-block;
-            width: auto;
-            .inc, .dec {
-                font-size: 16px;
-                padding: 0rem 0.57rem;
-                background: #f1f1f1;
-            }
-            .dec {
-                margin-top: 10px;
-            }
-            .inc {
-                margin-bottom: 10px;
-            }
-            .inn {
-                font-size: 30px;
-                font-weight: bolder;
-                line-height: 40px;
-            }
-        }
-    }
-}
-*/
 
 // overview
 
@@ -648,52 +617,6 @@ section.timer {
     }
 }
 
-// profile
-
-/*
-section.profile {
-    margin: 15% 0;
-    border-top: 4px solid $pahdera-green;
-    p {
-        @include font-size(12px);
-        color: darken($border-grey, 20%);
-    }
-    .work {
-        td {
-            width: 33.3333%;
-            .type {
-               text-align: center;
-            }
-            .time {
-                text-align: center;
-                font-weight: bold;
-            }
-            @media screen and (min-width: 500px) {
-                .time {
-                   font-size: 22px
-                }
-            }
-        }
-    }
-    .details {
-        td {
-            width: 50%;
-            padding: 10px 0 10px 10px
-        }
-        .user-image {
-            text-align: center;
-            @include respond(portrait-phones) {
-                text-align: left;
-            }
-            //text-align: center;
-            .image {
-                @include border-radius(50%);
-            }
-        }
-    }
-}
-*/
-
 // login
 
 @media (max-width: 769px) and (min-width: 500px) {
@@ -734,52 +657,6 @@ section.profile {
         }
     }
 }
-
-// timesheet
-
-/*
-.timesheet {
-    @include single-box-shadow(rgba(darken($border-grey, 60%), 0.1), 0px, 0px, 8px, 2px, false);
-}
-
-li.timesheet-item {
-    background: white;
-    padding: 0!important;
-    
-    .wrapper { 
-        padding: 1rem;
-        border-right: 1px solid $border-grey;
-        border-bottom: 1px solid $border-grey;
-    }
-    
-    .name-status {
-        .status-item {
-            @include fancytiles(2,2,2);
-        }
-        .status-item:nth-child(odd) {
-            a {
-                font-size: 18px!important;
-            }
-        }
-        .status-item:nth-child(even) {
-            text-align: right;
-            h6 {
-                color: $gumby-blue;
-            }
-        }
-    }
-    .detail {
-        p {
-            span {
-                font-weight: bolder;
-            }
-        }
-        p.time-alloted {
-            color: darken($border-grey, 20%);
-        }
-    }
-}
-*/
 
 // Sidebar anim
 
@@ -860,16 +737,14 @@ li.timesheet-item {
 #header {
     @include user-select(none);
     z-index: 400;
-	-webkit-box-shadow: 0px 0px 8px 1px rgba(50, 50, 50, 0.49);
-	-moz-box-shadow:    0px 0px 8px 1px rgba(50, 50, 50, 0.49);
-	box-shadow:         0px 0px 8px 1px rgba(50, 50, 50, 0.49);
+    @include single-box-shadow(rgba(50, 50, 50, 0.49), 0px, 0px, 8px, 1px, false);
     position: fixed;
     width: 100%;
-    @include card-shadow();
     background: $slate-grey;
     //padding: 1rem 0;
 
     .header-item {
+        webkit-tap-highlight-color: rgba(0,0,0,0);
         display: inline-block;
         width: auto;
         color: white;
@@ -877,8 +752,8 @@ li.timesheet-item {
         .item {
             display: inline-block;
             vertical-align: top;
-            i {
-                font-size: 30px;
+            i.fa-angle-left {
+                font-size: 30px!important;
                 cursor: pointer;
             }
         }
@@ -888,33 +763,105 @@ li.timesheet-item {
         .item.title {
             h5 {
                 padding: 0;
+                width: 130px;
                 @include respond(all-phones) {
                     white-space: nowrap;
                     text-overflow: ellipsis;
                     display: block;
                     overflow: hidden;
-                    width: 150px;
-                }
-				@include respond(portrait-phones) {
                     width: 100px;
-				}
+                }
             }
         }
         h5 {
             color: white;
         }
     }
-    .header-item:nth-child(even) {
+    .header-item.trigger {
+        i.fa-bars, i.fa-times {
+            font-size: 18px!important;
+        }
+    }
+    .header-item.inline-menu-trigger {
+        i.fa-ellipsis-v {
+            font-size: 28px!important;
+        }
+    }
+    .header-item.trigger, .header-item.option, .header-item.inline-menu-trigger {
         float: right;
         h5 {
             text-align: right;
             color: white;
         }
-    }
-    .trigger {
         cursor: pointer;
     }
-	.trigger:active {
+    .header-item:first-child {
+        position: absolute;
+    }
+    .header-item.fade-out {
+        @include transition-duration(.4s);
+        h5, p {
+            color: rgba(white, 0.2);
+        }
+        img {
+            opacity: 0.2;
+        }
+    }
+    .header-item.option.wide {
+        width: 70%;
+        input {
+            @include transition-duration(.6s);
+        }
+        cursor: auto;
+        padding-right: 0;
+    }
+    .header-item.option {
+        i.fa-check {
+            font-size: 22px!important;
+        }
+        i.fa-globe {
+            margin-top: -4px;
+            font-size: 24px!important;
+        }
+        i.fa-plus {
+            font-size: 20px!important;
+            margin-top: 2px;
+        }
+        .notifications.small {
+            position: absolute;
+            z-index: 80;
+            background: red;
+            padding: 0.1rem 0.2rem;
+            top: 10px;
+            left: 26px;
+            font-size: 8px!important;
+            line-height: 14px;
+            color: white;
+        }
+        
+        .header-search-pack {
+            .search.field {
+                position: relative;
+                min-width: 35px;
+                text-align: right;
+                input {
+                    margin-right: 33px;
+                    width: 100%;
+                }
+                input.closed {
+                    width: 0;
+                    padding: 0;
+                }
+                .btn.header-search {
+                    position: absolute;
+                    right: 0;
+                    @include border-radius(0px);
+                    background: lighten($slate-grey, 5%);
+                }
+            }
+        }
+    }
+	.header-item.trigger:active, .header-item.inline-menu-trigger:active, .header-item.option:active {
 		@include box-shadow(inset 3px 0px 12px 4px rgba(50, 50, 50, 0.6));
 	}
 }

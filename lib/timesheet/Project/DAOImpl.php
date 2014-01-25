@@ -20,6 +20,14 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
 	
 	// READ FUNCTIONS
 	
+    public function searchByNameUnderUserId($projectName, $userId) {
+        $valArr = array(
+            ':projectName' => $projectName,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find project by name under user', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
 	public function getAllProjects() {
         return $this->_executeObjectQuery('get all projects', null, \Native5\Core\Database\DB::SELECT);
 	}

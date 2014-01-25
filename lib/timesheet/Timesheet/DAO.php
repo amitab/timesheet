@@ -5,7 +5,7 @@ namespace Timesheet\Timesheet;
 interface DAO {
     // write only functions
     public function createTimesheet($timesheetDetails);
-    public function editTimesheet($timesheetId);
+    public function editTimesheet($timesheetDetails);
     public function deleteTimesheet($timesheetId);
 
     // read only functions
@@ -18,10 +18,6 @@ interface DAO {
     public function getTimesheetsInMonthWeek($month, $week);
     public function getRecentlyMarkedTimesheets($offset);
     public function getTimesheetsWithStatus($timesheetStatus, $limit, $offset);
-    
-    // These Times are in hours
-    public function getTimesheetWorkTime($timesheetId);
-    public function getTimesheetPauseTime($timesheetId);
     
     // project manager functions
     

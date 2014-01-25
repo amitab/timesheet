@@ -1,62 +1,98 @@
 {% include 'head.html' %}
     
     <div class="row">
-        <div class="six columns centered">
-            <section class="add-timesheet">
+        <div class="six columns centered card">
+            <form action="" method="post">
+                <input type="hidden" value="12" name="timesheetId" id="timesheetId" post-url={{ resolvePath("addsheet") }}>
+                <input type="hidden" name="projectId" value="">
+                <section class="add-timesheet">
+                    
+                    <div class="title">
+                        <h5>{{ items.title }}</h5>
+                    </div>
+                    
+                        <div class="warnings"></div>
+                        <!--<div class="project" style="text-align: center;">
+                            <div class="picker">
+                                <select name="project">
+                                    <option value="project a">Project a</option>
+                                    <option value="project b">Project b</option>
+                                    <option value="project c">Project c</option>
+                                    <option value="project d">Project d</option>
+                                </select>
+                              </div>
+                        </div>-->
+                        
+                        <table class="summary">
+                            <thead>
+                                <tr>
+                                    <th>Task</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="clickable" href={{ resolvePath("addsheet") }} >
+                                    <td>Task a</td>
+                                    <td>12:43</td>
+                                </tr>
+                                <tr class="clickable" href={{ resolvePath("addsheet") }} >
+                                    <td>Task b</td>
+                                    <td>09:03</td>
+                                </tr>
+                                <tr class="clickable" href={{ resolvePath("addsheet") }} >
+                                    <td>Task c</td>
+                                    <td>18:20</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                </section>
+            </form>
+            
+            <!--<div class="tasks">
                 
-                <div class="title">
-                    <h5>Add a new Timesheet</h5>
+                {% if items.edit == true %}
+                
+                    
+                
+                {% endif %}
+                
+            </div>-->
+            
+            <!--<div class="submit" style="text-align: center; padding: 20px 0;">
+                
+                {% if items.edit != true %}
+                    <div class="medium primary btn">
+                        <a id="save-sheet" href="#" >Submit</a>
+                    </div>
+                    
+                    <div class="medium secondary btn">
+                        <a href="#" >Save Draft</a>
+                    </div>
+                
+                {% else %}
+                
+                <div class="medium primary btn">
+                    <a id="save-sheet" href="#" >Save Changes</a>
                 </div>
                 
-                <form action="=" method="post" class="timesheet-form">
-                    <div class="warnings"></div>
-                    <div class="append field">
-                        <input class="input" type="text" placeholder="Project Name" name="project_name" />
-                        <span class="adjoined"><i class="fa fa-code"></i></span>
-                    </div>
-                    <div class="append field">
-                        <input class="input" type="text" placeholder="Task completed" name="take_completed" />
-                        <span class="adjoined"><i class="fa fa-check-circle"></i></span>
-                    </div>
-                    <div class="field append">
-                        <input class="input first-child" type="text" placeholder="Location" name="location" />
-                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
-                    </div>
-
-                    <div class="field">
-                        <label class="medium" for="start_date"><i class="fa fa-clock-o"></i>&nbsp;Start Time : </label>
-                        <input name="start_date" type="datetime-local" value="1996-12-19T16:39:57" readonly >
-                    </div>
-                    
-                    <div class="field">
-                        <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;End Time : </label>
-                        <input name="end_date" type="datetime-local" value="1996-12-19T16:39:57" >
-                    </div>
-                    
-                    <div class="field">
-                        <textarea class="input textarea" placeholder="Description" name="description"></textarea>
-                    </div>
-                    
-                    <table border="0" style="margin-top: 20px; ">
-                        <tr>
-                            <td style="padding: 0;">
-                                <div class="medium secondary btn"><a href="#">Save Draft</a></div>
-                            </td>
-                            <td style="padding: 0;text-align: right;">
-                                <div class="medium primary btn"><a href="#" id="submit">Submit</a></div>
-                            </td>
-                        </tr>
-                    </table>
-                </form>
+                {% endif %}
                 
-            </section>
+            </div>-->
         </div>
     </div>
     
-    <!--<script>
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("addsheet.js") }} ></script>
+    
+    <!--{% if items.edit == true %}
+    <script>
         $(document).ready(function() {
-            $('.date').pickadate();
+            $( "input, select, textarea" ).change(function() {
+                $(this).closest('section.task').attr("new", "true");
+            });
         });
-    </script>-->
-
+    </script>
+    {% endif %}-->
+    
 {% include 'foot.html' %}

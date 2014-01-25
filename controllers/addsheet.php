@@ -64,21 +64,37 @@ class AddsheetController extends DefaultController
         $skeleton =  new TwigRenderer('addsheet-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = true;
-        
-        /*$subject = SecurityUtils::getSubject();
-        if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
+        /*if($request->getparam('timesheetId') != null) {
+            $logger->info('ID : ' . $request->getparam('timesheetId'));
+            $title = "Edit Timesheet";
+            $edit = true;
+        } else { 
+            $title = "Add Timesheet";
+            $edit = false;
         }*/
         
+        $title = 'Jan 2014, Week 1';
+        
         $this->_response->setBody(array(
-            'title' => 'Add Timesheet',
-            'auth' => $auth,
+            'title' => $title,
+            'add_task' => true,
+            'edit' => $edit
         )); 
 
 
     }//end _default()
-
+    
+    public function _new_task($request)
+    {
+        global $logger;
+        $skeleton =  new TwigRenderer('newtask.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $this->_response->setBody(array(
+            'title' => 'New Task',
+            'form_save' => true,
+        )); 
+    }
 
 }//end class
 

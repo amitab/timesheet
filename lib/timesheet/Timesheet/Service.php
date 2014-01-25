@@ -30,8 +30,8 @@ class Service {
     public function createTimesheet($timesheetDetails) {
         return $this->_dao->createTimesheet($timesheetDetails);
     }
-    public function editTimesheet($timesheetId) {
-        return $this->_dao->editTimesheet($timesheetId);
+    public function editTimesheet($timesheetDetails) {
+        return $this->_dao->editTimesheet($timesheetDetails);
     }
     public function deleteTimesheet($timesheetId) {
         return $this->_dao->deleteTimesheet($timesheetId);
@@ -81,28 +81,6 @@ class Service {
         else {
             return $this->_dao->markTimesheet($status, $timesheetId, $timesheetMarkTime);
         }
-    }
-    
-    public function getTimesheetWorkTime($projectId) {
-        $this->_dao->getTimesheetWorkTime($projectId);
-    }
-    
-    public function getTimesheetPauseTime($projectId) {
-        $this->_dao->getTimesheetPauseTime($projectId);
-    }
-    
-    public function getSalaryEarnedForTimesheet($timesheetId) {
-        $projectImpl = new \Timesheet\Project\DAOImpl();
-        $project = $projectImpl->getProjectOfTimesheet($timesheetId);
-        $workTime = $this->getTimesheetWorkTime($project->getProjectId());
-        return $workTime * $project->getProjectSalary();
-    }
-    
-    public function getExpenseForTimesheet($timesheetId) {
-        $projectImpl = new \Timesheet\Project\DAOImpl();
-        $project = $projectImpl->getProjectOfTimesheet($timesheetId);
-        $pauseTime = $this->getTimesheetPauseTime($project->getProjectId());
-        return $pauseTime * $project->getProjectSalary();
     }
 	
 }

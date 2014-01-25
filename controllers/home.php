@@ -64,11 +64,9 @@ class HomeController extends DefaultController
         $skeleton =  new TwigRenderer('auth.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = false;
-        
         $this->_response->setBody(array(
             'title' => 'Login',
-            'auth' => $auth,
+            'login' => true,
         ));
 
     }//end _default()
@@ -79,11 +77,9 @@ class HomeController extends DefaultController
         $skeleton =  new TwigRenderer('signup.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $auth = false;
-        
         $this->_response->setBody(array(
             'title' => 'Sign Up',
-            'auth' => $auth
+            'login' => true,
         ));
 
     }

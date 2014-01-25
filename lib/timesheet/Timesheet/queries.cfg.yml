@@ -4,9 +4,9 @@ get all timesheets : SELECT `timesheet`.* FROM `timesheet`;
 find timesheet by id : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
 find timesheets under project name : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_name` LIKE :timesheetName;
 find timesheets under under project id : SELECT `timesheet`.* FROM `timesheet`, `project_timesheet`, `project` WHERE `timesheet`.`timesheet_id` = `project_timesheet`.`timesheet_id` AND `project_timesheet`.`project_id` = `project`.`project_id` AND `project`.`project_id` = :projectId;
-find timesheets created in month : SELECT `timesheet`.* FROM `timesheet` WHERE EXTRACT(MONTH FROM `timesheet`.`timesheet_start_time`) = :month;
-find timesheets created in year : SELECT `timesheet`.* FROM `timesheet` WHERE EXTRACT(YEAR FROM `timesheet`.`timesheet_start_time`) = :year;
-find timesheets created in month and week : SELECT `timesheet`.* from `timesheet` WHERE MONTH(`timesheet`.`timesheet_start_time`) = :month AND WEEK(`timesheet`.`timesheet_start_time`, 5) - WEEK(DATE_SUB(`timesheet`.`timesheet_start_time`, INTERVAL DAYOFMONTH(`timesheet`.`timesheet_start_time`) - 1 DAY), 5) + 1 = :week;
+find timesheets created in month : SELECT `timesheet`.* FROM `timesheet` WHERE EXTRACT(MONTH FROM `timesheet`.`timesheet_date`) = :month;
+find timesheets created in year : SELECT `timesheet`.* FROM `timesheet` WHERE EXTRACT(YEAR FROM `timesheet`.`timesheet_date`) = :year;
+find timesheets created in month and week : SELECT `timesheet`.* from `timesheet` WHERE MONTH(`timesheet`.`timesheet_date`) = :month AND WEEK(`timesheet`.`timesheet_date`, 5) - WEEK(DATE_SUB(`timesheet`.`timesheet_date`, INTERVAL DAYOFMONTH(`timesheet`.`timesheet_date`) - 1 DAY), 5) + 1 = :week;
 
 get recently marked timesheets : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` != 0 ORDER BY `timesheet`.`timesheet_mark_time` DESC;
 get recently marked timesheets with offset : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` != :status ORDER BY `timesheet`.`timesheet_mark_time` DESC OFFSET :offset;
@@ -14,11 +14,8 @@ get timesheets with status : SELECT `timesheet`.* FROM `timesheet` WHERE `timesh
 
 mark timesheet : UPDATE `timesheet` SET `timesheet`.`timesheet_status` = :timesheetStatus, `timesheet`.`timesheet_mark_time` = :timesheetMarkTime WHERE `timesheet`.`timesheet_id` = :timesheetId;
 
-create new timesheet : INSERT INTO `timesheet` (timesheet_start_time, timesheet_end_time, timesheet_description, timesheet_location, timesheet_task, timesheet_project_name, timesheet_status) VALUES (:timesheetStartTime, :timesheetEndTime, :timesheetDescription, :timesheetLocation, :timesheetTask, :timesheetProjectName, :timesheetStatus);
-edit timesheet : UPDATE `timesheet` SET timesheet_start_time = :timesheetStartTime, timesheet_end_time = :timesheetEndTime, timesheet_description = :timesheetDescription, timesheet_location = :timesheetLocation, timesheet_task = :timesheetTask, timesheet_project_name = :timesheetProjectName, timesheet_status = :timesheetStatus;
+create new timesheet : INSERT INTO `timesheet` (timesheet_date, timesheet_project_name, timesheet_status) VALUES (:timesheetDate, :timesheetProjectName, :timesheetStatus);
+edit timesheet : UPDATE `timesheet` SET timesheet_date = :timesheetDate, timesheet_project_name = :timesheetProjectName;
 delete timesheet : DELETE FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
-
-get timesheet work time : SELECT `timesheet`.`timesheet_work_time` AS `work_time` FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
-get timesheet pause time : SELECT TIMESTAMPDIFF(HOUR, `timesheet`.`timesheet_start_time`, `timesheet`.`timesheet_end_time`) - `timesheet`.`timesheet_work_time` AS `pause_time`  FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
 
 ...

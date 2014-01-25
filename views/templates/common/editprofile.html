@@ -7,7 +7,7 @@
                 <div class="title">
                     <h5>Edit Profile</h5>
                 </div>
-                <form action="=" method="post" class="edit-profile-form">
+                <form action="" method="post" class="edit-profile-form">
                     <div class="warnings"></div>
                     <div class="append field">
                         <input class="input" type="text" placeholder="User Name" name="user_name" />
@@ -16,6 +16,10 @@
                     <div class="append field">
                         <input class="input" type="text" placeholder="Email" name="email" />
                         <span class="adjoined"><i class="fa fa-envelope"></i></span>
+                    </div>
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" />
+                        <span class="adjoined"><i class="fa fa-phone"></i></span>
                     </div>
                     <div class="field append">
                         <input class="input first-child" type="text" placeholder="Location" name="location" />
@@ -30,18 +34,17 @@
                         <div class="medium primary btn"><a href="#" id="submit">Save Changes</a></div>
                     </div>
                 </form>
-                
-                <div class="inline-menu-trigger">
-                    <i class="fa fa-ellipsis-v"></i>
-                </div>
-                <div class="inline-menu hidden">
-                    <ul>
-                        <li><a href="">Edit Password</a></li>
-                        <li><a href="">Change Image</a></li>
-                    </ul>
-                </div>          
+                         
             </section>
         </div>
     </div>
+    
+    
+    <div id="edit-inline-menu" class="inline-menu hidden">
+        <ul>
+            <li><a href={{ resolvePath("profile\\change_password") }} >Edit Password</a></li>
+            <li><a href={{ resolvePath("profile\\upload_image") }} >Change Image</a></li>
+        </ul>
+    </div> 
 
 {% include 'foot.html' %}

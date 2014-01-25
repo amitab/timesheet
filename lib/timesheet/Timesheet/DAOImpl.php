@@ -93,35 +93,13 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         return $this->_executeObjectQuery('get timesheets with status', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
-    public function getTimesheetWorkTime($timesheetId) {
-	    $valArr = array(
-            ':timesheetId' => $timesheetId,
-        );
-        
-        $data = $this->_executeQuery('get timesheet work time', $valArr, \Native5\Core\Database\DB::SELECT);
-        if($data == false) return false;
-        else return $data[0]['work_time'];
-    }
-    public function getTimesheetPauseTime($timesheetId) {
-	    $valArr = array(
-            ':timesheetId' => $timesheetId,
-        );
-        $data = $this->_executeQuery('get timesheet pause time', $valArr, \Native5\Core\Database\DB::SELECT);
-        if($data == false) return false;
-        else return $data[0]['pause_time'];
-    }
-	
 	// WRITE FUNCTIONS
 	
-	public function createTimesheet($timesheetDetails) {
+	/*public function createTimesheet($timesheetDetails, $tasks) {
 	    $valArr = array(
-            ':timesheetStartTime' => $timesheetDetails->getTimesheetStartTime(),
-            ':timesheetEndTime' => $timesheetDetails->getTimesheetEndTime(),
-            ':timesheetDescription' => $timesheetDetails->getTimesheetDescription(),
-            ':timesheetLocation' => $timesheetDetails->getTimesheetLocation(),
-            ':timesheetTask' => $timesheetDetails->getTimesheetTask(),
             ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
-            ':timesheetStatus' => $timesheetDetails->getTimesheetStatus(),
+            ':timesheetStatus' => 0,
+            ':timesheetDate' => $timesheetDetails->getTimesheetDate(),
         );
         
         try {
@@ -138,13 +116,56 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
             'VALUES (' . $timesheetId . ', ' . $timesheetDetails->getProjectId . ');';
             
             parent::tableHasPrimaryKey(false);
+            $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
             
+            // INSERT INTO TASK TABLE
+            
+            $taskImpl = new \Timesheet\Task\DaoImpl();
+            
+            foreach($tasks as $task) {
+                $taskImpl->createTask($task, $timesheetId, true);
+            }
+            
+            $this->db->commitTransaction();
+            
+        } catch (\Exception $e) {
+            $GLOBALS['logger']->info( 'Could not create timesheet' . $e->getMessage());
+            $this->db->rollbackTransaction();
+            return false;
+            
+        } 
+        
+        return true;
+	}*/
+	
+	
+	public function createTimesheet($timesheetDetails) {
+	    $valArr = array(
+            ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
+            ':timesheetStatus' => 0,
+            ':timesheetDate' => $timesheetDetails->getTimesheetDate(),
+        );
+        
+        try {
+            
+            $this->db->beginTransaction();
+            
+            // Need current insert ID
+            $timesheetId = $this->_executeObjectQuery('create new timesheet', $valArr, \Native5\Core\Database\DB::INSERT); 
+            
+            // Inserting into the association tables
+            $sql = 'INSERT INTO `user_timesheet` (timesheet_id, user_id) VALUES (' . 
+            $timesheetId . ', ' . $timesheetDetails->getUserId . ');';
+            $sql .= 'INSERT INTO `project_timesheet` (timesheet_id, project_id) ' .
+            'VALUES (' . $timesheetId . ', ' . $timesheetDetails->getProjectId . ');';
+            
+            parent::tableHasPrimaryKey(false);
             $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
             
             $this->db->commitTransaction();
             
         } catch (\Exception $e) {
-            
+            $GLOBALS['logger']->info( 'Could not create timesheet' . $e->getMessage());
             $this->db->rollbackTransaction();
             return false;
             
@@ -153,16 +174,12 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         return true;
 	}
 	
+	
 	public function editTimesheet($timesheetDetails) {
 	    $valArr = array(
             ':timesheetId' => $timesheetDetails->getTimesheetId(),
-            ':timesheetStartTime' => $timesheetDetails->getTimesheetStartTime(),
-            ':timesheetEndTime' => $timesheetDetails->getTimesheetEndTime(),
-            ':timesheetDescription' => $timesheetDetails->getTimesheetDescription(),
-            ':timesheetLocation' => $timesheetDetails->getTimesheetLocation(),
-            ':timesheetTask' => $timesheetDetails->getTimesheetTask(),
             ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
-            ':timesheetStatus' => $timesheetDetails->getTimesheetStatus(),
+            ':timesheetDate' => $timesheetDetails->getTimesheetDate(),
         );
         
         try {

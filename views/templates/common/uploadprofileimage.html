@@ -7,10 +7,22 @@
                 <div class="title">
                     <h5>Upload Image</h5>
                 </div>
+                <div class="warnings">
+                    {% for warning in items.warnings %}
+                        <p class="warning alert">{{ warning }}</p>
+                    {% endfor %}
+                </div>
+                <div class="success">
+                    {% for success in items.successful %}
+                        <p class="success alert">{{ success }}</p>
+                    {% endfor %}
+                </div>
+                <div class="display-picture">
+                    <img src={{ items.image_path }} alt="" class="image">
+                </div>
                 <form enctype="multipart/form-data" action="" method="post" class="upload-image-form">
-                    <div class="warnings"></div>
                     <div class="file" style="text-align: center; margin: 1rem 0;">
-                        <input type="file" size="10" name="user_image" value="">   
+                        <input type="file" size="1000" name="user_image" value="">   
                     </div>
                     <div class="submit" style="text-align: center;">
                         <div class="medium primary btn"><a href="#" id="submit">Upload</a></div>
