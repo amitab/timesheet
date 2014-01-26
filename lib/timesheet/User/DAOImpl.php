@@ -20,7 +20,13 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
     }
 	
 	// READ FUNCTIONS
-	
+	public function getUserNameById($userId) {
+	    $valArr = array(
+            ':userId' => $userId
+        );
+        $data = $this->_executeQuery('find user name by id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['user_name'];
+	}
 	public function getAllUsers() {
         return $this->_executeObjectQuery('get all users', null, \Native5\Core\Database\DB::SELECT);
 	}
@@ -82,14 +88,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
         return $data[0]['timesheet_count'];
 	}
 	
-	public function getUserHourCount($userId) {
-		$valArr = array(
-            ':userId' => $userId
-        );
-        $data = $this->_executeQuery('get number of hours', $valArr, \Native5\Core\Database\DB::SELECT);
-        return $data[0]['hour_count'];
-	}
-	
 	public function getUsersUnderGroup($group) {
 	    if(isset($group['groupName'])) {
             
@@ -121,6 +119,14 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
         );
         $data = $this->_executeQuery('find user image url', $valArr, \Native5\Core\Database\DB::SELECT);
         return $data[0]['image_url'];
+    }
+    
+    public function getTotalUserWorkHours($userId) {
+        $valArr = array(
+            ':userId' => $userId
+        );
+        $data = $this->_executeQuery('get total user work hours', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['total_work_hours'];
     }
 	
 	// WRITE FUNCTIONS

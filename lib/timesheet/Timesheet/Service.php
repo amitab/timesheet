@@ -75,12 +75,39 @@ class Service {
     }
     
     public function markTimesheet($status, $timesheetId, $timesheetMarkTime) {
-        if($status != /Timesheet/Timesheet/APPROVED || $status != /Timesheet/Timesheet/REJECTED) {
+        if($status != \Timesheet\Timesheet\APPROVED || $status != \Timesheet\Timesheet\REJECTED) {
             return false;
         }
         else {
             return $this->_dao->markTimesheet($status, $timesheetId, $timesheetMarkTime);
         }
+    }
+    
+    // User specific read
+    
+    public function getUserTimesheetsUnderProjectId($projectId, $userId) {
+        $this->_dao->getUserTimesheetsUnderProjectId($projectId, $userId);
+    }
+    public function getUserTimesheetsUnderProjectName($projectName, $userId) {
+        $this->_dao->getUserTimesheetsUnderProjectName($projectName, $userId);
+    }
+    public function getUserAllTimesheets($userId) {
+        $this->_dao->getUserAllTimesheets($userId);
+    }
+    public function getUserTimesheetsInMonth($month, $userId) {
+        $this->_dao->getUserTimesheetsInMonth($month, $userId);
+    }
+    public function getUserTimesheetsInYear($year, $userId) {
+        $this->_dao->getUserTimesheetsInYear($year, $userId);
+    }
+    public function getUserTimesheetsInMonthWeek($month, $week, $userId) {
+        $this->_dao->getUserTimesheetsInMonthWeek($month, $week, $userId);
+    }
+    public function getUserRecentlyMarkedTimesheets($offset, $userId) {
+        $this->_dao->getUserRecentlyMarkedTimesheets($offset, $userId);
+    }
+    public function getUserTimesheetsWithStatus($timesheetStatus, $limit, $offset, $userId) {
+        $this->_dao->getUserTimesheetsWithStatus($timesheetStatus, $limit, $offset, $userId);
     }
 	
 }

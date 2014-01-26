@@ -95,6 +95,23 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         return $this->_executeObjectQuery('get project of timesheet', $valArr, \Native5\Core\Database\DB::SELECT);
     }
     
+    public function getEmployeeTotalWorkTime($userId, $projectId) {
+        $valArr = array(
+            ':projectId' => $projectId,
+            ':userId' => $userId,
+        );
+        $data = $this->_executeQuery('get employee total work time', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['total_work_time'];
+    }
+    public function getEmployeeTotalPauseTime($userId, $projectId) {
+        $valArr = array(
+            ':projectId' => $projectId,
+            ':userId' => $userId,
+        );
+        $data = $this->_executeQuery('get employee total pause time', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['total_pause_time'];
+    }
+    
 	// WRITE FUNCTIONS
 	
 	public function createProject($projectDetails) {
@@ -175,6 +192,15 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         } 
         
         return true;
+	}
+	
+	public function getProjectTotalWorkTime($projectId) {
+	    $valArr = array(
+            ':projectId' => $projectId
+        );
+        
+        $data = $this->_executeQuery('get project total work time', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['total_project_work_time'];
 	}
 	
 }

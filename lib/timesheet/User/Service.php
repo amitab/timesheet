@@ -51,9 +51,13 @@ class Service {
 	    $data = array(
 	        'timesheets' => $this->_dao->getUserTimesheetCount($userId),
 	        'projects' => $this->_dao->getUserProjectCount($userId),
-	        'hours' => $this->_dao->getUserHourCount($userId)
+	        'hours' => ($this->_dao->getTotalUserWorkHours($userId))/3600
 	    );
 	    return $data;
+	}
+	
+	public function getTotalUserWorkHours($userId) {
+	    return ($this->_dao->getTotalUserWorkHours($userId))/3600;
 	}
 	
 	public function getAllUsers() {
@@ -89,5 +93,8 @@ class Service {
     }
     public function getUserImageUrl($userId) {
         return $this->_dao->getUserImageUrl($userId);
+    }
+    public function getUserNameById($userId) {
+        return $this->_dao->getUserNameById($userId);
     }
 }

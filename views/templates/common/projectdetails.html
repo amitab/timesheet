@@ -1,88 +1,91 @@
 {% include 'head.html' %}
 
     <div class="row">
-        <section class="project-details">
-            <div class="title">
-                <h5>Project a</h5>
-            </div>
-            <div class="wrapper">
-                <div class="overview">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Total Time</th>
-                                <th>Total Salary</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>01h 02m</td>
-                                <td>2500$</td>
-                            </tr>
-                        </tbody>
-                        <thead>
-                            <tr>
-                                <th>Pause Time</th>
-                                <th>Expenses</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>00h 02m</td>
-                                <td>500$</td>
-                            </tr>
-                        </tbody>
-                    </table>
+        <div class="eight columns centered">
+            <section class="project-details">
+                <div class="title">
+                    <h5>{{ items.project_details.projectName }}</h5>
                 </div>
-                <div class="details">
-                    <h6>Details</h6>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>Employer</td>
-                                <td>Mr. X</td>
-                            </tr>
-                            <tr>
-                                <td>Location</td>
-                                <td>Unknown Location</td>
-                            </tr>
-                            <tr>
-                                <td>Salary/hr</td>
-                                <td>100$</td>
-                            </tr>
-                            <tr>
-                                <td>Status</td>
-                                <td>In Progress</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class="description">
-                        <h6>Description</h6>
-                        <p style="font-size: 14px; padding: 0 6px;">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid, amet, dolorem corporis minus quam ab sed vel assumenda quo repudiandae fuga accusamus delectus consequatur id voluptate est a similique ad!</p>
+                <div class="wrapper">
+                    <div class="overview" style="margin-bottom: 10px;">
+                        
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Total Time</td>
+                                    <td>{{ items.total_time }} hours</td>
+                                </tr>
+                                {% if items.is_employee == true %}
+                                    <tr>
+                                        <td>Total Salary</td>
+                                        <td>2500$</td>
+                                    </tr>
+                                <tr>
+                                    <td>Pause Time</td>
+                                    <td>00h 02m</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td>Expenses</td>
+                                    <td>{{ items.expenses }}$</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                </div>
-            </div>
-            
-            {% if items.is_employee == true %}
-            
-                <div id="timer-control" style="text-align: center; margin-bottom: 30px;">
-                    <div class="medium primary btn">
-                        <a href={{ resolvePath("timer") }} id="timer-button">Start a New Timesheet</a>
-                    </div>
-                </div>
-            
-            {% endif %}
-            {% if items.is_admin == true %}
-            
-                <div id="admin-control" style="text-align: center; margin-bottom: 30px;">
-                    <div class="medium primary btn">
-                        <a href={{ resolvePath("project\\add_users") }} id="add-user-button">Add Users</a>
+                    <div class="details" style="margin-bottom: 10px;">
+                        <h6>Details</h6>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Employer</td>
+                                    <td>{{ items.employer_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Created</td>
+                                    <td>{{ items.project_details.projectCreatedDate }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Deadline</td>
+                                    <td>{{ items.project_details.projectTimeAlloted }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Salary/hr</td>
+                                    <td>{{ items.project_details.projectSalary }}$</td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>{{ items.project_details.projectStatus }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="description">
+                            <h6>Description</h6>
+                            <p style="font-size: 14px; padding: 0 6px;">{{ items.project_details.projectDescription }}</p>
+                        </div>
                     </div>
                 </div>
                 
-            {% endif %}
-            
-        </section>
+                {% if items.is_employee == true %}
+                
+                    <div id="timer-control" style="text-align: center; margin-bottom: 30px;">
+                        <div class="medium primary btn">
+                            <a href={{ resolvePath("timer") }} id="timer-button">Start a New Timesheet</a>
+                        </div>
+                    </div>
+                
+                {% endif %}
+                {% if items.is_admin == true %}
+                
+                    <div id="admin-control" style="text-align: center; margin-bottom: 30px;">
+                        <div class="medium primary btn">
+                            <a href={{ resolvePath("project\\add_users") }} id="add-user-button">Add Users</a>
+                        </div>
+                    </div>
+                    
+                {% endif %}
+                
+            </section>
+        </div>
     </div>
     
 {% include 'foot.html' %}

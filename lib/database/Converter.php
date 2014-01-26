@@ -42,4 +42,16 @@ class Converter {
         return $container;
     }
     
+    public static function getSingleArray($object) {
+        $container = array();
+        $encode = self::get_vars($object);
+        if($encode) {
+            return $encode;
+        }
+        else {
+            $GLOBALS['logger']->info('ERROR : ' . print_r($object, 1) );
+            return false;
+        }
+    }
+    
 }

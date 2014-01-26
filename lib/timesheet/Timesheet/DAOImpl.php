@@ -26,7 +26,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	
     public function getTimesheetById($timesheetId) {
 		$valArr = array(
-            ':timesheetId' => $ustimesheetIderId
+            ':timesheetId' => $timesheetId
         );
         return $this->_executeObjectQuery('find timesheet by id', $valArr, \Native5\Core\Database\DB::SELECT);
 	} 
@@ -70,7 +70,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	public function getRecentlyMarkedTimesheets($offset = NULL) {
 	    if($offset == NULL) {
 	        $valArr = array(
-                ':status' => /Timesheet/Timesheet/UNMARKED,
+                ':status' => \Timesheet\Timesheet\UNMARKED,
             );
             return $this->_executeObjectQuery('get recently marked timesheets', $valArr, \Native5\Core\Database\DB::SELECT);
 	        
@@ -84,7 +84,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	    }
 	}
 	
-	public function getTimesheetsWithStatus($timesheetStatus, $offset, $limit) {
+	public function getTimesheetsWithStatus($timesheetStatus,$limit, $offset) {
 	    $valArr = array(
             ':timesheetStatus' => $timesheetStatus,
             ':limit' => $limit,
@@ -94,50 +94,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	}
 	
 	// WRITE FUNCTIONS
-	
-	/*public function createTimesheet($timesheetDetails, $tasks) {
-	    $valArr = array(
-            ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
-            ':timesheetStatus' => 0,
-            ':timesheetDate' => $timesheetDetails->getTimesheetDate(),
-        );
-        
-        try {
-            
-            $this->db->beginTransaction();
-            
-            // Need current insert ID
-            $timesheetId = $this->_executeObjectQuery('create new timesheet', $valArr, \Native5\Core\Database\DB::INSERT); 
-            
-            // Inserting into the association tables
-            $sql = 'INSERT INTO `user_timesheet` (timesheet_id, user_id) VALUES (' . 
-            $timesheetId . ', ' . $timesheetDetails->getUserId . ');';
-            $sql .= 'INSERT INTO `project_timesheet` (timesheet_id, project_id) ' .
-            'VALUES (' . $timesheetId . ', ' . $timesheetDetails->getProjectId . ');';
-            
-            parent::tableHasPrimaryKey(false);
-            $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
-            
-            // INSERT INTO TASK TABLE
-            
-            $taskImpl = new \Timesheet\Task\DaoImpl();
-            
-            foreach($tasks as $task) {
-                $taskImpl->createTask($task, $timesheetId, true);
-            }
-            
-            $this->db->commitTransaction();
-            
-        } catch (\Exception $e) {
-            $GLOBALS['logger']->info( 'Could not create timesheet' . $e->getMessage());
-            $this->db->rollbackTransaction();
-            return false;
-            
-        } 
-        
-        return true;
-	}*/
-	
 	
 	public function createTimesheet($timesheetDetails) {
 	    $valArr = array(
@@ -201,6 +157,86 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         }
         
         return $result;
+	}
+	
+	// user specific read functions 
+	
+    public function getUserAllTimesheets($userId) {
+        $varArr = array(
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('get all timesheets for user', $varArr, \Native5\Core\Database\DB::SELECT);
+	}
+	
+    public function getUserTimesheetsUnderProjectName($projectName, $userId) {
+		$valArr = array(
+            ':projectName' => $projectName,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find timesheets under project name for user', $valArr, \Native5\Core\Database\DB::SELECT);
+	} 
+	
+    public function getUserTimesheetsUnderProjectId($projectId, $userId) {
+		$valArr = array(
+            ':projectId' => $projectId,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find timesheets under under project id for user', $valArr, \Native5\Core\Database\DB::SELECT);
+	} 
+	
+    public function getUserTimesheetsInMonth($month, $userId) {
+		$valArr = array(
+            ':month' => $month,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find timesheets created in month for user', $valArr, \Native5\Core\Database\DB::SELECT);
+	}
+	
+    public function getUserTimesheetsInYear($year, $userId) {
+		$valArr = array(
+            ':year' => $year,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find timesheets created in year for user', $valArr, \Native5\Core\Database\DB::SELECT);
+	}
+	
+    public function getUserTimesheetsInMonthWeek($month, $week, $userId) {
+		$valArr = array(
+            ':month' => $month,
+            ':week' => $week,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find timesheets created in month and week for user', $valArr, \Native5\Core\Database\DB::SELECT);
+	}
+	
+	public function getUserRecentlyMarkedTimesheets($userId, $offset = NULL) {
+	    if($offset == NULL) {
+	        $valArr = array(
+                ':status' => \Timesheet\Timesheet\UNMARKED,
+                ':userId' => $userId
+                
+            );
+            return $this->_executeObjectQuery('get recently marked timesheets for user', $valArr, \Native5\Core\Database\DB::SELECT);
+	        
+	    } else {
+	        
+	        $valArr = array(
+                ':offset' => $offset,
+                ':userId' => $userId
+            );
+            return $this->_executeObjectQuery('get recently marked timesheets with offset for user', $valArr, \Native5\Core\Database\DB::SELECT);
+	        
+	    }
+	}
+	
+	public function getUserTimesheetsWithStatus($timesheetStatus, $limit, $userId, $offset = NULL) {
+	    $valArr = array(
+            ':timesheetStatus' => $timesheetStatus,
+            ':limit' => $limit,
+            ':offset' => $offset,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('get timesheets with status for user', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
 	// project manager functions

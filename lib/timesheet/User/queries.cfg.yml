@@ -1,13 +1,14 @@
 ---
 find user by id : SELECT `user`.* FROM `user` where `user`.`user_id` = :userId;
 find user by name : SELECT `user`.* FROM `user` where `user`.`user_name` LIKE :userName;
+find user name by id : SELECT `user`.`user_name` AS `user_name` FROM `user` where `user`.`user_id` = :userId;
 get all users : SELECT `user`.* FROM `user`;
 get all users under project id : SELECT `user`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `project`.`project_id` = :projectId;
 get all users under project name : SELECT `user`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `project`.`project_name` LIKE :projectName;
 
 get number of projects : SELECT COUNT(*) as `project_count` from `user_project` WHERE `user_project`.`user_id` = :userId;
 get number of timesheets : SELECT COUNT(*) as `timesheet_count` from `user_timesheet` WHERE `user_timesheet`.`user_id` = :userId;
-get number of hours : SELECT TIMESTAMPDIFF(HOUR,`timesheet`.`timesheet_start_time` , `timesheet`.`timesheet_end_time`) AS `hour_count` FROM `timesheet`, `user_timesheet` WHERE `user_timesheet`.`timesheet_id` = `timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
+
 
 create new user : INSERT INTO `user` (user_name, user_email, user_location, user_phone_number, user_image_url, user_sex) VALUES (:userName, :userMail, :userLocation, :userPhoneNumber, :userImageUrl, :userSex);
 
@@ -29,5 +30,7 @@ find user image url : SELECT `user`.`user_image_url` as `image_url` FROM `user` 
 
 update user image : UPDATE `user` SET `user`.`user_image_url` = :imageUrl WHERE `user`.`user_id` = :userId;
 select user image url : SELECT `user`.`user_image_url` AS `user_image_url` FROM `user` WHERE `user`.`user_id` = :userId;
+
+get total user work hours : SELECT SUM(`task`.`task_work_time`) AS `total_work_hours` FROM `task`, `user_timesheet` WHERE `task`.`task_timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
 
 ...

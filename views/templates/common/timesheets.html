@@ -1,106 +1,25 @@
 {% include 'head.html' %}
     
     <div class="row">
-        <div class="six columns centered card">
-            
+        <div class="eight columns centered">
+            <input type="hidden" id="url" timesheet-details-path={{ resolvePath("timesheets\\details") }}>
             <section class="overview">
             
-                <h6>Timesheets</h6>
-                <div class="day">
-                    <table border="0">
-                        <tr class="head-row">
-                            <td>
-                               <p class="day-name"><span>Week 3: </span>January 2014</p> 
-                            </td>
-                            <td class="add">
-                                <i class="fa fa-plus"></i>
-                            </td>
-                        </tr>
-                    </table>
-                    <table border="0" class="timesheets-for-day">
-                        <tr class="item-row">
-                            <td>
-                                <p>Project a</p>
-                            </td>
-                            <td>
-                                <p>12:05:52</p>
-                            </td>
-                        </tr>
-                        <tr class="item-row">
-                            <td>
-                                <p>Project b</p>
-                            </td>
-                            <td>
-                                <p>0:02:12</p>
-                            </td>
-                        </tr>
-                    </table>
+                <div class="title">
+                    <h5>Timesheets</h5>
                 </div>
-                <div class="day">
-                    <table border="0">
-                        <tr class="head-row">
-                            <td>
-                               <p class="day-name"><span>Week 2: </span> January 2014</p> 
-                            </td>
-                            <td class="add">
-                                <i class="fa fa-plus"></i>
-                            </td>
-                        </tr>
-                    </table>
-                    <table border="0" class="timesheets-for-day">
-                        <tr class="item-row">
-                            <td>
-                                <p>Project b</p>
-                            </td>
-                            <td>
-                                <p>0:08:02</p>
-                            </td>
-                        </tr>
-                    </table>
+                
+                <div id="timesheet-list" class="empty-list">
+                    
                 </div>
-                <div class="day">
-                    <table border="0">
-                        <tr class="head-row">
-                            <td>
-                               <p class="day-name"><span>Week 1: </span>January 2014</p> 
-                            </td>
-                            <td class="add">
-                                <i class="fa fa-plus"></i>
-                            </td>
-                        </tr>
-                    </table>
-                    <table border="0" class="timesheets-for-day">
-                        <tr class="item-row">
-                            <td>
-                                <p>Project c</p>
-                            </td>
-                            <td>
-                                <p>0:21:34</p>
-                            </td>
-                        </tr>
-                        <tr class="item-row">
-                            <td>
-                                <p>Project d</p>
-                            </td>
-                            <td>
-                                <p>0:02:00</p>
-                            </td>
-                        </tr>
-                        <tr class="item-row">
-                            <td>
-                                <p>Project a</p>
-                            </td>
-                            <td>
-                                <p>0:01:02</p>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+                
             </section>
+            
         </div>
     </div>
     
     <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("smart-list.js") }} ></script>
     <script src={{ resolvePath("timesheetsearch.js") }} ></script>
     
 {% include 'foot.html' %}

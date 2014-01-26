@@ -67,12 +67,18 @@ ul {
     margin-bottom: 0!important;
 }
 
+@include respond(all-phones) {
+    #page-wrap div.row {
+        padding: 0 2%;
+    }
+}
+
 // table resets
 
 table.summary {
     thead {
-        background: inherit;
-        color: $slate-grey;
+        // background: inherit;
+        // color: $slate-grey;
         th {
             border-bottom: 1px solid #e5e5e5;
         }
@@ -146,6 +152,8 @@ section {
         h5 {
             font-weight: bold;
             color: darken($border-grey, 20%);
+            border-bottom: 1px solid $border-grey;
+            padding-bottom: 10px;
         }
     }
     .display-picture {
@@ -264,10 +272,33 @@ section.new-profile {
     border-top: 4px solid $pahdera-green;
 }
 
+
+// task details
+
+section.task-details {
+    border-top: 4px solid $pahdera-green;
+    div.notes {
+        padding: 10px;
+        h5 {
+            border-bottom: 1px solid $border-grey;
+        }
+    }
+    td {
+        width: 50%;
+    }
+}
+
+
 // new task
 
 section.new-task {
     border-top: 4px solid $corvoda-blue;
+    input {
+        border: 1px solid #d8d8d8;
+        padding: 6px 10px;
+        @include border-radius(4px);
+        margin-bottom: 6px;
+    }
 }
 
 // edit profile
@@ -292,7 +323,7 @@ section.new-project {
 // add timesheet
 
 section.add-timesheet {
-    
+    padding: 10px 0;
     border-top: 4px solid $gumby-blue;
     .field.inline > * {
         display: inline-block;
@@ -305,6 +336,9 @@ section.add-timesheet {
         @include border-radius(4px);
         margin-bottom: 6px;
     }
+	th {
+		width: 50%;
+	}
 }
 section.task {
     input {
@@ -413,6 +447,15 @@ section.projects-list, section.notifications-list, section.message-list, section
     }
 }
 
+section#projects-list {
+    table {
+        margin-bottom: 10px;
+        td {
+            width: 50%;
+        }
+    }
+}
+
 // dashboard
 
 @media (max-width: 769px) and (min-width: 500px) {
@@ -512,51 +555,35 @@ section.project-details {
         td, th {
             padding: 6px;
         }
+        td {
+            width: 50%;
+        }
     }
 }
 
 // overview
 
 section.overview {
-    
-    border-top: 4px solid $gumby-blue;
-    h6 {
-        color: darken($border-grey, 20%);
-        font-weight: bold;
-        text-align: center;
-        margin-bottom: 10px;
+    .title {
+        padding: 6px 0;
+        margin: 0;
     }
-    .day {
-        margin-bottom: 3px;
-        table {
-            
-        }
-        tr.head-row {
-            background: $gumby-blue;
-            color: white;
-            p.day-name {
-                color: white;
-                margin: 0;
-                span {
-                    font-weight: bold;
-                }
-            }
-        }
-        tr.item-row {
+    border-top: 4px solid $gumby-blue;
+    padding: 0;
+    table {
+        margin-bottom: 10px;
+        tbody tr {
             border-bottom: 1px solid $border-grey;
-            td:nth-child(even) p {
-                text-align: right;
-            }
         }
-        td {
-            padding: 6px;
+        th {
+            width: 50%;
         }
-        td.add {
-            text-align: right;
-            i {
-                cursor: pointer;
-            }
-        }
+    }
+    div.empty-list:before {
+        content: "No Results";
+        color: darken($border-grey, 20%);
+        display: block;
+        padding: 1rem;
     }
 }
 
@@ -763,7 +790,7 @@ section.timer {
         .item.title {
             h5 {
                 padding: 0;
-                width: 130px;
+                width: 150px;
                 @include respond(all-phones) {
                     white-space: nowrap;
                     text-overflow: ellipsis;
@@ -820,7 +847,6 @@ section.timer {
             font-size: 22px!important;
         }
         i.fa-globe {
-            margin-top: -4px;
             font-size: 24px!important;
         }
         i.fa-plus {
@@ -845,7 +871,6 @@ section.timer {
                 min-width: 35px;
                 text-align: right;
                 input {
-                    margin-right: 33px;
                     width: 100%;
                 }
                 input.closed {

@@ -1,4 +1,4 @@
-<? php
+<?php
 
 namespace Timesheet\Timesheet;
 
@@ -10,6 +10,11 @@ class Timesheet {
     private $timesheetMarkTime;
     
     private $readableTimesheetStatus;
+    
+    private $userId;  // Set whenever necessary
+    private $userName;  // Set whenever necessary
+    
+    private $timesheetDuration;  // Set whenever necessary
     
     const UNMARKED = 0;
     const APPROVED = 1;
@@ -27,6 +32,9 @@ class Timesheet {
         return $timesheet;
     }
     
+    public function setTimesheetDuration($timesheetDuration) { $this->timesheetDuration = $timesheetDuration; }
+    public function getTimesheetDuration() { return $this->timesheetDuration; }
+    
     public function setTimesheetDate($timesheetDate) { $this->timesheetDate = $timesheetDate; }
     public function getTimesheetDate() { return $this->timesheetDate; }
     public function setTimesheetMarkTime($timesheetMarkTime) { $this->timesheetMarkTime = $timesheetMarkTime; }
@@ -39,13 +47,35 @@ class Timesheet {
 	public function getTimesheetStatus() { return $this->timesheetStatus; }
 	public function setTimesheetStatus($timesheetStatus) { 
 	    $this->timesheetStatus = $timesheetStatus; 
-	    if ($timesheetStatus == UNMARKED) {
+	    if ($timesheetStatus == self::UNMARKED) {
 	        $readableTimesheetStatus = 'Not Evaluated';
-	    } else if ($timesheetStatus == APPROVED) {
+	    } else if ($timesheetStatus == self::APPROVED) {
 	        $readableTimesheetStatus = 'Approved';
-	    } else if ($timesheetStatus == REJECTED) {
+	    } else if ($timesheetStatus == self::REJECTED) {
 	        $readableTimesheetStatus = 'Rejected';
 	    }
 	}
+	public function getUserId(){
+		return $this->userId;
+	}
+
+	public function setUserId($userId){
+		$this->userId = $userId;
+	}
+
+	public function getUserName(){
+		return $this->userName;
+	}
+
+	public function setUserName($userName){
+		$this->userName = $userName;
+	}
+	
+	public function makeAndGetDate() {
+        $ddate = $this->getTimesheetDate();
+        $duedt = explode("-", $ddate);
+        $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
+        return $date;
+    }
 
 }

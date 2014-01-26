@@ -53,9 +53,11 @@ $(document).ready(function(){
             $('#search-box').val('');
             $('div.header-item:first').removeClass('fade-out');
         }
-        if(!$('.inline-menu').hasClass('hidden')) {
-            $('.inline-menu').addClass('hidden');
-        }
+        /*if($(this)[0] != $('.inline-menu li')[0]) {
+            if(!$('.inline-menu').hasClass('hidden')) {
+                $('.inline-menu').addClass('hidden');
+            }
+        }*/
     });
     
     $(document).on(clickevent, '.trigger', function(event) {

@@ -23,4 +23,10 @@ get project of timesheet : SELECT `project`.* FROM `timesheet`, `project`, `proj
 
 find project by name under user : SELECT `project`.* FROM `project`, `user_project` WHERE `user_project`.`project_id` = `project`.`project_id` AND `user_project`.`user_id` = :userId AND `project`.`project_name` LIKE :projectName;
 
+get employee total work time : SELECT SUM(`task`.`task_work_time`) AS `total_work_time` FROM `user_timesheet`, `project_timesheet`, `task` WHERE `project_timesheet`.`timesheet_id` = `task`.`task_timesheet_id` AND `project_timesheet`.`project_id` = :projectId AND `user_timesheet`.`timesheet_id` = `project_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
+
+get employee total pause time : SELECT SUM( TIMESTAMPDIFF(SECOND, `task`.`task_start_time`, `task`.`task_end_time` ) - `task`.`task_work_time` ) AS `total_work_time` FROM  `user_timesheet`, `project_timesheet`, `task` WHERE `project_timesheet`.`timesheet_id` = `task`.`task_timesheet_id` AND `project_timesheet`.`project_id` = :projectId AND `user_timesheet`.`timesheet_id` = `project_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
+
+get project total work time : SELECT SUM(`task`.`task_work_time`) AS `total_project_work_time` FROM  `project_timesheet`, `task` WHERE `project_timesheet`.`timesheet_id` = `task`.`task_timesheet_id` AND `project_timesheet`.`project_id` = :projectId;
+
 ...

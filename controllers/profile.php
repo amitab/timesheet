@@ -59,14 +59,21 @@ class ProfileController extends DefaultController
      */
     public function _default($request)
     {
-        
         global $logger;
         $skeleton =  new TwigRenderer('profile-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
+        $userId = 1;
+        $userService = \Timesheet\User\Service::getInstance();
+        $user = $userService->getUserById($userId);
+        $user = $user[0];
+        $stats = $userService->getUserStats($userId);
+        
         $this->_response->setBody(array(
             'title' => 'Profile',
-            'dp' => UPLOADS . 'user_images/default.jpg',
+            'image_path' => IMAGE_PATH,
+            'user' => $user,
+            'stats' => $stats
         )); 
 
 
@@ -79,13 +86,17 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('editprofile.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        if($request->getParam('user_name') != null) {
-            $logger->log($request->getParam('user_name'));
-        }
+        
+        $userId = 1;
+        $userService = \Timesheet\User\Service::getInstance();
+        $user = $userService->getUserById($userId);
+        $user = $user[0];
         
         $this->_response->setBody(array(
             'title' => 'Edit Profile',
-            'inline_menu' => true
+            'inline_menu' => true,
+            'form_save' => true,
+            'user' => $user
         )); 
 
     }
@@ -97,6 +108,10 @@ class ProfileController extends DefaultController
         
         $skeleton =  new TwigRenderer('uploadprofileimage.html');
         $this->_response = new HttpResponse('none', $skeleton);
+        
+        $userId = 1;
+        $userService = \Timesheet\User\Service::getInstance();
+        $userImagePath = $userService->getUserImageUrl($userId);
         
         if(isset($_FILES['user_image'])) {
                 
@@ -126,7 +141,7 @@ class ProfileController extends DefaultController
                 $image_path = IMAGE_PATH . 'pic.jpg'; // Show default pic
             }
         } else {
-            $image_path = IMAGE_PATH . 'pic.jpg'; // Show default pic
+            $image_path = IMAGE_PATH . $userImagePath; // Show default pic
         }
         
         $this->_response->setBody(array(

@@ -76,11 +76,38 @@ class ProjectController extends DefaultController
         $skeleton =  new TwigRenderer('projectdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $this->_response->setBody(array(
+        $projectService = \Timesheet\Project\Service::getInstance();
+        $taskService = \Timesheet\Task\Service::getInstance();
+        $userService = \Timesheet\User\Service::getInstance();
+        $id = $request->getParam('id');
+        $projectData = $projectService->getProjectById($id);
+        $projectData = $projectData[0];
+        
+        $employerName = $userService->getUserNameById($projectData->getProjectManagerId());
+        $totalTime = $projectService->getProjectTotalWorkTime($id);
+        if($totalTime == null) {
+            $totalTime = 0;
+        } else {
+            $totalTime = $totalTime/3600;  // Converting seconds to hours since money is calculated per hour
+        }
+        // If admin, get total time spent by all employees and total money spent on the project
+        // If employee, get total time spent by him and total salary
+        $expenses = $projectData->getProjectSalary() * $totalTime;
+        
+        $response = array(
             'title' => 'Project Details',
             'is_admin' => true,
-            'is_employee' => false
-        ));  
+            'is_employee' => false,
+            'project_details' => $projectData,
+            'expenses' => $expenses, // for employee, salary * pausetime; for employer, salary * total work hours
+            'total_time' => $totalTime,
+            'pause_time' => null, // for admin null
+            'total_salary' => null, // for admin null
+            'employer_name' => $employerName,
+        );
+        
+        
+        $this->_response->setBody($response);  
     }
     
     public function _create_new($request) {
@@ -91,6 +118,30 @@ class ProjectController extends DefaultController
         
         $this->_response->setBody(array(
             'title' => 'New Project',
+            'form_save' => true,
+        ));  
+    }
+    
+    public function _edit_project($request) {
+        global $logger;
+        $skeleton =  new TwigRenderer('createproject.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        if($request->getparam('id') == null) {
+            return;
+        } else {
+            $id = $request->getparam('id');
+        }
+        
+        $projectService = \Timesheet\Project\Service::getInstance();
+        $project = $projectService->getProjectById($id);
+        $project = $project[0];
+        
+        $this->_response->setBody(array(
+            'title' => 'Edit Project',
+            'form_save' => true,
+            'edit' => true,
+            'project' => $project
         ));  
     }
     
@@ -125,7 +176,7 @@ class ProjectController extends DefaultController
         }
         
         $data = \Database\Converter::getArray($data);
-        $logger->info(print_r($data,1));
+        
         $this->_response->setBody(array(
             'users' => $data,
             'image_location' => IMAGE_PATH
@@ -136,18 +187,19 @@ class ProjectController extends DefaultController
         global $logger;
         $this->_response = new HttpResponse('json');
         
-        if ($request->getParam('q') == null ) {
-            return;
-        }
-        
         $query = $request->getParam('q');
         $userId = 13;
         $projectService = \Timesheet\Project\Service::getInstance();
         
-        if(!empty($query))
+        if(!empty($query)) {
+            // if employee search projects handled by him. Else search projects handled by him
             $data = $projectService->searchByNameUnderUserId($query, $userId);
-        else
+        }
+        else if($request->getParam('default') == true) {
+            // if employee use this. else get projects created by user id
             $data = $projectService->getProjectsHandledByUserId($userId);
+        }
+        else return;
         
         $data = \Database\Converter::getArray($data);
         

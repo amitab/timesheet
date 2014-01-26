@@ -20,7 +20,23 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Task\DAO {
 	
 	// READ FUNCTIONS
 	
-	public function getAllTasksOfTimesheet($timesheetId) {
+    public function getTotalWorkTimeOfTimesheet($timesheetId) {
+        $valArr = array(
+            ':timesheetId' => $timesheetId
+        );
+        $data = $this->_executeQuery('find total work time of timesheet', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['total_work_time'];
+    }
+    
+    public function getTotalPauseTimeOfTimesheet($timesheetId) {
+        $valArr = array(
+            ':timesheetId' => $timesheetId
+        );
+        $data = $this->_executeQuery('find total pause time of timesheet', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['total_pause_time'];
+    }
+	
+    public function getAllTasksOfTimesheet($timesheetId) {
         $valArr = array(
             ':timesheetId' => $timesheetId
         );

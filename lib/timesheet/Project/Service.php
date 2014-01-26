@@ -73,39 +73,15 @@ class Service {
     public function getProjectOfTimesheet($timesheetId) {
         return $this->_dao->getProjectOfTimesheet($timesheetId);
     }
-    public function getTotalPauseTime($projectId) {
-        $timesheetImpl = new \Timesheet\Timesheet\DAOImpl();
-        $pauseTime = 0;
-        $timesheets = $timesheetImpl->getTimesheetsUnderProjectId($projectId);
-        foreach($timesheets as $timesheet) {
-            $pause = $timesheetImpl->getTimesheetPauseTime($timesheet->getTimesheetId());
-            if($pause!=false) {
-                $pauseTime += $pause;
-            }
-        }
-        return $pauseTime;
+    
+    public function getEmployeeTotalWorkTime($userId, $projectId) {
+        return $this->_dao->getEmployeeTotalWorkTime($userId, $projectId);
     }
-    public function getTotalWorkTime($projectId) {
-        $timesheetImpl = new \Timesheet\Timesheet\DAOImpl();
-        $workTime = 0;
-        $timesheets = $timesheetImpl->getTimesheetsUnderProjectId($projectId);
-        foreach($timesheets as $timesheet) {
-            $work = $timesheetImpl->getTimesheetWorkTime($timesheet->getTimesheetId());
-            if($work!=false) {
-                $workTime += $work;
-            }
-        }
-        return $workTime;
+    public function getEmployeeTotalPauseTime($userId, $projectId) {
+        return $this->_dao->getEmployeeTotalPauseTime($userId, $projectId);
     }
-    public function getTotalSalaryEarned($projectId) {
-        $project = $this->getProjectById($projectId);
-        $workTime = $this->getTotalWorkTime($projectId);
-        return $workTime * $project->getProjectSalary();
-    }
-    public function getTotalExpense($projectId) {
-        $project = $this->getProjectById($projectId);
-        $pauseTime = $this->getTotalPauseTime($projectId);
-        return $pauseTime * $project->getProjectSalary();
+    public function getProjectTotalWorkTime($projectId) {
+        return $this->_dao->getProjectTotalWorkTime($projectId);
     }
 	
 }

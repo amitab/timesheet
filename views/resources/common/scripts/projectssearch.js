@@ -1,82 +1,88 @@
-// Native5 Default Application Configuration
-var app = (function (app, native5) {
-    app.registry = new native5.core.ServiceRegistry();
-    app.config = { 
-        path:'timesheet',   // Change the path when developing locally - same as settings.yml
-        method:'POST',
-        mode:'ui'
+$(document).ready(function() {
+    
+    var searchList = smartList.createList({element : '#projects-list'});
+    
+    // success handler must be declared before app is constructed
+    
+    var successHandler = function(data) {
+        $('#projects-list > ul').html('');
+        $.each(data.message.projects, function(key, value) {
+            var list = '';
+            var extract = value.projectDescription.substring(0,60) + '...';
+            
+            list += '<li>'
+            list += '<table>'
+            list += '<tr>'
+            list += '<td><h6 class="no-padding"><a href="#" class="project-details" id="' + value.projectId
+            list += '">' + value.projectName + '</a></h6></td>'
+            list += '<td><p class="right small">Completed</p></td>'
+            list += '</tr>'
+            list += '</table>'
+            list += '<div class="detail">'
+            list += '<p class="about small">' + extract + '</p>'
+            list += '<p class="time-alloted small">'
+            list += '<span>Deadline : </span>'
+            list += '' + value.projectTimeAlloted + '</p>'
+            list += '</div>'
+            list += '</li>'
+            $('#projects-list > ul').prepend(list);
+        });
+        searchList.activate();
+        searchList.emptyListCheck();
     };
     
-    $(document).ready(function() {
+    var communicator = app.construct({
+        path : 'timesheet',
+        method : 'POST',
+        url : 'project/search',
+        successHandler : successHandler
+    });
+    
+    function openSearchBox(searchBox) {
+        searchBox.removeClass('closed');
+        $('div.header-item:first').addClass('fade-out');
+    }
+    
+    function closeSearchBox(searchBox) {
+        searchBox.addClass('closed');
+        $('#search-box').val('');
+        $('div.header-item:first').removeClass('fade-out');
+    }
+    
+    $('#search-button').click(function(e){
+        e.preventDefault();
+        var searchBox = $($(this).attr('href'));
         
-        var colour = ['#4cc2e4', '#FFCC5C', '#FF6F69', '#77C4D3', '#00A388', '#3085d6'];
-        
-        function getColor() {
-           return colour[Math.floor(Math.random() * colour.length)];
-        }
-        
-        function getData(args, url) {
-            var service =  new native5.core.Service(url, app.config);
-        
-            service.configureHandlers(
-                function(data) {
-                    // find projects             
-                },
-                function(err) {
-                    console.log(err);
-                }
-            );
-        
-            service.invoke(args);
-        }
-        
-        function emptyListChecker() {
-            
-            if($('#projects-list > ul').children().length < 1) {
-                $('#projects-list > ul').addClass('empty-list');
+        if(searchBox.val().length <= 0) {
+            if(searchBox.hasClass('closed')) {
+                openSearchBox(searchBox);
             } else {
-                $('#projects-list > ul').removeClass('empty-list');
+                closeSearchBox(searchBox);
             }
         }
         
-        $('#search-button').click(function(e){
-            e.preventDefault();
-            var searchBox = $($(this).attr('href'));
-            
-            if(searchBox.val().length <= 0) {
-                if(searchBox.hasClass('closed')) {
-                    openSearchBox(searchBox);
-                } else {
-                    closeSearchBox(searchBox);
-                }
-            }
-            
-            else {
-               var query = '%' + $('#search-box').val() + '%';
-                // Search using ajax
-                var args = {};
-                args.q = query;
-                console.log(args.q);
-                
-                var url = 'project/search';
-                getData(args, url); 
-            }
-            
-        });
-        
-        function openSearchBox(searchBox) {
-            searchBox.removeClass('closed');
-            $('div.header-item:first').addClass('fade-out');
-        }
-        
-        function closeSearchBox(searchBox) {
-            searchBox.addClass('closed');
-            $('#search-box').val('');
-            $('div.header-item:first').removeClass('fade-out');
+        else {
+           var query = '%' + $('#search-box').val() + '%';
+            // Search using ajax
+            var args = {};
+            args.q = query;
+            args.ids = [];
+            communicator.serviceObject.invoke(args);
         }
         
     });
     
-    return app;
-})(app || {}, native5 || {});
+    // Load initial data
+    communicator.serviceObject.invoke({default:'true'});
+    searchList.emptyListCheck();
+    
+    // Link to the details page
+    $(document).on('click', 'a.project-details', function(e) {
+        e.preventDefault();
+        var url = $('input#url').attr('project-details-path') + '?id=' + $(this).attr('id');
+        window.location.href = url;
+    });
+    
+});
+
 

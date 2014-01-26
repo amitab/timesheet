@@ -17,5 +17,6 @@ interface DAO {
     public function getTaskByName($taskName);
     public function getTaskUnderProjectByName($taskName, $projectId);
     public function getTaskUnderTimesheetByName($taskName, $timesheetId);
-    
+    public function getTotalWorkTimeOfTimesheet($timesheetId);
+    public function getTotalPauseTimeOfTimesheet($timesheetId);
 }

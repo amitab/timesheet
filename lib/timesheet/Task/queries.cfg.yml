@@ -11,4 +11,8 @@ create new task : INSERT INTO `task` (task_name, task_notes, task_start_time, ta
 delete task : DELETE FROM `task` WHERE `task`.`task_id` = :taskId;
 edit task : UPDATE `task` SET `task`.`task_name` = :taskName , `task`.`task_notes` = :taskNotes, `task`.`task_start_time` = :taskStartTime, `task`.`task_end_time` = :taskEndTime, `task`.`task_timesheet_id` = :taskTimesheetId, `task`.`task_location` = :taskLocation WHERE `task`.`task_id` = :taskId, `task`.`task_work_time` = :taskWorkTime;
 
+find total work time of timesheet : SELECT SUM(`task`.`task_work_time`) AS `total_work_time` FROM `task`, `timesheet` WHERE `task`.`task_timesheet_id` = `timesheet`.`timesheet_id` AND `timesheet`.`timesheet_id` = :timesheetId;
+
+find total pause time of timesheet : SELECT SUM( TIMESTAMPDIFF(SECOND, `task`.`task_start_time`, `task`.`task_end_time` ) - `task`.`task_work_time`) AS `total_pause_time` FROM `task`, `timesheet` WHERE `task`.`task_timesheet_id` = `timesheet`.`timesheet_id` AND `timesheet`.`timesheet_id` = :timesheetId;
+
 ...

@@ -1,7 +1,7 @@
 {% include 'head.html' %}
     
     <div class="row">
-        <div class="six columns centered card">
+        <div class="eight columns centered">
             <section class="new-project">
                 
                 <div class="title">
@@ -10,35 +10,54 @@
                 <form action="=" method="post" class="timesheet-form">
                     <div class="warnings"></div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="Project Name" name="project_name" />
+                        <input class="input" type="text" placeholder="Project Name" name="project_name" 
+                               {% if items.edit == true %}
+                                   value = {{ items.project.projectName }}
+                               {% endif %}
+                        />
                         <span class="adjoined"><i class="fa fa-file"></i></span>
-                    </div>
-                    <div class="append field">
-                        <input class="input" type="text" placeholder="About" name="about" />
-                        <span class="adjoined"><i class="fa fa-file-text"></i></span>
                     </div>
                     <div class="append field">
                         <div class="picker">
                             <select>
-                                <option>High Priority</option>
-                                <option>Medium Priority</option>
-                                <option>Low Priority</option>
+                                
+                                <option 
+                                    {% if items.project.projectStatus == 0 %}
+                                        selected="selected"
+                                    {% endif %}
+                                >High Priority</option>
+                                <option
+                                    {% if items.project.projectStatus == 1 %}
+                                        selected="selected"
+                                    {% endif %}
+                                >Medium Priority</option>
+                                <option
+                                    {% if items.project.projectStatus == 2 %}
+                                        selected="selected"
+                                    {% endif %}
+                                >Low Priority</option>
                             </select>
                         </div>
                     </div>
                     <div class="field">
                         <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;Deadline : </label>
-                        <input name="end_date" type="datetime-local" value="1996-12-19T16:39:57" >
+                        <input name="end_date" type="text" 
+                            {% if items.edit == true %}
+                               value = {{ items.project.projectTimeAlloted }}
+                            {% endif %}
+                        >
                     </div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="Salary" name="salary" />
+                        <input class="input" type="text" placeholder="Salary" name="salary" 
+                            {% if items.edit == true %}
+                               value = {{ items.project.projectSalary }}
+                            {% endif %} 
+                        />
                         <span class="adjoined"><i class="fa fa-money"></i></span>
                     </div>
                     <div class="field">
-                        <textarea class="input textarea" placeholder="Description" name="description"></textarea>
+                        <textarea class="input textarea" placeholder="Description" name="description">{% if items.edit == true %}{{ items.project.projectDescription }}{% endif %}</textarea>
                     </div>
-                    
-                    <div class="medium primary btn"><a href={{ resolvePath("project\\create_new") }} id="submit">Create Project</a></div>
                 </form>
                 
             </section>

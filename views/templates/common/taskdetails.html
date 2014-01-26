@@ -1,0 +1,44 @@
+
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="eight columns centered">
+            <section class="task-details">
+                <div class="title">
+                    <h5>
+                        Details of {{ items.task.taskName }}
+                    </h5>
+                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Task Name</td>
+                            <td>{{ items.task.taskName }}</td>
+                        </tr>
+                        <tr>
+                            <td>Start Time</td>
+                            <td>{{ items.task.taskStartTime }}</td>
+                        </tr>
+                        <tr>
+                            <td>End Time</td>
+                            <td>{{ items.task.taskEndTime }}</td>
+                        </tr>
+                        <tr>
+                            <td>Work Time</td>
+                            <td>{{ items.task.taskWorkTime }}</td>
+                        </tr>
+                        <tr>
+                            <td>Location</td>
+                            <td>{{ items.task.taskLocation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="notes">
+                    <h5 style="padding-bottom: 10px;">Notes</h5>
+                    <p>{{ items.task.taskNotes }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+{% include 'foot.html' %}

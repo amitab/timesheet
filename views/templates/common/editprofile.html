@@ -10,28 +10,32 @@
                 <form action="" method="post" class="edit-profile-form">
                     <div class="warnings"></div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="User Name" name="user_name" />
+                        <input class="input" type="text" placeholder="User Name" name="user_name" 
+                            value="{{ items.user.userName }}"
+                        />
                         <span class="adjoined"><i class="fa fa-user"></i></span>
                     </div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="Email" name="email" />
+                        <input class="input" type="text" placeholder="Email" name="email" 
+                            value="{{ items.user.userMail }}"
+                        />
                         <span class="adjoined"><i class="fa fa-envelope"></i></span>
                     </div>
                     <div class="field append">
-                        <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" />
+                        <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" 
+                            value="{{ items.user.userPhoneNumber }}"
+                        />
                         <span class="adjoined"><i class="fa fa-phone"></i></span>
                     </div>
                     <div class="field append">
-                        <input class="input first-child" type="text" placeholder="Location" name="location" />
+                        <input class="input first-child" type="text" placeholder="Location" name="location" 
+                            value="{{ items.user.userLocation }}"
+                        />
                         <span class="adjoined"><i class="fa fa-map-marker"></i></span>
                     </div>
                     <div class="append field">
                         <input class="input" type="password" placeholder="Current Password" name="current_password" />
                         <span class="adjoined"><i class="fa fa-lock"></i></span>
-                    </div>
-                    
-                    <div class="submit" style="text-align: center;">
-                        <div class="medium primary btn"><a href="#" id="submit">Save Changes</a></div>
                     </div>
                 </form>
                          

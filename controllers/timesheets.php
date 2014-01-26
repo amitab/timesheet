@@ -68,31 +68,37 @@ class TimesheetsController extends DefaultController
             'search' =>true,
         ));  
 
-    }//end _default()
-    
-    /*public function _details($request) {
-        
-        global $logger;
-        $skeleton =  new TwigRenderer('timesheetdetails.html');
-        $this->_response = new HttpResponse('none', $skeleton);
-        
-        $this->_response->setBody(array(
-            'title' => 'Timesheet Details',
-        )); 
-    }*/
+    }
     
     public function _details($request) {
         global $logger;
-        $skeleton =  new TwigRenderer('addsheet-test.html');
+        $skeleton =  new TwigRenderer('sheetdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $title = 'Jan 2014, Week 1';
+        if($request->getParam('id') == null) {
+            return;
+        } else {
+            $id = $request->getParam('id');
+        }
         
-        $this->_response->setBody(array(
+        $taskService = \Timesheet\Task\Service::getInstance();
+        $timesheetService = \Timesheet\Timesheet\Service::getInstance();
+        
+        $tasks = $taskService->getAllTasksOfTimesheet($id);
+        $timesheet = $timesheetService->getTimesheetById($id);
+        $timesheet = $timesheet[0];
+        $date = $timesheet->makeAndGetDate();
+        $title = date('M', $date) . ' ' . date('Y', $date) . ', Week ' . date('W', $date);
+        $projectName = $timesheet->getTimesheetProjectName();
+        
+        $response = array(
             'title' => $title,
             'add_task' => true,
-            'edit' => $edit
-        )); 
+            'timesheet' => $timesheet,
+            'tasks' => $tasks,
+            'project_name' => $projectName
+        );
+        $this->_response->setBody($response); 
     }
     
     public function _new_task($request)
@@ -104,6 +110,99 @@ class TimesheetsController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'New Task',
             'form_save' => true,
+        )); 
+    }
+    
+    public function _edit_task($request) {
+        global $logger;
+        $skeleton =  new TwigRenderer('newtask.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        if($request->getParam('id') == null) {
+            return;
+        } else {
+            $id = $request->getParam('id');
+        }
+        
+        $taskService = \Timesheet\Task\Service::getInstance();
+        $task = $taskService->getTaskById($id);
+        $task = $task[0];
+        
+        $this->_response->setBody(array(
+            'title' => 'Edit Task',
+            'form_save' => true,
+            'task' => $task,
+            'edit' => true
+        )); 
+    }
+    
+    public function _search($request) {
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        
+        $timesheetService = \Timesheet\Timesheet\Service::getInstance();
+        $taskImpl = new \Timesheet\Task\DAOImpl();
+        
+        $month = date('m');
+        
+        if($request->getParam('q')!=null) {
+            $query = $request->getParam('q');
+            $temp = $timesheetService->getTimesheetsUnderProjectName($query); // convert to user specific
+        } else if($request->getParam('default') == true) {
+            $temp = $timesheetService->getTimesheetsInMonth($month); // convert to user specific
+        } else {
+            return false;
+        }
+        
+        
+        $data = array();
+            
+        foreach($temp as $timesheet) {
+            $ddate = $timesheet->getTimesheetDate();
+            $duedt = explode("-", $ddate);
+            $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
+            $week  = (int)date('W', $date);
+            $year  = (int)date('Y', $date);
+            $month = date('M', $date);
+            
+            $time = $taskImpl->getTotalWorkTimeOfTimesheet($timesheet->getTimesheetId());
+            if($time) {
+                $timesheet->setTimesheetDuration($time);
+            } else {
+                $timesheet->setTimesheetDuration(0);
+            }
+            
+            $timesheet = \Database\Converter::getSingleArray($timesheet);
+            $data[$year][$week][] = $timesheet;
+        }
+            
+        $this->_response->setBody(array(
+            'tables' => $data
+        ));
+    }
+    
+    public function _task_details($request) {
+        global $logger;
+        $skeleton =  new TwigRenderer('taskdetails.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        if($request->getParam('id') == null) {
+            return;
+        } else {
+            $id = $request->getParam('id');
+        }
+        
+        $taskService  = \Timesheet\Task\Service::getInstance();
+        
+        $task = $taskService->getTaskById($id);
+        $task = $task[0];
+        $title = $task->getTaskName();
+        
+        
+        
+        $this->_response->setBody(array(
+            'title' => $title,
+            'task' =>$task
         )); 
     }
 

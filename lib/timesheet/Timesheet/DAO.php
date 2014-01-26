@@ -19,6 +19,16 @@ interface DAO {
     public function getRecentlyMarkedTimesheets($offset);
     public function getTimesheetsWithStatus($timesheetStatus, $limit, $offset);
     
+    // user specific function
+    public function getUserTimesheetsUnderProjectId($projectId, $userId);
+    public function getUserTimesheetsUnderProjectName($projectName, $userId);
+    public function getUserAllTimesheets($userId);
+    public function getUserTimesheetsInMonth($month, $userId);
+    public function getUserTimesheetsInYear($year, $userId);
+    public function getUserTimesheetsInMonthWeek($month, $week, $userId);
+    public function getUserRecentlyMarkedTimesheets($offset, $userId);
+    public function getUserTimesheetsWithStatus($timesheetStatus, $limit, $offset, $userId);
+    
     // project manager functions
     
     public function markTimesheet($status, $timesheetId, $timesheetMarkTime);

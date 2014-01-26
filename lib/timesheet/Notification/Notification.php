@@ -6,9 +6,12 @@ class Notification {
     private $notificationId;
     private $notificationBody;
     private $notificationFromUser;
-    private $notificationToUser;
     private $notificationPriority;
     private $notificationRead;
+    private $location;
+    private $date;
+    
+    private $notificationToUser;
     
     public static function make($data) {
         $notification = new self();
@@ -16,9 +19,9 @@ class Notification {
         $notification->setNotificationId($data['notification_id']);
         $notification->setNotificationBody($data['notification_body']);
         $notification->setNotificationFromUser($data['notification_from_user']);
-        $notification->setNotificationToUser($data['notification_to_user']);
         $notification->setNotificationPriority($data['notification_priority']);
         $notification->setNotificationRead($data['notification_read']);
+        $notification->setLocation($data['location']);
         
         return $notification;
     }
@@ -69,6 +72,14 @@ class Notification {
 
 	public function setNotificationRead($notificationRead){
 		$this->notificationRead = $notificationRead;
+	}
+    
+    public function getLocation(){
+		return $this->location;
+	}
+
+	public function setLocation($location){
+		$this->location = $location;
 	}
     
 } 
