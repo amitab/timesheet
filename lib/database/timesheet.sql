@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 25, 2014 at 07:13 AM
+-- Generation Time: Jan 26, 2014 at 12:51 PM
 -- Server version: 5.6.14
 -- PHP Version: 5.5.8
 
@@ -558,7 +558,7 @@ INSERT INTO `user` (`user_id`, `user_name`, `user_sex`, `user_email`, `user_loca
 (3, 'Tobias', 'm', 'R.Goins@ukmail.nl', 'Persimmon St', '0319 990594', 'default.jpg'),
 (4, 'JanCees', 'm', 'Y.Fururia@emailplanet.is', 'Claybourne Dr', '0576 267433', 'default.jpg'),
 (5, 'Teddy', 'f', 'U.Coggins@mail.excite.co.kr', 'Stegerman Dr', '0115 566744', 'default.jpg'),
-(6, 'Mario', 'f', 'F.Cañedo@popmail.co.za', 'Wood Owl Dr', '0664 240712', 'default.jpg'),
+(6, 'Mario', 'f', 'F.Canedo@popmail.co.za', 'Wood Owl Dr', '0664 240712', 'default.jpg'),
 (7, 'Milan', 'f', 'P.Layman@mail.excite.jp', 'Saranac Dr', '0586 329868', 'default.jpg'),
 (8, 'Kimberly', 'm', 'L.Coronel@home.au', 'Excalibur St', '0138 336487', 'default.jpg'),
 (9, 'Laura', 'f', 'Z.Alvisto@uol.nl', 'Whiteriver Dr', '0499 290478', 'default.jpg'),
