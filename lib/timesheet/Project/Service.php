@@ -31,18 +31,23 @@ class Service {
     public function createProject($projectDetails) {
         return $this->_dao->createProject($projectDetails);
     }
-    public function editProject($projectId) {
+    public function editProject($projectDetails) {
         return $this->_dao->editProject($projectDetails);
     }
     public function deleteProject($projectId) {
         return $this->_dao->deleteProject($projectDetails);
+    }
+    public function addUsersToProject($projectId, $userIds) {
+        return $this->_dao->addUsersToProject($projectId, $userIds);
     }
     
     // read only functions
     public function searchByNameUnderUserId($projectName, $userId) {
         return $this->_dao->searchByNameUnderUserId($projectName, $userId);
     }
-    
+    public function getProjectNameById($projectId) {
+        return $this->_dao->getProjectNameById($projectId);
+    }
     public function getAllProjects() {
         return $this->_dao->getAllProjects();
     }

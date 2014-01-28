@@ -35,6 +35,10 @@ class Service {
         return $this->_dao->deleteNotification($notificationId);
     }
     
+    public function markRead($notificationId) {
+        return $this->_dao->markRead($notificationId);
+    }
+    
     //read functions
     public function getNotificationById($notificationId) {
         return $this->_dao->getNotificationById($notificationId);
@@ -42,8 +46,8 @@ class Service {
     public function getNotificationFromUser($userId) {
         return $this->_dao->getNotificationFromUser($userId);
     }
-    public function getNotificationsToUser($userId) {
-        return $this->_dao->getNotificationsToUser($userId);
+    public function getNotificationsToUser($userId, $offset=null) {
+        return $this->_dao->getNotificationsToUser($userId, $offset);
     }
     public function getNotificationsByPriority($priorityLevel) {
         return $this->_dao->getNotificationsByPriority($priorityLevel);

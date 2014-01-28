@@ -61,10 +61,16 @@ p.right {
 }
 
 p.small, label.small {
-    font-size: 12px!important;
+    font-size: 14px!important;
+    @include respond(all-phones) {
+        font-size: 12px!important;
+    }
 }
 p.very-small, label.very-small {
-    font-size: 10px!important;
+    font-size: 12px!important;
+    @include respond(all-phones) {
+        font-size: 10px!important;
+    }
 }
 
 p.normal, label.normal {

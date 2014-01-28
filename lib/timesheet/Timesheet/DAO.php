@@ -7,9 +7,11 @@ interface DAO {
     public function createTimesheet($timesheetDetails);
     public function editTimesheet($timesheetDetails);
     public function deleteTimesheet($timesheetId);
+    public function createTimesheetAndTask($timesheetDetails, $task);
 
     // read only functions
     public function getTimesheetById($timesheetId);
+    public function getTimesheetProjectId($timesheetId);
     public function getTimesheetsUnderProjectId($projectId);
     public function getTimesheetsUnderProjectName($projectName);
     public function getAllTimesheets();
@@ -28,6 +30,7 @@ interface DAO {
     public function getUserTimesheetsInMonthWeek($month, $week, $userId);
     public function getUserRecentlyMarkedTimesheets($offset, $userId);
     public function getUserTimesheetsWithStatus($timesheetStatus, $limit, $offset, $userId);
+    public function findThisWeekTimesheet($userId, $projectId);
     
     // project manager functions
     

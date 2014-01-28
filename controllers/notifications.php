@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class NotificationsController extends DefaultController
+class NotificationsController extends \My\Control\ProtectedController
 {
 
 
@@ -64,11 +64,38 @@ class NotificationsController extends DefaultController
         $skeleton =  new TwigRenderer('notifications.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
+        
         $this->_response->setBody(array(
             'title' => 'Notifications',
+            'refresh' => true
         )); 
-
-
+    }
+    
+    public function _search($request) {
+        
+        global $logger;
+        
+        $userId = 5;
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        
+        $this->_response = new HttpResponse('json');
+        if($request->getParam('offset') != null) {
+            $offset = (int) $request->getParam('offset');
+            $data = $notificationService->getNotificationsToUser($userId, $offset);
+            $data = \Database\Converter::getArray($data);
+        } else {
+            $data = $notificationService->getNotificationsToUser($userId);
+            $data = \Database\Converter::getArray($data);
+        }
+        
+        if(empty($data)) {
+            $lol = 'You got no more messages brah.';
+        }
+        
+        $this->_response->setBody(array(
+            'notifications' => $data,
+            'lol' => $lol
+        ));      
     }
 
 }//end class

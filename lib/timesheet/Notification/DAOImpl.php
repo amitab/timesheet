@@ -25,6 +25,8 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
             ':notificationBody' => $notificationDetails->getNotificationBody(),
             ':notificationPriority' => $notificationDetails->getNotificationPriority(),
             ':notificationRead'  => 0,
+            ':notificationType' => $notificationDetails->getNotificationType(),
+            ':notificationSubjectId' =>$notificationDetails->getNotificationSubjectId()
         );
         
         try {
@@ -70,6 +72,18 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
             return false;
         }
     }
+    
+    public function markRead($notificationId) {
+        $valArr = array(
+            ':notificationId' => $notificationId
+        );
+        try {
+            return $this->_executeObjectQuery('mark notification', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (\Exception $e) {
+            return false;
+        }
+        
+    }
 	
 	// READ FUNCTIONS
 	
@@ -87,11 +101,17 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
         return $this->_executeObjectQuery('find notifications from user', $valArr, \Native5\Core\Database\DB::SELECT);
     }
     
-    public function getNotificationsToUser($userId) {
-        $valArr = array(
-            ':userId' => $userId
-        );
-        return $this->_executeObjectQuery('find notifications to user', $valArr, \Native5\Core\Database\DB::SELECT);
+    public function getNotificationsToUser($userId, $offset=null) {
+        if($offset != null) {
+            $sql = 'SELECT DISTINCT `notification`.* , `user`.`user_name` AS `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = ' . $userId . ' LIMIT 10 OFFSET ' . (int)$offset . ';';
+            $data = $this->_executeObjectQueryString($sql, null, \Native5\Core\Database\DB::SELECT);
+            return $data;
+        } else {
+            $valArr = array(
+                ':userId' => $userId
+            );
+            return $this->_executeObjectQuery('find notifications to user', $valArr, \Native5\Core\Database\DB::SELECT);
+        }
     }
     
     public function getNotificationsByPriority($notificationPriority) {

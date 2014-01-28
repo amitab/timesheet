@@ -664,9 +664,11 @@ h6 { font-size: 16px; font-size: 1rem; }
 /*=====================================================  Links & Paragraph styles  ======================================================*/
 p.right { text-align: right; }
 
-p.small, label.small { font-size: 12px !important; }
+p.small, label.small { font-size: 14px !important; }
+@media only screen and (max-width: 767px) { p.small, label.small { font-size: 12px !important; } }
 
-p.very-small, label.very-small { font-size: 10px !important; }
+p.very-small, label.very-small { font-size: 12px !important; }
+@media only screen and (max-width: 767px) { p.very-small, label.very-small { font-size: 10px !important; } }
 
 p.normal, label.normal { font-size: 16px !important; }
 
@@ -1817,6 +1819,7 @@ section.projects-list li.project-list-item .wrapper .detail .time-alloted, secti
 section.projects-list li.project-list-item .wrapper .detail .time-alloted span, section.projects-list li.notifications-list-item .wrapper .detail .time-alloted span, section.projects-list li.message-list-item .wrapper .detail .time-alloted span, section.projects-list li.list-item .wrapper .detail .time-alloted span, section.notifications-list li.project-list-item .wrapper .detail .time-alloted span, section.notifications-list li.notifications-list-item .wrapper .detail .time-alloted span, section.notifications-list li.message-list-item .wrapper .detail .time-alloted span, section.notifications-list li.list-item .wrapper .detail .time-alloted span, section.message-list li.project-list-item .wrapper .detail .time-alloted span, section.message-list li.notifications-list-item .wrapper .detail .time-alloted span, section.message-list li.message-list-item .wrapper .detail .time-alloted span, section.message-list li.list-item .wrapper .detail .time-alloted span, section.list li.project-list-item .wrapper .detail .time-alloted span, section.list li.notifications-list-item .wrapper .detail .time-alloted span, section.list li.message-list-item .wrapper .detail .time-alloted span, section.list li.list-item .wrapper .detail .time-alloted span { font-weight: bolder; }
 section.projects-list li.list-item td .display-picture, section.notifications-list li.list-item td .display-picture, section.message-list li.list-item td .display-picture, section.list li.list-item td .display-picture { text-align: left; width: 50px; }
 section.projects-list li.list-item .check-input, section.notifications-list li.list-item .check-input, section.message-list li.list-item .check-input, section.list li.list-item .check-input { text-align: right; }
+section.projects-list li.list-item .content-header > p, section.notifications-list li.list-item .content-header > p, section.message-list li.list-item .content-header > p, section.list li.list-item .content-header > p { width: 50%; display: inline-block; }
 section.projects-list li.message-list-item p.date, section.notifications-list li.message-list-item p.date, section.message-list li.message-list-item p.date, section.list li.message-list-item p.date { color: #b5b5b5; }
 @media only screen and (max-width: 320px) { section.projects-list li.message-list-item p.snippet, section.notifications-list li.message-list-item p.snippet, section.message-list li.message-list-item p.snippet, section.list li.message-list-item p.snippet { display: none !important; } }
 section.projects-list li.notifications-list-item table td, section.notifications-list li.notifications-list-item table td, section.message-list li.notifications-list-item table td, section.list li.notifications-list-item table td { padding: 0; }
@@ -1905,8 +1908,8 @@ section.timer .start-button-container a { font-weight: lighter; }
 #header .header-item .item { display: inline-block; vertical-align: top; }
 #header .header-item .item i.fa-angle-left { font-size: 30px !important; cursor: pointer; }
 #header .header-item .item.logo { margin-bottom: -10px; }
-#header .header-item .item.title h5 { padding: 0; width: 150px; }
-@media only screen and (max-width: 767px) { #header .header-item .item.title h5 { white-space: nowrap; text-overflow: ellipsis; display: block; overflow: hidden; width: 100px; } }
+#header .header-item .item.title h5 { padding: 0; width: 150px; white-space: nowrap; text-overflow: ellipsis; display: block; overflow: hidden; }
+@media only screen and (max-width: 767px) { #header .header-item .item.title h5 { width: 100px; } }
 #header .header-item h5 { color: white; }
 #header .header-item.trigger i.fa-bars, #header .header-item.trigger i.fa-times { font-size: 18px !important; }
 #header .header-item.inline-menu-trigger i.fa-ellipsis-v { font-size: 28px !important; }
@@ -1921,6 +1924,7 @@ section.timer .start-button-container a { font-weight: lighter; }
 #header .header-item.option i.fa-check { font-size: 22px !important; }
 #header .header-item.option i.fa-globe { font-size: 24px !important; }
 #header .header-item.option i.fa-plus { font-size: 20px !important; margin-top: 2px; }
+#header .header-item.option i.fa-pencil, #header .header-item.option i.fa-refresh { font-size: 20px !important; }
 #header .header-item.option .notifications.small { position: absolute; z-index: 80; background: red; padding: 0.1rem 0.2rem; top: 10px; left: 26px; font-size: 8px !important; line-height: 14px; color: white; }
 #header .header-item.option .header-search-pack .search.field { position: relative; min-width: 35px; text-align: right; }
 #header .header-item.option .header-search-pack .search.field input { width: 100%; }
@@ -1929,3 +1933,9 @@ section.timer .start-button-container a { font-weight: lighter; }
 #header .header-item.trigger:active, #header .header-item.inline-menu-trigger:active, #header .header-item.option:active { -webkit-box-shadow: inset 3px 0px 12px 4px rgba(50, 50, 50, 0.6); -moz-box-shadow: inset 3px 0px 12px 4px rgba(50, 50, 50, 0.6); box-shadow: inset 3px 0px 12px 4px rgba(50, 50, 50, 0.6); }
 
 #page-wrap { padding-top: 62px; }
+
+div.warnings { position: absolute; right: -50%; width: 50%; -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.785, 0.135, 0.15, 0.86); -webkit-transition-delay: 0s; -moz-transition: -moz-transform 0.3s cubic-bezier(0.785, 0.135, 0.15, 0.86) 0s; -o-transition: -o-transform 0.3s cubic-bezier(0.785, 0.135, 0.15, 0.86) 0s; transition: transform 0.3s cubic-bezier(0.785, 0.135, 0.15, 0.86) 0s; z-index: 200; }
+
+div.warnings.waah { -webkit-transform: perspective(500px) translate3d(-100%, 0px, 0px); -moz-transform: perspective(500px) translate3d(-100%, 0px, 0px); -ms-transform: perspective(500px) translate3d(-100%, 0px, 0px); -o-transform: perspective(500px) translate3d(-100%, 0px, 0px); transform: perspective(500px) translate3d(-100%, 0px, 0px); }
+
+div.warnings.hide { display: none; }

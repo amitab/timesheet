@@ -8,10 +8,24 @@ class Notification {
     private $notificationFromUser;
     private $notificationPriority;
     private $notificationRead;
-    private $location;
-    private $date;
+    private $notificationType;
+    private $notificationSubjectId;
     
     private $notificationToUser;
+    
+    private $readableType;
+    private $readablePriority;
+    private $url;
+    
+    const TYPE_PROJECT = 0;
+    const TYPE_TASK = 1;
+    
+    const PRIORITY_HIGH = 0;
+    const PRIORITY_MEDIUM = 1;
+    const PRIORITY_LOW = 2;
+    
+    const READ = 1;
+    const UNREAD = 0;
     
     public static function make($data) {
         $notification = new self();
@@ -21,8 +35,10 @@ class Notification {
         $notification->setNotificationFromUser($data['notification_from_user']);
         $notification->setNotificationPriority($data['notification_priority']);
         $notification->setNotificationRead($data['notification_read']);
-        $notification->setLocation($data['location']);
-        
+        $notification->setNotificationType($data['notification_type']);
+        $notification->setNotificationSubjectId($data['notification_subject_id']);
+        $notification->setNotificationFromUser($data['from_user']);
+                
         return $notification;
     }
     
@@ -64,6 +80,13 @@ class Notification {
 
 	public function setNotificationPriority($notificationPriority){
 		$this->notificationPriority = $notificationPriority;
+		if($notificationPriority == self::PRIORITY_HIGH) {
+		    $this->readablePriority = 'High';
+		} else if($notificationPriority == self::PRIORITY_MEDIUM) {
+		    $this->readablePriority = 'Medium';
+		} else if($notificationPriority == self::PRIORITY_LOW) {
+		    $this->readablePriority = 'Low';
+		} 
 	}
 
 	public function getNotificationRead(){
@@ -74,12 +97,25 @@ class Notification {
 		$this->notificationRead = $notificationRead;
 	}
     
-    public function getLocation(){
-		return $this->location;
+    public function getNotificationType(){
+		return $this->notificationType;
 	}
 
-	public function setLocation($location){
-		$this->location = $location;
+	public function setNotificationType($notificationType){
+		$this->notificationType = $notificationType;
+		if($notificationType == self::TYPE_PROJECT) {
+		    $this->url = 'timesheets\task_details';
+		} else if ($notificationType == self::TYPE_TASK) {
+		    $this->url = 'project\details';
+		} 
+	}
+
+	public function getNotificationSubjectId(){
+		return $this->notificationSubjectId;
+	}
+
+	public function setNotificationSubjectId($notificationSubjectId){
+		$this->notificationSubjectId = $notificationSubjectId;
 	}
     
 } 

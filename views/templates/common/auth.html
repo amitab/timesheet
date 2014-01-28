@@ -7,9 +7,9 @@
                     <h6>Effective Work Management Tool</h6>
                 </div>
                 
-                <form action="" method="post" class="login-form" id="login">
+                <form action={{ resolvePath("login") }} method="post" class="login-form" id="login">
                     <h6>PLEASE LOG IN</h6>
-                    <div class="warnings"></div>
+                    <div class="warnings">{{ items.message }}</div>
                     <div class="append field">
                         <input class="input" id="email" type="text" placeholder="Email" name="email" />
                         <span class="adjoined"><i class="fa fa-user"></i></span>
@@ -20,7 +20,7 @@
                     </div>
                     <div class="field form-submit-button">
                         <div class="medium primary btn">
-                            <a href="#" id="login-button">Login</a>
+                            <a href="#" id="login-button" onclick="submit();">Login</a>
                         </div>
                     </div>
                 </form>

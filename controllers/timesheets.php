@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class TimesheetsController extends DefaultController
+class TimesheetsController extends \My\Control\ProtectedController
 {
 
 
@@ -96,21 +96,142 @@ class TimesheetsController extends DefaultController
             'add_task' => true,
             'timesheet' => $timesheet,
             'tasks' => $tasks,
-            'project_name' => $projectName
+            'project_name' => $projectName,
+            'project_id' => $timesheetService->getTimesheetProjectId($id),
+            'timesheet_id' => $id,
         );
         $this->_response->setBody($response); 
     }
     
-    public function _new_task($request)
+    public function _new_task($request) 
     {
         global $logger;
         $skeleton =  new TwigRenderer('newtask.html');
         $this->_response = new HttpResponse('none', $skeleton);
+        $timesheetService = \Timesheet\Timesheet\Service::getInstance();
+        $taskService = \Timesheet\Task\Service::getInstance();
+        $userId = 2;
+        $projectId = (int)$request->getParam('project_id');
+        $projectService = \Timesheet\Project\Service::getInstance();
+        $projectName = $projectService->getProjectNameById($projectId);
         
-        $this->_response->setBody(array(
+        if($request->getParam('new') != null) {
+            
+            $task = new \Timesheet\Task\Task();
+            $task->setTaskName($request->getParam('task_name'));
+            $dateObject = new DateTime($request->getParam('start_time'));
+            $task->setTaskStartTime($dateObject->format('Y-m-d H:i:s'));
+            $dateObject = new DateTime($request->getParam('end_time'));
+            $task->setTaskEndTime($dateObject->format('Y-m-d H:i:s'));
+            
+            if($request->getParam('work_time') != null) {
+                $task->setTaskWorkTime($request->getParam('work_time'));
+            } else {
+                $startTime = strtotime($request->getParam('start_time'));
+                $endTime = strtotime($request->getParam('end_time'));
+                $task->setTaskWorkTime($endTime - $startTime);
+            }
+            
+            $task->setTaskLocation($request->getParam('location'));
+            $task->setTaskNotes($request->getParam('notes'));
+            
+            if($request->getParam('timesheet_id') != null) { // If new task being added to old timesheet
+                
+                $timesheet_id = (int) $reuest->getParam('timesheet_id');
+                if($taskService->createTask($task, $timesheetId, false)) {
+                    $message['success'] = 'New Task created.';
+                } else {
+                    $message['fail'] = 'Task could not be created.';
+                }
+            } else if($timesheetId = $timesheetService->findThisWeekTimesheet($userId, $projectId)) { 
+                // Timesheet for this project this week present already
+                
+                if($taskService->createTask($task, $timesheetId, false)) {
+                    $message['success'] = 'New Task created.';
+                } else {
+                    $message['fail'] = 'Task could not be created.';
+                }
+                
+            } else {  // Make new timesheet and task in it
+                
+                $timesheet = new \Timesheet\Timesheet\Timesheet();
+                $projectService = \Timesheet\Project\Service::getInstance();
+                $timesheet->setTimesheetProjectName($projectService->getProjectNameById($projectId));
+                $timesheet->setUserId($userId);
+                $timesheet->setProjectId($projectId);
+                $now = new DateTime('now');
+                $timesheet->setTimesheetDate($now->format('Y-m-d'));
+                
+                if($timesheetService->createTimesheetAndTask($timesheet, $task)) {
+                    $message['success'] = 'New Task created.';
+                } else {
+                    $message['fail'] = 'Task could not be created.';
+                }
+                
+            }
+        }
+        
+        // collect common parameters
+        if($request->getParam('project_id') != null) {
+            $getParamProjectId = $request->getParam('project_id');
+        } else {
+            $getParamProjectId = 0;
+        }
+        
+        // collect parameters from the timesheet details page
+        if($request->getParam('from_timesheet_details_page') != null) {
+            $logger->info('Coming from timesheet details page.');
+            $coming_from_timesheet_details_page = true;
+            
+            if($request->getParam('old_timesheet_id') != null) {
+                $getParamId = $request->getParam('old_timesheet_id');
+            } else {
+                $getParamId = 0;
+            }
+        }
+        
+        // collect parameters from the timer page
+        if($request->getParam('from_timer_page') != null) {
+            
+            $coming_from_timer_page = true;
+            
+            if($request->getParam('work_time') != null) {
+                $getParamWorkTime = $request->getParam('work_time');
+            } else {
+                $getParamWorkTime = 0;
+            }
+            if($request->getParam('start_time') != null) {
+                $getParamStartTime = $request->getParam('start_time');
+            } else {
+                $getParamStartTime = 0;
+            }
+            if($request->getParam('end_time') != null) {
+                $getParamEndTime = $request->getParam('end_time');
+            } else {
+                $getParamEndTime = 0;
+            }
+        }
+        
+        $response = array(
             'title' => 'New Task',
             'form_save' => true,
-        )); 
+            'message' => $message,
+            
+            'coming_from_timer_page' => $coming_from_timer_page,
+            'coming_from_timesheet_details_page' => $coming_from_timesheet_details_page,
+            
+            // sent values from timesheet details page
+            'old_timesheet_id' => $getParamId,
+            // sent values from timer page
+            'sent_work_time' => $getParamWorkTime,
+            'sent_start_time' => $getParamStartTime,
+            'sent_end_time' => $getParamEndTime,
+            // common parameters
+            'sent_project_id' => $getParamProjectId,
+            'project_name' =>$projectName,
+        );
+        
+        $this->_response->setBody($response); 
     }
     
     public function _edit_task($request) {
@@ -121,10 +242,36 @@ class TimesheetsController extends DefaultController
         if($request->getParam('id') == null) {
             return;
         } else {
+            $projectService = \Timesheet\Project\Service::getInstance();
             $id = $request->getParam('id');
+            $projectName = $projectService->getProjectNameById($id);
         }
         
         $taskService = \Timesheet\Task\Service::getInstance();
+        
+        if($request->getParam('edit') != null) {
+            
+            $task = new \Timesheet\Task\Task();
+            $task->setTaskName($request->getParam('task_name'));
+            $dateObject = new DateTime($request->getParam('start_time'));
+            $task->setTaskStartTime($dateObject->format('Y-m-d H:i:s'));
+            $dateObject = new DateTime($request->getParam('end_time'));
+            $task->setTaskEndTime($dateObject->format('Y-m-d H:i:s'));
+            
+            $startTime = strtotime($request->getParam('start_time'));
+            $endTime = strtotime($request->getParam('end_time'));
+            $task->setTaskWorkTime($endTime - $startTime);
+            
+            $task->setTaskLocation($request->getParam('location'));
+            $task->setTaskNotes($request->getParam('notes'));
+            
+            if($taskService->editTask($task)) {
+                $message['success'] = 'Task successfuly edited.';
+            } else {
+                $message['fail'] = 'Task could not be edited.';
+            }
+        }
+        
         $task = $taskService->getTaskById($id);
         $task = $task[0];
         
@@ -132,7 +279,9 @@ class TimesheetsController extends DefaultController
             'title' => 'Edit Task',
             'form_save' => true,
             'task' => $task,
-            'edit' => true
+            'edit' => true,
+            'message' => $message,
+            'project_name' =>$projectName,
         )); 
     }
     
@@ -202,7 +351,7 @@ class TimesheetsController extends DefaultController
         
         $this->_response->setBody(array(
             'title' => $title,
-            'task' =>$task
+            'task' =>$task,
         )); 
     }
 

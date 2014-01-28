@@ -111,6 +111,14 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         $data = $this->_executeQuery('get employee total pause time', $valArr, \Native5\Core\Database\DB::SELECT);
         return $data[0]['total_pause_time'];
     }
+	
+	public function getProjectNameById($projectId) {
+	    $valArr = array(
+            ':projectId' => $projectId,
+        );
+        $data = $this->_executeQuery('get project name by id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['project_name'];
+	}
     
 	// WRITE FUNCTIONS
 	
@@ -123,6 +131,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
             ':projectManagerId' => $projectDetails->getProjectManagerId(),
             ':projectSalary' =>$projectDetails->getProjectSalary(),
+            ':projectState' => 0,
         );
         
         try {
@@ -139,10 +148,8 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             ':projectDescription' => $projectDetails->getProjectDescription(),
             ':projectStatus' => $projectDetails->getProjectStatus(),
             ':projectTimeAlloted' => $projectDetails->getProjectTimeAlloted(),
-            ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
             ':projectManagerId' => $projectDetails->getProjectManagerId()
         );
-        
         try {
             return $this->_executeQuery('edit project', $valArr, \Native5\Core\Database\DB::UPDATE);
         } catch (\Exception $e) {
@@ -177,6 +184,8 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             }
             $sql .= implode(', ', $valuesArray);
             $sql .= ';';
+            
+            $GLOBALS['logger']->info($sql);
             
             parent::tableHasPrimaryKey(false);
             

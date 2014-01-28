@@ -13,6 +13,7 @@ class Timesheet {
     
     private $userId;  // Set whenever necessary
     private $userName;  // Set whenever necessary
+    private $projectId; // Set whenever necessary
     
     private $timesheetDuration;  // Set whenever necessary
     
@@ -61,6 +62,14 @@ class Timesheet {
 
 	public function setUserId($userId){
 		$this->userId = $userId;
+	}
+	
+	public function getProjectId(){
+		return $this->projectId;
+	}
+
+	public function setProjectId($projectId){
+		$this->projectId = $projectId;
 	}
 
 	public function getUserName(){

@@ -15,4 +15,6 @@ find total work time of timesheet : SELECT SUM(`task`.`task_work_time`) AS `tota
 
 find total pause time of timesheet : SELECT SUM( TIMESTAMPDIFF(SECOND, `task`.`task_start_time`, `task`.`task_end_time` ) - `task`.`task_work_time`) AS `total_pause_time` FROM `task`, `timesheet` WHERE `task`.`task_timesheet_id` = `timesheet`.`timesheet_id` AND `timesheet`.`timesheet_id` = :timesheetId;
 
+mark task : UPDATE `task` SET `task`.`task_status` = :taskStatus WHERE `task`.`task_id` = :taskId;
+
 ...

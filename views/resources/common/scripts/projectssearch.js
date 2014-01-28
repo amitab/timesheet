@@ -10,21 +10,21 @@ $(document).ready(function() {
             var list = '';
             var extract = value.projectDescription.substring(0,60) + '...';
             
-            list += '<li>'
-            list += '<table>'
-            list += '<tr>'
-            list += '<td><h6 class="no-padding"><a href="#" class="project-details" id="' + value.projectId
-            list += '">' + value.projectName + '</a></h6></td>'
-            list += '<td><p class="right small">Completed</p></td>'
-            list += '</tr>'
-            list += '</table>'
-            list += '<div class="detail">'
-            list += '<p class="about small">' + extract + '</p>'
-            list += '<p class="time-alloted small">'
-            list += '<span>Deadline : </span>'
-            list += '' + value.projectTimeAlloted + '</p>'
-            list += '</div>'
-            list += '</li>'
+            list += '<li class="project-link" id="' + value.projectId + '">';
+            list += '<table>';
+            list += '<tr>';
+            list += '<td><h6 class="no-padding"><a href="#"';
+            list += '">' + value.projectName + '</a></h6></td>';
+            list += '<td><p class="right small">' + value.readableProjectState + '</p></td>';
+            list += '</tr>';
+            list += '</table>';
+            list += '<div class="detail">';
+            list += '<p class="about small">' + extract + '</p>';
+            list += '<p class="time-alloted small">';
+            list += '<span>Deadline : </span>';
+            list += '' + value.projectTimeAlloted + '</p>';
+            list += '</div>';
+            list += '</li>';
             $('#projects-list > ul').prepend(list);
         });
         searchList.activate();
@@ -49,6 +49,8 @@ $(document).ready(function() {
         $('div.header-item:first').removeClass('fade-out');
     }
     
+    var prevQuery = '';
+    
     $('#search-button').click(function(e){
         e.preventDefault();
         var searchBox = $($(this).attr('href'));
@@ -57,12 +59,23 @@ $(document).ready(function() {
             if(searchBox.hasClass('closed')) {
                 openSearchBox(searchBox);
             } else {
+                if(prevQuery != '') {
+                    communicator.serviceObject.invoke({default:'true'});
+                    searchList.emptyListCheck();
+                }
                 closeSearchBox(searchBox);
             }
         }
         
         else {
            var query = '%' + $('#search-box').val() + '%';
+            
+            if(prevQuery != query) {
+                prevQuery = query;
+            } else {
+                return;
+            }
+            
             // Search using ajax
             var args = {};
             args.q = query;
@@ -77,7 +90,7 @@ $(document).ready(function() {
     searchList.emptyListCheck();
     
     // Link to the details page
-    $(document).on('click', 'a.project-details', function(e) {
+    $(document).on('click', 'li.project-link', function(e) {
         e.preventDefault();
         var url = $('input#url').attr('project-details-path') + '?id=' + $(this).attr('id');
         window.location.href = url;

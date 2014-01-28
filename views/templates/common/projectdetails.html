@@ -69,7 +69,7 @@
                 
                     <div id="timer-control" style="text-align: center; margin-bottom: 30px;">
                         <div class="medium primary btn">
-                            <a href={{ resolvePath("timer") }} id="timer-button">Start a New Timesheet</a>
+                            <a href={{ resolvePath("timer?project_id=" ~ items.project_id) }} id="timer-button">Start a New Task</a>
                         </div>
                     </div>
                 
@@ -78,14 +78,28 @@
                 
                     <div id="admin-control" style="text-align: center; margin-bottom: 30px;">
                         <div class="medium primary btn">
-                            <a href={{ resolvePath("project\\add_users") }} id="add-user-button">Add Users</a>
+                            <a href={{ resolvePath("project\\add_users?id=" ~ items.project_id) }} id="add-user-button">Add Users</a>
                         </div>
                     </div>
+                    
+                    <input type="hidden" id="edit_url" value={{ resolvePath("project\\edit_project?id="  ~ items.project_id) }}>
+                    
+                    <script>
+                        $(document).ready(function() {
+                            $(document).on('click', 'div#edit_option' , function(e) {
+                                e.preventDefault();
+                                var url = $('input#edit_url').val();                            
+                                window.location.href = url;
+                            });
+                        });
+                    </script>
                     
                 {% endif %}
                 
             </section>
         </div>
     </div>
+    
+    
     
 {% include 'foot.html' %}

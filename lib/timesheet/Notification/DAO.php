@@ -9,9 +9,11 @@ interface DAO {
     //read functions
     public function getNotificationById($notificationId);
     public function getNotificationFromUser($userId);
-    public function getNotificationsToUser($userId);
+    public function getNotificationsToUser($userId, $offset);
     public function getNotificationsByPriority($priorityLevel);
     public function getUnreadNotificationsForUser($userId);
     public function getUnreadNotificationCountForUser($userId);
-	
+    
+    // User
+    public function markRead($notificationId);	
 }

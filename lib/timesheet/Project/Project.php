@@ -12,11 +12,18 @@ class Project {
     private $projectTimesheets;
     private $projectManagerId;
     private $projectSalary;
+    private $projectState;
+    
     private $readableProjectStatus;
+    private $readableProjectState;
     
     const HIGH_PRIORITY = 0;
     const MEDIUM_PRIORITY = 1;
     const LOW_PRIORITY = 2;
+    
+    const STATE_INCOMPLETE = 0;
+    const STATE_COMPLETE = 1;
+    const STATE_OVERDUE = 2;
     
     public static function make($data) {
         $project = new self();
@@ -29,22 +36,34 @@ class Project {
         $project->setProjectCreatedDate($data['project_created_date']);
         $project->setProjectManagerId($data['project_manager_id']);
         $project->setProjectSalary($data['project_salary']);
+        $project->setProjectState($data['project_state']);
         
         return $project;
     }
     
     public function setProjectId($projectId) { $this->projectId = $projectId; }
     public function getProjectId() { return $this->projectId; }
+    public function setProjectState($projectState) {
+        $this->projectState = $projectState;
+        if($projectState == self::STATE_INCOMPLETE) {
+            $this->readableProjectState = 'Incomplete';
+        } else if($projectState == self::STATE_COMPLETE) {
+            $this->readableProjectState = 'Complete';
+        } else if($projectState == self::STATE_OVERDUE) {
+            $this->readableProjectState = 'Overdue';
+        }
+    }
+    public function getProjectState() { return $this->projectState; }
     public function setProjectName($projectName) { $this->projectName = $projectName; }
     public function getProjectName() { return $this->projectName; }
     public function setProjectStatus($projectStatus) { 
         $this->projectStatus = $projectStatus; 
-        if($projectStatus == HIGH_PRIORITY) {
-            $readableProjectStatus = 'High Priority';
-        } else if($projectStatus == MEDIUM_PRIORITY) {
-            $readableProjectStatus = 'Medium Priority';
-        } else if($projectStatus == LOW_PRIORITY) {
-            $readableProjectStatus = 'Low Priority';
+        if($projectStatus == self::HIGH_PRIORITY) {
+            $this->readableProjectStatus = 'High Priority';
+        } else if($projectStatus == self::MEDIUM_PRIORITY) {
+            $this->readableProjectStatus = 'Medium Priority';
+        } else if($projectStatus == self::LOW_PRIORITY) {
+            $this->readableProjectStatus = 'Low Priority';
         }
     }
     public function getProjectStatus() { return $this->projectStatus; }
@@ -62,5 +81,13 @@ class Project {
     public function getProjectTimesheets() { return $this->projectTimesheets; }
     public function setProjectManagerId($projectManagerId) { $this->projectManagerId = $projectManagerId; }
     public function getProjectManagerId() { return $this->projectManagerId; }
+    
+    public function getReadableProjectState(){
+		return $this->readableProjectState;
+	}
+
+	public function setReadableProjectState($readableProjectState){
+		$this->readableProjectState = $readableProjectState;
+	}
 
 } 

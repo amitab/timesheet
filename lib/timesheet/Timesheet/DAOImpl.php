@@ -19,6 +19,22 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
     }
 	
 	// READ FUNCTIONS
+	public function getTimesheetProjectId($timesheetId) {
+	    $valArr = array(
+            ':timesheetId' => $timesheetId,
+        );
+        $data = $this->_executeQuery('find project id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['project_id'];
+	}
+	
+	public function findThisWeekTimesheet($userId, $projectId) {
+	    $valArr = array(
+            ':userId' => $userId,
+            ':projectId' => $projectId
+        );
+        $data = $this->_executeQuery('find this week timesheet', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['timesheet_id'];
+	}
 	
 	public function getAllTimesheets() {
         return $this->_executeObjectQuery('get all timesheets', null, \Native5\Core\Database\DB::SELECT);
@@ -130,6 +146,44 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         return true;
 	}
 	
+	public function createTimesheetAndTask($timesheetDetails, $task) {
+	    $valArr = array(
+            ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
+            ':timesheetStatus' => 0,
+            ':timesheetDate' => $timesheetDetails->getTimesheetDate(),
+        );
+        
+        try {
+            
+            $this->db->beginTransaction();
+            
+            // Need current insert ID
+            $timesheetId = $this->_executeObjectQuery('create new timesheet', $valArr, \Native5\Core\Database\DB::INSERT); 
+            
+            // Inserting into the association tables
+            $sql = 'INSERT INTO `user_timesheet` (timesheet_id, user_id) VALUES (' . 
+            $timesheetId . ', ' . $timesheetDetails->getUserId() . ');';
+            $sql .= 'INSERT INTO `project_timesheet` (timesheet_id, project_id) ' .
+            'VALUES (' . $timesheetId . ', ' . $timesheetDetails->getProjectId() . ');';
+            
+            parent::tableHasPrimaryKey(false);
+            $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
+            
+            $taskService = \Timesheet\Task\Service::getInstance();
+            $taskService->createTask($task, $timesheetId, true);
+            
+            $this->db->commitTransaction();
+            
+        } catch (\Exception $e) {
+            $GLOBALS['logger']->info( 'Could not create timesheet' . $e->getMessage());
+            $this->db->rollbackTransaction();
+            return false;
+            
+        } 
+        
+        return true;
+	}
+	
 	
 	public function editTimesheet($timesheetDetails) {
 	    $valArr = array(
@@ -181,7 +235,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
             ':projectId' => $projectId,
             ':userId' => $userId
         );
-        return $this->_executeObjectQuery('find timesheets under under project id for user', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $this->_executeObjectQuery('find timesheets under project id for user', $valArr, \Native5\Core\Database\DB::SELECT);
 	} 
 	
     public function getUserTimesheetsInMonth($month, $userId) {

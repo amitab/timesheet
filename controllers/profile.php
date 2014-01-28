@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class ProfileController extends DefaultController
+class ProfileController extends \My\Control\ProtectedController
 {
 
 
@@ -138,7 +138,7 @@ class ProfileController extends DefaultController
                 
             } catch (\Exception $e) {
                 $warnings[] = $e->getMessage();
-                $image_path = IMAGE_PATH . 'pic.jpg'; // Show default pic
+                $image_path = IMAGE_PATH . $userImagePath; // Show default pic
             }
         } else {
             $image_path = IMAGE_PATH . $userImagePath; // Show default pic

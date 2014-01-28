@@ -11,6 +11,7 @@ class Task {
     private $taskWorkTime;
     private $taskTimesheetId;
     private $taskLocation;
+    private $taskStatus;
     
     public static function make($data) {
         $task = new self();
@@ -23,6 +24,7 @@ class Task {
         $task->setTaskWorkTime($data['task_work_time']);
         $task->setTaskTimesheetId($data['task_timesheet_id']);
         $task->setTaskLocation($data['task_location']);
+        $task->setTaskStatus($data['task_status']);
         
         return $task;
     }
@@ -33,6 +35,14 @@ class Task {
 
 	public function setTaskLocation($taskLocation){
 		$this->taskLocation = $taskLocation;
+	}
+    
+    public function getTaskStatus(){
+		return $this->taskStatus;
+	}
+
+	public function setTaskStatus($taskStatus){
+		$this->taskStatus = $taskStatus;
 	}
     
     public function getTaskId(){

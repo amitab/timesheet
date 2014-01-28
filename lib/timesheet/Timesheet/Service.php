@@ -26,7 +26,16 @@ class Service {
     }
 	
 	// The Cover
-	
+	public function getTimesheetProjectId($timesheetId) {
+	    return $this->_dao->getTimesheetProjectId($timesheetId);
+	}
+	public function createTimesheetAndTask($timesheetDetails, $task) {
+	    return $this->_dao->createTimesheetAndTask($timesheetDetails, $task);
+	}
+	public function findThisWeekTimesheet($userId, $projectId) {
+        return $this->_dao->findThisWeekTimesheet($userId, $projectId);
+    }
+    
     public function createTimesheet($timesheetDetails) {
         return $this->_dao->createTimesheet($timesheetDetails);
     }

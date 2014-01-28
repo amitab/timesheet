@@ -1,8 +1,5 @@
 $(document).ready(function() {
     
-    var monthNames = [ "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December" ];
-    
     function emptyListCheck() {
         if($('div#timesheet-list').children().length > 0) {
             $('div#timesheet-list').removeClass('empty-list');
@@ -72,6 +69,10 @@ $(document).ready(function() {
             if(searchBox.hasClass('closed')) {
                 openSearchBox(searchBox);
             } else {
+                if(prevQuery != '') {
+                    communicator.serviceObject.invoke({default:'true'});
+                    emptyListCheck();
+                }
                 closeSearchBox(searchBox);
             }
         }

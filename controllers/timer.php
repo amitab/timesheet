@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class TimerController extends DefaultController
+class TimerController extends \My\Control\ProtectedController
 {
 
 
@@ -65,6 +65,7 @@ class TimerController extends DefaultController
         
         $this->_response->setBody(array(
             'title' => 'Project a',
+            'project_id' => $request->getParam('project_id')
         ));  
 
     }//end _default()

@@ -61,4 +61,8 @@ class Service {
         return $this->_dao->getTotalPauseTimeOfTimesheet($timesheetId);
     }
 	
+	public function markTask($taskId, $mark) {
+	    return $this->_dao->markTask($taskId, $mark);
+	}
+	
 }

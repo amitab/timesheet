@@ -62,16 +62,16 @@ class LoginController extends DefaultController
         $logger->debug('Authentication Status '.$subject->isAuthenticated());
 
         if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('dashboard');
+            $this->_response->redirectTo('profile');
         } else {
             $token = new UsernamePasswordToken(
-                $request->getParam('uname'),
-                $request->getParam('upass')
+                $request->getParam('email'),
+                $request->getParam('password')
             );
 
             try {
                 $subject->login($token);
-                $this->_response->redirectTo('dashboard');
+                $this->_response->redirectTo('profile');
             } catch (AuthenticationException $aex) {
                 $this->_handleFailedAuthentication($subject, $token, $aex);
             }
@@ -91,11 +91,16 @@ class LoginController extends DefaultController
      * @return void
      */
     private function _handleFailedAuthentication($subject, $token, $aex)
-    {
-        $this->_response->redirectTo('home');
-        $this->_response->setBody(
-            array('message' => 'Either username or password is incorrect.')
-        );
+    {        
+        global $logger;
+        $skeleton =  new TwigRenderer('auth.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $this->_response->setBody(array(
+            'title' => 'Login',
+            'login' => true,
+            'message' => 'Either username or password is incorrect.'
+        ));
 
     }//end _handleFailedAuthentication()
 

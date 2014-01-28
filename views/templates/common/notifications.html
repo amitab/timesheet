@@ -1,121 +1,18 @@
 {% include 'head.html' %}
 
     <div class="row">
-        <div class="six columns centered">
-            <section class="notifications-list">
+        <div class="eight columns centered">
+            <div class="warnings" style="margin-top: 20px;"></div>
+            <section class="list" id="notification-list">
                 <ul>
-                    <li class="notifications-list-item" style="border-left: 4px solid green;">
-                        <div class="wrapper">
-                            <table class="content-heading">
-                                <tr>
-                                    <td>
-                                        <h5 class="no-padding"><a href="details" class="">Project a</a></h5>
-                                        <p class="medium task">Task a</p>
-                                    </td>
-                                    <td><p class="right small status">Approved&nbsp;&nbsp;<i class="fa fa-check-circle"></i></p>
-                                    <p class="right small time">12th Feb 2014</p></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </li>
-                    <li class="notifications-list-item" style="border-left: 4px solid red;">
-                        <div class="wrapper">
-                            <table class="content-heading">
-                                <tr>
-                                    <td>
-                                        <h5 class="no-padding"><a href="" class="">Project b</a></h5>
-                                        <p class="medium task">Task d</p>
-                                    </td>
-                                    <td>
-                                        <p class="right small status">Approved&nbsp;&nbsp;<i class="fa fa-check-circle"></i></p>
-                                        <p class="right small time">12th Feb 2014</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </li>
-                    <li class="notifications-list-item" style="border-left: 4px solid yellow;">
-                        <div class="wrapper">
-                            <table class="content-heading">
-                                <tr>
-                                    <td>
-                                        <h5 class="no-padding"><a href="" class="">Project c</a></h5>
-                                        <p class="medium task">Task 1</p>
-                                    </td>
-                                    <td>
-                                        <p class="right small status">Rejected&nbsp;&nbsp;<i class="fa fa-exclamation-circle"></i></p>
-                                        <p class="right small time">12th Feb 2014</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </li>
-                    <li class="notifications-list-item" style="border-left: 4px solid green;">
-                        <div class="wrapper">
-                            <table class="content-heading">
-                                <tr>
-                                    <td>
-                                        <h5 class="no-padding"><a href="" class="">Project d</a></h5>
-                                        <p class="medium task">Task a</p>
-                                    </td>
-                                    <td>
-                                        <p class="right small status">Approved&nbsp;&nbsp;<i class="fa fa-check-circle"></i></p>
-                                        <p class="right small time">12th Feb 2014</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </li>              
+                    
+                    
+                    
                 </ul>
             </section>
-        </div>
-    </div>
     
-    <div class="row">
-        <div class="six columns centered">
-            <section class="notifications-list">
-                <ul>
-                    <li class="notifications-list-item" style="border-left: 4px solid green;">
-                        <div class="wrapper">
-                            <table class="content-heading">
-                                <tr>
-                                    <td>
-                                        <h5 class="no-padding"><a href="details" class="">Project a</a></h5>
-                                        <p class="medium task">Task a</p>
-                                    </td>
-                                    <td><p class="right small status">Approved&nbsp;&nbsp;<i class="fa fa-check-circle"></i></p>
-                                    <p class="right small time">12th Feb 2014</p></td>
-                                </tr>
-                            </table>
-                        </div>
-                    </li>
-                    <li class="notifications-list-item" style="border-left: 4px solid red;">
-                        <div class="wrapper">
-                            <table class="content-heading">
-                                <tr>
-                                    <td>
-                                        <h5 class="no-padding"><a href="" class="">Project b</a></h5>
-                                        <p class="medium task">Task d</p>
-                                    </td>
-                                    <td>
-                                        <p class="right small status">Approved&nbsp;&nbsp;<i class="fa fa-check-circle"></i></p>
-                                        <p class="right small time">12th Feb 2014</p>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </li>             
-                </ul>
-            </section>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="six columns centered card" style="text-align: center;">
-            <div class="medium primary btn" style="margin-bottom: 15px;">
-                <a href="#" id="load-notitfications">Load More</a>
-            </div>
-        </div>
-    </div>
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("smart-list.js") }} ></script>
+    <script src={{ resolvePath("notifications.js") }} ></script>
     
 {% include 'foot.html' %}

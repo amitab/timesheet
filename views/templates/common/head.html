@@ -146,12 +146,20 @@
             
             {% if items.search == true %}
                 <div class="header-item option wide" style="height: 68px; position: relative">
+            {% elseif items.form_save == true %}
+            <div class="header-item option" id="save-form" style="height: 68px; position: relative">
+            {% elseif items.add_task == true %}
+            <div class="header-item option" id="add-task" style="height: 68px; position: relative">
+            {% elseif items.edit_option == true %}
+            <div class="header-item option" id="edit_option" style="height: 68px; position: relative">
+            {% elseif items.refresh == true %}
+            <div class="header-item option" id="load-notitfications" style="height: 68px; position: relative">
             {% else %}
                 <div class="header-item option" style="height: 68px; position: relative">
             {% endif %}
                 {% if items.add_task == true %}
                     
-                    <a href={{ resolvePath("timesheets/new_task") }} id="add-task" >
+                    <a href={{ resolvePath("timesheets/new_task") }}>
                         <h5><i class="fa fa-plus"></i></h5>
                     </a>
                     
@@ -168,9 +176,25 @@
                 
                 {% elseif items.form_save == true %}
                 
-                    <div id="save-form" target="form">
+                    <div target="form">
                         <a href="#" >
                             <h5><i class="fa fa-check"></i></h5>
+                        </a>
+                    </div>
+                    
+                {% elseif items.edit_option == true %}
+                
+                    <div>
+                        <a href="#" >
+                            <h5><i class="fa fa-pencil"></i></h5>
+                        </a>
+                    </div>
+                
+                {% elseif items.refresh == true %}
+                
+                    <div>
+                        <a href="#" >
+                            <h5><i class="fa fa-refresh"></i></h5>
                         </a>
                     </div>
                 

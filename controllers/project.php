@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class ProjectController extends DefaultController
+class ProjectController extends \My\Control\ProtectedController
 {
 
 
@@ -88,7 +88,7 @@ class ProjectController extends DefaultController
         if($totalTime == null) {
             $totalTime = 0;
         } else {
-            $totalTime = $totalTime/3600;  // Converting seconds to hours since money is calculated per hour
+            $totalTime = $totalTime/3600;  // Converting seconds to hours since money is per hour
         }
         // If admin, get total time spent by all employees and total money spent on the project
         // If employee, get total time spent by him and total salary
@@ -104,6 +104,8 @@ class ProjectController extends DefaultController
             'pause_time' => null, // for admin null
             'total_salary' => null, // for admin null
             'employer_name' => $employerName,
+            'project_id' => $id,
+            'edit_option' => true // only if user is admin
         );
         
         
@@ -115,10 +117,39 @@ class ProjectController extends DefaultController
         global $logger;
         $skeleton =  new TwigRenderer('createproject.html');
         $this->_response = new HttpResponse('none', $skeleton);
+        $userId = 1;
+        
+        if($request->getParam('new') != null) {
+            $project = new \Timesheet\Project\Project();
+            $project->setProjectName($request->getParam('project_name'));
+            
+            $dateObject = new DateTime($request->getParam('deadline'));
+            
+            $project->setProjectTimeAlloted($dateObject->format('Y-m-d H:i:s'));
+            $project->setProjectSalary($request->getParam('salary'));
+            $project->setProjectDescription($request->getParam('description'));
+            
+            $dateObject = new DateTime('now');
+            
+            $project->setProjectCreatedDate($dateObject->format('Y-m-d H:i:s'));
+            $project->setProjectStatus($request->getParam('status'));
+            $project->setProjectManagerId($userId);
+            
+            // Insert
+            
+            $projectService = \Timesheet\Project\Service::getInstance();
+            if($projectService->createProject($project)) {
+                $message['success'] = 'Project successfuly created.';
+            } else {
+                $message['fail'] = 'Project could not be created.';
+            }
+            
+        }
         
         $this->_response->setBody(array(
             'title' => 'New Project',
             'form_save' => true,
+            'message' => $message
         ));  
     }
     
@@ -126,6 +157,32 @@ class ProjectController extends DefaultController
         global $logger;
         $skeleton =  new TwigRenderer('createproject.html');
         $this->_response = new HttpResponse('none', $skeleton);
+        $userId = 1;
+        $projectService = \Timesheet\Project\Service::getInstance();
+        
+        if($request->getParam('edit') != null) {
+            $project = new \Timesheet\Project\Project();
+            $project->setProjectId($request->getParam('project_id'));
+            $project->setProjectName($request->getParam('project_name'));
+            
+            $dateObject = new DateTime($request->getParam('deadline'));
+            
+            $project->setProjectTimeAlloted($dateObject->format('Y-m-d H:i:s'));
+            $project->setProjectSalary($request->getParam('salary'));
+            $project->setProjectDescription($request->getParam('description'));
+            
+            $project->setProjectStatus($request->getParam('status'));
+            $project->setProjectManagerId($userId);
+            
+            // Update
+            
+            if($projectService->editProject($project)) {
+                $message['success'] = 'Project successfuly updated.';
+            } else {
+                $message['fail'] = 'Project could not be updated.';
+            }
+            
+        }
         
         if($request->getparam('id') == null) {
             return;
@@ -133,28 +190,53 @@ class ProjectController extends DefaultController
             $id = $request->getparam('id');
         }
         
-        $projectService = \Timesheet\Project\Service::getInstance();
-        $project = $projectService->getProjectById($id);
-        $project = $project[0];
+        $editproject = $projectService->getProjectById($id);
+        $editproject = $editproject[0];
         
         $this->_response->setBody(array(
             'title' => 'Edit Project',
             'form_save' => true,
             'edit' => true,
-            'project' => $project
+            'project' => $editproject,
+            'message' => $message
         ));  
     }
     
     public function _add_users($request) {
         
         global $logger;
-        $skeleton =  new TwigRenderer('adduserstoproject.html');
-        $this->_response = new HttpResponse('none', $skeleton);
         
-        $this->_response->setBody(array(
-            'title' => 'Add People',
-            'search' =>true,
-        ));  
+        if($request->getParam('add_users') != null) {
+            $userIds = $request->getParam('ids');
+            $projectId = $request->getParam('project_id');
+            
+            $projectService = \Timesheet\Project\Service::getInstance();
+            if($projectService->addUsersToProject($projectId, $userIds)) {
+                $success = true;
+                $message = "Users successfully added";
+                $logger->info('added');
+            } else {
+                $success = false;
+                $message = "Could not add users. You are a problem.";
+                $logger->info('fail');
+            }
+            
+            $this->_response = new HttpResponse('json');
+            $this->_response->setBody(array(
+                'success' => $success,
+                'info' => $message,
+            ));  
+            
+        } else {
+            $skeleton =  new TwigRenderer('adduserstoproject.html');
+            $this->_response = new HttpResponse('none', $skeleton);
+            $this->_response->setBody(array(
+                'title' => 'Add People',
+                'search' =>true,
+                'project_id' => $request->getParam('id')
+            ));  
+        }
+        
     }
     
     public function _search_to_add($request) {
@@ -188,7 +270,7 @@ class ProjectController extends DefaultController
         $this->_response = new HttpResponse('json');
         
         $query = $request->getParam('q');
-        $userId = 13;
+        $userId = 12;
         $projectService = \Timesheet\Project\Service::getInstance();
         
         if(!empty($query)) {

@@ -5,33 +5,41 @@
             <section class="new-project">
                 
                 <div class="title">
-                    <h5>New Project</h5>
+                    <h5>{{ items.title }}</h5>
                 </div>
-                <form action="=" method="post" class="timesheet-form">
-                    <div class="warnings"></div>
+                <form action="" method="post" class="timesheet-form">
+                    {% if items.edit == true %}
+                        <input type="hidden" value={{ items.project.projectId }} name="project_id" />
+                    {% endif %}
+                    <div class="warnings">
+                        {% if items.message.success %}
+                            <p class="alert success">{{ items.message.success }}</p>
+                        {% elseif items.message.fail %}
+                            <p class="alert warning">{{ items.message.fail }}</p>
+                        {% endif %}
+                    </div>
                     <div class="append field">
                         <input class="input" type="text" placeholder="Project Name" name="project_name" 
                                {% if items.edit == true %}
-                                   value = {{ items.project.projectName }}
+                                   value="{{ items.project.projectName }}"
                                {% endif %}
                         />
                         <span class="adjoined"><i class="fa fa-file"></i></span>
                     </div>
                     <div class="append field">
                         <div class="picker">
-                            <select>
-                                
-                                <option 
+                            <select name="status">
+                                <option value="0"
                                     {% if items.project.projectStatus == 0 %}
                                         selected="selected"
                                     {% endif %}
                                 >High Priority</option>
-                                <option
+                                <option value="1"
                                     {% if items.project.projectStatus == 1 %}
                                         selected="selected"
                                     {% endif %}
                                 >Medium Priority</option>
-                                <option
+                                <option value="2"
                                     {% if items.project.projectStatus == 2 %}
                                         selected="selected"
                                     {% endif %}
@@ -41,16 +49,16 @@
                     </div>
                     <div class="field">
                         <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;Deadline : </label>
-                        <input name="end_date" type="text" 
+                        <input name="deadline" type="datetime-local" 
                             {% if items.edit == true %}
-                               value = {{ items.project.projectTimeAlloted }}
+                               value="{{ items.project.projectTimeAlloted }}"
                             {% endif %}
                         >
                     </div>
                     <div class="append field">
                         <input class="input" type="text" placeholder="Salary" name="salary" 
                             {% if items.edit == true %}
-                               value = {{ items.project.projectSalary }}
+                               value="{{ items.project.projectSalary }}"
                             {% endif %} 
                         />
                         <span class="adjoined"><i class="fa fa-money"></i></span>
@@ -63,5 +71,15 @@
             </section>
         </div>
     </div>
+    
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', 'div#save-form', function(e) {
+                e.preventDefault();
+                $('form').append('<input type="hidden" name="{% if items.edit == true %}edit{% else %}new{% endif %}" value="1">');
+                $('form').submit();
+            });
+        });
+    </script>
 
 {% include 'foot.html' %}

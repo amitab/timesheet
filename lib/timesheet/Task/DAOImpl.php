@@ -71,6 +71,18 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Task\DAO {
 	
 	// WRITE FUNCTIONS
 	
+	public function markTask($taskId, $mark) {
+	    try {
+            $valArr = array(
+                ':taskId' => $taskId,
+                ':mark' => $mark
+            );
+            return $this->_executeObjectQuery('mark task', $valArr, \Native5\Core\Database\DB::UPDATE);
+	    } catch (\Exception $e) {
+	        return false;
+	    }
+	}
+	
 	public function createTask($task, $timesheetId = null, $call = false) {
 	    try {
 	        $timesheetId == null ? $timesheetId = $task->getTaskTimesheetId() : 1;

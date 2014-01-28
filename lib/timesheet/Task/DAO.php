@@ -10,6 +10,8 @@ interface DAO {
     public function deleteTask($taskId);
     public function editTask($task);
     
+    public function markTask($taskId, $mark);
+    
     // read only
     
     public function getAllTasksOfTimesheet($timesheetId);

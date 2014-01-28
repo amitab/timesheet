@@ -46,7 +46,7 @@ use Timesheet\User\DAOImpl as UserDAOImpl;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class HomeController extends \My\Control\ProtectedController
+class SignupController extends DefaultController
 {
 
 
@@ -58,13 +58,7 @@ class HomeController extends \My\Control\ProtectedController
      * @access public
      * @return void
      */
-    public function _default($request)
-    {
-        $this->_response->redirectTo('profile');
-
-    }//end _default()
-	
-	public function _signup($request)
+	public function _default($request)
     {        
         global $logger;
         $skeleton =  new TwigRenderer('signup.html');
@@ -75,6 +69,59 @@ class HomeController extends \My\Control\ProtectedController
             'login' => true,
         ));
 
+    }
+    
+    public function _create_user($request) {
+        global $logger;
+        $skeleton =  new TwigRenderer('signup.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        try {
+            $user =
+                \Native5\Services\Users\User::createBuilder('john.doe@email.com')
+                    ->setPassword('password')
+                    ->setName('John Doe')
+                    ->setRoles(
+                        array(
+                            'Employer',
+                            'Employee'
+                        )
+                    )
+                    ->setAliases(
+                        array(
+                            'email' => 'john.doe@email.com',
+                            'userId' => 1
+                            'mobile' => '+91-8081-333-222'
+                        )
+                    )
+                    ->build();
+            $userManager = new Native5\Services\Users\DefaultUserManager();
+            if($userManager->createUser($user)) {
+                $message = 'Successfuly created user.';
+            } else {
+                $message = 'Failed to create user.';
+            }
+            
+        } catch (\Exception $e) {
+            $message = 'Failed to create user.';
+            $logger->info($e->getMessage());
+        }
+        
+        $logger->info(print_r($user, 1));
+        $logger->info(print_r($return, 1));
+        
+        $this->_response->setBody(array(
+            'title' => 'Sign Up',
+            'login' => true,
+            'message' => $message
+        ));
+    }
+    
+    public function _tester($request) {
+        global $logger;
+        $userService = \Timesheet\User\Service::getInstance();
+        $users = $userService->getAllUsers();
+        $logger->info(print_r($users,1));
     }
 
 }//end class

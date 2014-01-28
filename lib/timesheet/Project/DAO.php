@@ -4,7 +4,7 @@ namespace Timesheet\Project;
 interface DAO {
     // write only functions
     public function createProject($projectDetails);
-    public function editProject($projectId);
+    public function editProject($projectDetails);
     public function deleteProject($projectId);
 
     // read only functions
@@ -21,6 +21,7 @@ interface DAO {
     public function searchByNameUnderUserId($projectName, $userId);
     public function getEmployeeTotalWorkTime($userId, $projectId);
     public function getEmployeeTotalPauseTime($userId, $projectId);
+    public function getProjectNameById($projectId);
         
     // admin functions
         
