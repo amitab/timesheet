@@ -45,10 +45,8 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class ProjectController extends \My\Control\ProtectedController
+class ProjectController extends DefaultController
 {
-
-
     /**
      * _default 
      * 
@@ -83,12 +81,16 @@ class ProjectController extends \My\Control\ProtectedController
         $projectData = $projectService->getProjectById($id);
         $projectData = $projectData[0];
         
+        // Check if user owns this project or is working for this project
+        // $isAdmin
+        // $isEmployee
+        
         $employerName = $userService->getUserNameById($projectData->getProjectManagerId());
         $totalTime = $projectService->getProjectTotalWorkTime($id);
         if($totalTime == null) {
             $totalTime = 0;
         } else {
-            $totalTime = $totalTime/3600;  // Converting seconds to hours since money is per hour
+            $totalTime = round($totalTime/3600);  // Converting seconds to hours since money is per hour
         }
         // If admin, get total time spent by all employees and total money spent on the project
         // If employee, get total time spent by him and total salary
@@ -117,7 +119,8 @@ class ProjectController extends \My\Control\ProtectedController
         global $logger;
         $skeleton =  new TwigRenderer('createproject.html');
         $this->_response = new HttpResponse('none', $skeleton);
-        $userId = 1;
+        $userId = 1; // Get current User
+        // Also check if user is admin else kick
         
         if($request->getParam('new') != null) {
             $project = new \Timesheet\Project\Project();
@@ -138,8 +141,10 @@ class ProjectController extends \My\Control\ProtectedController
             // Insert
             
             $projectService = \Timesheet\Project\Service::getInstance();
-            if($projectService->createProject($project)) {
+            $projectId = $projectService->createProject($project);
+            if($projectId) {
                 $message['success'] = 'Project successfuly created.';
+                $this->_response->redirectTo('project/details?id=' . $projectId);
             } else {
                 $message['fail'] = 'Project could not be created.';
             }
@@ -159,6 +164,8 @@ class ProjectController extends \My\Control\ProtectedController
         $this->_response = new HttpResponse('none', $skeleton);
         $userId = 1;
         $projectService = \Timesheet\Project\Service::getInstance();
+        
+        // Check if user owns this project else kick
         
         if($request->getParam('edit') != null) {
             $project = new \Timesheet\Project\Project();
@@ -205,13 +212,25 @@ class ProjectController extends \My\Control\ProtectedController
     public function _add_users($request) {
         
         global $logger;
+        $userId = 1;
+        // Check if user owns this project else kick
         
         if($request->getParam('add_users') != null) {
             $userIds = $request->getParam('ids');
             $projectId = $request->getParam('project_id');
             
+            $notification = new \Timesheet\Notification\Notification();
+            $notification->setNotificationFromUser($userId);
+            $notification->setNotificationPriority(1);
+            $notification->setNotificationType(0);
+            $today = new DateTime('now');
+            $notification->setNotificationDate($today->format('Y-m-d H:i:s'));
+            $notification->setNotificationToUser($userIds);
+            $notification->setNotificationSubjectId($projectId);
             $projectService = \Timesheet\Project\Service::getInstance();
-            if($projectService->addUsersToProject($projectId, $userIds)) {
+            $notification->setNotificationBody('You\'ve been requested to join ' . $projectService->getProjectNameById($projectId));
+            
+            if($projectService->addUsersToProject($projectId, $userIds, $notification)) {
                 $success = true;
                 $message = "Users successfully added";
                 $logger->info('added');
@@ -250,18 +269,20 @@ class ProjectController extends \My\Control\ProtectedController
         $userService = \Timesheet\User\Service::getInstance();
         $query = $request->getParam('q');
         $ids = $request->getParam('ids');
+        $projectId = $request->getParam('project_id');
         
         if (!isset($ids[0]) || empty($ids[0]) || empty($ids)) {
-            $data = $userService->getUserByName($query);
+            $data = $userService->getUsersForProject($query, $projectId);
         } else {
-            $data = $userService->getUserByNameExcept($query, $ids);
+            $data = $userService->getUsersForProject($query, $projectId, $ids);
         }
         
         $data = \Database\Converter::getArray($data);
         
         $this->_response->setBody(array(
             'users' => $data,
-            'image_location' => IMAGE_PATH
+            'image_location' => IMAGE_PATH,
+            'thumb_image_location' => THUMB_IMAGE_PATH
         ));
     }
     
@@ -270,7 +291,7 @@ class ProjectController extends \My\Control\ProtectedController
         $this->_response = new HttpResponse('json');
         
         $query = $request->getParam('q');
-        $userId = 12;
+        $userId = 7; // Get current user
         $projectService = \Timesheet\Project\Service::getInstance();
         
         if(!empty($query)) {

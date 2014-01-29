@@ -38,7 +38,7 @@
                             <tbody>
                                 <tr>
                                     <td>Employer</td>
-                                    <td>{{ items.employer_name }}</td>
+                                    <td><a href={{ resolvePath("profile\\view?id=" ~ items.project_details.projectManagerId ) }}>{{ items.employer_name }}</a></td>
                                 </tr>
                                 <tr>
                                     <td>Created</td>
@@ -54,7 +54,7 @@
                                 </tr>
                                 <tr>
                                     <td>Status</td>
-                                    <td>{{ items.project_details.projectStatus }}</td>
+                                    <td>{{ items.project_details.readableProjectState }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -65,25 +65,19 @@
                     </div>
                 </div>
                 
+                <div style="text-align: center; margin-bottom: 30px;">
                 {% if items.is_employee == true %}
-                
-                    <div id="timer-control" style="text-align: center; margin-bottom: 30px;">
-                        <div class="medium primary btn">
-                            <a href={{ resolvePath("timer?project_id=" ~ items.project_id) }} id="timer-button">Start a New Task</a>
-                        </div>
-                    </div>
-                
-                {% endif %}
-                {% if items.is_admin == true %}
-                
-                    <div id="admin-control" style="text-align: center; margin-bottom: 30px;">
-                        <div class="medium primary btn">
-                            <a href={{ resolvePath("project\\add_users?id=" ~ items.project_id) }} id="add-user-button">Add Users</a>
-                        </div>
+                    
+                    <div class="medium primary btn">
+                        <a href={{ resolvePath("timer?project_id=" ~ items.project_id) }} id="timer-button">Start a New Task</a>
                     </div>
                     
+                {% elseif items.is_admin == true %}
+                
+                    <div class="medium primary btn">
+                        <a href={{ resolvePath("project\\add_users?id=" ~ items.project_id) }} id="add-user-button">Add Users</a>
+                    </div>
                     <input type="hidden" id="edit_url" value={{ resolvePath("project\\edit_project?id="  ~ items.project_id) }}>
-                    
                     <script>
                         $(document).ready(function() {
                             $(document).on('click', 'div#edit_option' , function(e) {
@@ -95,6 +89,7 @@
                     </script>
                     
                 {% endif %}
+                </div>
                 
             </section>
         </div>

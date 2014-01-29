@@ -22,10 +22,10 @@ $(document).ready(function() {
             list += '<tbody>';
             list += '<tr>';
             list += '<td>';
-            list += '<img src="' + data.message.image_location + value.userImageUrl + '">';
+            list += '<img src="' + data.message.thumb_image_location + 'thumb_' + value.userImageUrl + '">';
             list += '</td>';
             list += '<td>';
-            list += '<h5>' + value.userName + '</h5>';
+            list += '<h5>' + value.userFirstName + ' ' + value.userLastName + '</h5>';
             list += '<p class="small email">' + extract + domain + '</p>';
             list += '</td>';
             list += '</tr>';
@@ -96,6 +96,7 @@ $(document).ready(function() {
             var args = {};
             args.q = query;
             args.ids = [];
+            args.project_id = parseInt($('input#project_id').val());
             
             $('section#selected-users li').each(function(index) {
                 args.ids.push($(this).attr('userid'));

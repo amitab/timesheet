@@ -31,7 +31,7 @@ require 'lib/loader.php';
 define('UPLOAD_PATH', getcwd() . '/static/');
 define('THUMB_UPLOAD_PATH', getcwd() . '/static/thumbs/' );
 define('IMAGE_PATH', "http://" . $_SERVER['HTTP_HOST'] . DIRECTORY_SEPARATOR . 'timesheet' . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR );
-define('THUMB_IMAGE_PATH', "http://" . $_SERVER['HTTP_HOST'] . DIRECTORY_SEPARATOR . 'timesheet' . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR );
+define('THUMB_IMAGE_PATH', "http://" . $_SERVER['HTTP_HOST'] . DIRECTORY_SEPARATOR . 'timesheet' . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR );
 
 use Native5\Application;
 use Native5\Route\HttpRequest;

@@ -415,9 +415,13 @@ section.projects-list, section.notifications-list, section.message-list, section
         .check-input {
             text-align: right;
         }
-        .content-header > p{
-            width: 50%;
-            display: inline-block;
+        .content-header {
+            span.time {
+                color: darken($border-grey, 20%);
+            }
+            span.from {
+                font-weight: bold;
+            }
         }
     }
     li.message-list-item {
@@ -896,24 +900,11 @@ section.timer {
 	.header-item.trigger:active, .header-item.inline-menu-trigger:active, .header-item.option:active {
 		@include box-shadow(inset 3px 0px 12px 4px rgba(50, 50, 50, 0.6));
 	}
+    .header-item.option.wide:active {
+        @include box-shadow(inset 0px 0px 0px 0px rgba(0, 0, 0, 0));
+    }
 }
 
 #page-wrap {
     padding-top: 62px;
-}
-
-div.warnings {
-    position: absolute;
-    right: -50%;
-    width: 50%;
-    @include single-transition(transform, 0.3s, $snap-animation, 0s);
-    z-index: 200;
-}
-
-div.warnings.waah {
-    @include translate3d(-100%, 0px, 0px, 500px);
-}
-
-div.warnings.hide {
-    display: none;
 }

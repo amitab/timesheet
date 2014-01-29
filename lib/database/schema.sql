@@ -1,13 +1,13 @@
 CREATE TABLE user(
 	user_id INT(20) PRIMARY KEY AUTO_INCREMENT,
-	user_name VARCHAR(100),
     user_first_name VARCHAR(255),
     user_last_name VARCHAR(255),
 	user_sex CHAR(1),
 	user_email VARCHAR(100) UNIQUE,
 	user_location VARCHAR(255),
     user_phone_number VARCHAR(13),
-    user_image_url VARCHAR(255)
+    user_image_url VARCHAR(255),
+    user_country_code CHAR(2)
 );
 
 CREATE TABLE project(
@@ -26,10 +26,8 @@ CREATE TABLE project(
 
 CREATE TABLE timesheet(
 	timesheet_id INT(20) PRIMARY KEY AUTO_INCREMENT,
-	timesheet_mark_time DATETIME,
     timesheet_date DATE,
-	timesheet_project_name VARCHAR(100),
-    timesheet_status INT(1)
+	timesheet_project_name VARCHAR(100)
 );
 
 CREATE TABLE task(
@@ -72,7 +70,8 @@ CREATE TABLE notification(
 	notification_priority INT(1),
 	notification_read INT(1),
     notification_type INT(1),
-    notification_subject_id INT(20)
+    notification_subject_id INT(20),
+    notification_date DATETIME
 );
 
 CREATE TABLE user_notification(

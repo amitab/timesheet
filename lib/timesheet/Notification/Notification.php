@@ -10,6 +10,8 @@ class Notification {
     private $notificationRead;
     private $notificationType;
     private $notificationSubjectId;
+    private $notificationDate;
+    private $dataObject;
     
     private $notificationToUser;
     
@@ -32,12 +34,12 @@ class Notification {
         
         $notification->setNotificationId($data['notification_id']);
         $notification->setNotificationBody($data['notification_body']);
-        $notification->setNotificationFromUser($data['notification_from_user']);
         $notification->setNotificationPriority($data['notification_priority']);
         $notification->setNotificationRead($data['notification_read']);
         $notification->setNotificationType($data['notification_type']);
         $notification->setNotificationSubjectId($data['notification_subject_id']);
         $notification->setNotificationFromUser($data['from_user']);
+        $notification->setNotificationDate($data['notification_date']);
                 
         return $notification;
     }
@@ -48,6 +50,14 @@ class Notification {
 
 	public function setNotificationId($notificationId){
 		$this->notificationId = $notificationId;
+	}
+	
+	public function getNotificationDate(){
+		return $this->notificationDate;
+	}
+
+	public function setNotificationDate($notificationDate){
+		$this->notificationDate = $notificationDate;
 	}
 
 	public function getNotificationBody(){
@@ -104,9 +114,9 @@ class Notification {
 	public function setNotificationType($notificationType){
 		$this->notificationType = $notificationType;
 		if($notificationType == self::TYPE_PROJECT) {
-		    $this->url = 'timesheets\task_details';
-		} else if ($notificationType == self::TYPE_TASK) {
 		    $this->url = 'project\details';
+		} else if ($notificationType == self::TYPE_TASK) {
+		    $this->url = 'timesheets\task_details';
 		} 
 	}
 

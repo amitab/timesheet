@@ -43,7 +43,8 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
 		$valArr = array(
             ':userName' => $userName
         );
-        return $this->_executeObjectQuery('find user by name', $valArr, \Native5\Core\Database\DB::SELECT);
+        $data = $this->_executeObjectQuery('find user by name', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data;
 	} 
 	
     public function getUserByNameExcept($userName, $userIds) {
@@ -51,7 +52,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
             ':userName' => $userName
         );
         
-        $sql = 'SELECT `user`.* FROM `user` WHERE `user`.`user_name` LIKE :userName AND `user`.`user_id` NOT IN(';
+        $sql = 'SELECT `user`.* FROM `user` WHERE `user`.`user_first_name` LIKE :userName OR `user`.`user_last_name` LIKE :userName OR concat(`user`.`user_first_name`, \' \', `user`.`user_last_name`) LIKE :userName AND `user`.`user_id` NOT IN(';
         $sql .= implode(', ', $userIds);
         $sql .= ');';
         
@@ -128,12 +129,36 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
         $data = $this->_executeQuery('get total user work hours', $valArr, \Native5\Core\Database\DB::SELECT);
         return $data[0]['total_work_hours'];
     }
+    
+    public function getUsersForProject($userName, $projectId, $userIds=null) {
+        if(empty($userIds)) {
+            $valArr = array(
+                ':userName' => $userName,
+                ':projectId' => $projectId
+            );
+            $data = $this->_executeObjectQuery('find users for project', $valArr, \Native5\Core\Database\DB::SELECT);
+            return $data;
+        } else {
+            $valArr = array(
+                ':userName' => $userName,
+                ':projectId' => $projectId
+            );
+            
+            $sql = 'SELECT `user`.* FROM `user` WHERE `user`.`user_first_name` LIKE :userName OR `user`.`user_last_name` LIKE :userName OR concat(`user`.`user_first_name`, \' \', `user`.`user_last_name`) LIKE :userName AND `user`.`user_id` NOT IN (';
+            $sql .= implode(', ', $userIds);
+            $sql .= ') AND `user`.`user_id` NOT IN (SELECT `user_project`.`user_id` FROM `user_project` WHERE `user_project`.`project_id` = :projectId);';
+            
+            return $this->_executeObjectQueryString($sql, $valArr, \Native5\Core\Database\DB::SELECT);
+        }
+        
+    }
 	
 	// WRITE FUNCTIONS
 	
 	public function createUser($userDetails) {
 	    $valArr = array(
-            ':userName' => $userDetails->getUserName(),
+            ':userFirstName' => $userDetails->getUserFirstName(),
+            ':userLastName' => $userDetails->getUserLastName(),
             ':userMail' => $userDetails->getUserMail(),
             ':userLocation' => $userDetails->getUserLocation(),
             ':userPhoneNumber' => $userDetails->getUserPhoneNumber(),
@@ -151,7 +176,8 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
 	public function editUser($userDetails) {
 	    $userArr = array(
             ':userId' => $userDetails->getUserId(),
-            ':userName' => $userDetails->getUserName(),
+            ':userFirstName' => $userDetails->getUserFirstName(),
+            ':userLastName' => $userDetails->getUserLastName(),
             ':userMail' => $userDetails->getUserMail(),
             ':userLocation' => $userDetails->getUserLocation(),
             ':userPhoneNumber' => $userDetails->getUserPhoneNumber(),

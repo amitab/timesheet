@@ -31,7 +31,13 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
 	public function getAllProjects() {
         return $this->_executeObjectQuery('get all projects', null, \Native5\Core\Database\DB::SELECT);
 	}
-	
+	public function getProjectManagerId($projectId) {
+        $valArr = array(
+            ':projectId' => $projectId
+        );
+        $data = $this->_executeQuery('get manager id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['manager_id'];
+    }
     public function getProjectById($projectId) {
 		$valArr = array(
             ':projectId' => $projectId
@@ -141,6 +147,19 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         }
 	}
 	
+	public function markCompleted($projectId) {
+	    $valArr = array(
+            ':projectState' => 1,
+            ':projectId' => $project
+        );
+        
+        try {
+            return $this->_executeQuery('mark complete', $valArr, \Native5\Core\Database\DB::UPDATE);
+        } catch (\Exception $e) {
+            return false;
+        }
+	}
+	
 	public function editProject($projectDetails) {
 	    $valArr = array(
             ':projectId' => $projectDetails->getProjectId(),
@@ -171,7 +190,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
 	
 	// Admin Functions
 	
-	public function addUsersToProject($projectId, $userIds) {
+	public function addUsersToProject($projectId, $userIds, $notification = null) {
 	    try {
         
             $this->db->beginTransaction();
@@ -185,16 +204,17 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             $sql .= implode(', ', $valuesArray);
             $sql .= ';';
             
-            $GLOBALS['logger']->info($sql);
-            
             parent::tableHasPrimaryKey(false);
             
             $this->_executeQueryString($sql, null, \Native5\Core\Database\DB::INSERT);
             
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notificationService->createNotification($notification, true);
+            
             $this->db->commitTransaction();
         
         } catch (\Exception $e) {
-            
+            $GLOBALS['logger']->info('ERROR AT PROJECT IMPL : ' . $e->getMessage());
             $this->db->rollbackTransaction();
             return false;
             

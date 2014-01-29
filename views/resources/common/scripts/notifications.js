@@ -5,18 +5,49 @@ $(document).ready(function() {
     var successHandler = function(data) {
         
         if(data.message.notifications.length == 0) {
-            $('div.warnings').html('');
-            $('div.warnings').append('<p class="alert primary">' + data.message.lol + '</p>');
+            native5.Notifications.show( data.message.lol, {
+                notificationType:'toast',
+                title:'Information',
+                position:'bottom',
+                distance:'0px',
+                timeout: 5000,
+                persistent:false
+            });
+            
             return;
         }
         
         $.each(data.message.notifications, function(key, value) {
+            
+            var notificationDate = ~~(new Date(value.notificationDate).getTime()/1000);
+            var today = ~~(new Date(Date.now()).getTime()/1000);
+            
+            var timeLeft = today - notificationDate;
+            var days = ~~(timeLeft/(3600*24));
+            var hrs = ~~(timeLeft / 3600);
+            var mins = ~~((timeLeft % 3600) / 60);
+            var secs = ~~(timeLeft % 60);
+            
+            var timeString = '';
+            
+            if(days > 0) {
+                timeString += days + ' days ago';
+            } else if (hrs > 0) {
+                timeString += hrs + ' hours ago';
+            } else if (mins > 0) {
+                timeString += mins + ' minutes ago';
+            } else if (secs > 0) {
+                timeString += secs + 'seconds ago';
+            } else {
+                timeString += 'Just Now';
+            }
+            
             var list = '';
             list += '<li class="notification-link" id="' + value.notificationId +'" url="\\' + path + '\\' + value.url + '?id=' + value.notificationSubjectId + '">';
             list += '<div class="content">';
             list += '<div class="content-header">';
-            list += '<p class="small left">From : ' + value.notificationFromUser + '</p>';
-            list += '<p class="small right">' + value.notificationPriority + '</p>';
+            list += '<p class="small"><span class="from">' + value.notificationFromUser + '</span>, <span class="time">'; 
+            list += timeString + '</span></p>';
             list += '</div>';
             list += '<p>' + value.notificationBody + '</p>';
             list += '</div>';

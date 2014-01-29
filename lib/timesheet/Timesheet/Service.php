@@ -26,6 +26,9 @@ class Service {
     }
 	
 	// The Cover
+	public function getProjectManagerId($timesheetId) {
+	    return $this->_dao->getProjectManagerId($timesheetId);
+	}
 	public function getTimesheetProjectId($timesheetId) {
 	    return $this->_dao->getTimesheetProjectId($timesheetId);
 	}
@@ -67,56 +70,29 @@ class Service {
     public function getTimesheetsInMonthWeek($month, $week) {
         return $this->_dao->getTimesheetsInMonthWeek($month, $week);
     }
-    public function getRecentlyMarkedTimesheets($offset) {
-        return $this->_dao->getRecentlyMarkedTimesheets($offset);
-    }
-	
-	public function getApprovedTimesheets($offset = 0, $limit = 10) {
-	    return $this->_dao->getTimesheetsWithStatus(\Timesheet\Timesheet\APPROVED, $offset, $limit);
-	}
-	
-	public function getRejectedTimesheets($offset = 0, $limit = 10) {
-	    return $this->_dao->getTimesheetsWithStatus(\Timesheet\Timesheet\REJECTED, $offset, $limit);
-	}
-    
-    public function getUnmarkedTimesheets($offset = 0, $limit = 10) {
-        return $this->_dao->getTimesheetsWithStatus(\Timesheet\Timesheet\UNMARKED, $offset, $limit);
-    }
-    
-    public function markTimesheet($status, $timesheetId, $timesheetMarkTime) {
-        if($status != \Timesheet\Timesheet\APPROVED || $status != \Timesheet\Timesheet\REJECTED) {
-            return false;
-        }
-        else {
-            return $this->_dao->markTimesheet($status, $timesheetId, $timesheetMarkTime);
-        }
-    }
     
     // User specific read
     
     public function getUserTimesheetsUnderProjectId($projectId, $userId) {
-        $this->_dao->getUserTimesheetsUnderProjectId($projectId, $userId);
+        return $this->_dao->getUserTimesheetsUnderProjectId($projectId, $userId);
     }
     public function getUserTimesheetsUnderProjectName($projectName, $userId) {
-        $this->_dao->getUserTimesheetsUnderProjectName($projectName, $userId);
+        return $this->_dao->getUserTimesheetsUnderProjectName($projectName, $userId);
     }
-    public function getUserAllTimesheets($userId) {
-        $this->_dao->getUserAllTimesheets($userId);
+    public function getUserAllTimesheets($userId, $offset=null) {
+        return $this->_dao->getUserAllTimesheets($userId, $offset);
     }
     public function getUserTimesheetsInMonth($month, $userId) {
-        $this->_dao->getUserTimesheetsInMonth($month, $userId);
+        return $this->_dao->getUserTimesheetsInMonth($month, $userId);
     }
     public function getUserTimesheetsInYear($year, $userId) {
-        $this->_dao->getUserTimesheetsInYear($year, $userId);
+        return $this->_dao->getUserTimesheetsInYear($year, $userId);
     }
     public function getUserTimesheetsInMonthWeek($month, $week, $userId) {
-        $this->_dao->getUserTimesheetsInMonthWeek($month, $week, $userId);
-    }
-    public function getUserRecentlyMarkedTimesheets($offset, $userId) {
-        $this->_dao->getUserRecentlyMarkedTimesheets($offset, $userId);
+        return $this->_dao->getUserTimesheetsInMonthWeek($month, $week, $userId);
     }
     public function getUserTimesheetsWithStatus($timesheetStatus, $limit, $offset, $userId) {
-        $this->_dao->getUserTimesheetsWithStatus($timesheetStatus, $limit, $offset, $userId);
+        return $this->_dao->getUserTimesheetsWithStatus($timesheetStatus, $limit, $offset, $userId);
     }
 	
 }

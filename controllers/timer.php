@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class TimerController extends \My\Control\ProtectedController
+class TimerController extends DefaultController
 {
 
 

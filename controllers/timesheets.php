@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class TimesheetsController extends \My\Control\ProtectedController
+class TimesheetsController extends DefaultController
 {
 
 
@@ -124,6 +124,18 @@ class TimesheetsController extends \My\Control\ProtectedController
             $dateObject = new DateTime($request->getParam('end_time'));
             $task->setTaskEndTime($dateObject->format('Y-m-d H:i:s'));
             
+            $notification = new \Timesheet\Notification\Notification();
+            $notification->setNotificationFromUser($userId);
+            $notification->setNotificationPriority(1);
+            $notification->setNotificationType(1);
+            $today = new DateTime('now');
+            $notification->setNotificationDate($today->format('Y-m-d H:i:s'));
+            $notification->setNotificationToUser(array($projectService->getProjectManagerId($projectId)));
+            
+            $notification->setNotificationBody('A new Task was added to ' . $projectName . '.');
+            
+            $task->setNotification($notification);
+            
             if($request->getParam('work_time') != null) {
                 $task->setTaskWorkTime($request->getParam('work_time'));
             } else {
@@ -135,24 +147,32 @@ class TimesheetsController extends \My\Control\ProtectedController
             $task->setTaskLocation($request->getParam('location'));
             $task->setTaskNotes($request->getParam('notes'));
             
-            if($request->getParam('timesheet_id') != null) { // If new task being added to old timesheet
+            // If new task being added to old timesheet
+            if($request->getParam('timesheet_id') != null) { 
                 
-                $timesheet_id = (int) $reuest->getParam('timesheet_id');
+                $timesheetId = (int) $request->getParam('timesheet_id');
                 if($taskService->createTask($task, $timesheetId, false)) {
                     $message['success'] = 'New Task created.';
+                    $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
                 } else {
                     $message['fail'] = 'Task could not be created.';
                 }
-            } else if($timesheetId = $timesheetService->findThisWeekTimesheet($userId, $projectId)) { 
-                // Timesheet for this project this week present already
-                
+            } 
+            // Timesheet for this project this week present already
+            else if($timesheetId = $timesheetService->findThisWeekTimesheet($userId, $projectId)) { 
+                $logger->info('Found Timesheet for this week.');
                 if($taskService->createTask($task, $timesheetId, false)) {
                     $message['success'] = 'New Task created.';
+                    $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
                 } else {
                     $message['fail'] = 'Task could not be created.';
                 }
                 
-            } else {  // Make new timesheet and task in it
+            } 
+            // Make new timesheet and task in it
+            else {  
+                
+                $logger->info('Creating Timesheet for this week.');
                 
                 $timesheet = new \Timesheet\Timesheet\Timesheet();
                 $projectService = \Timesheet\Project\Service::getInstance();
@@ -162,8 +182,11 @@ class TimesheetsController extends \My\Control\ProtectedController
                 $now = new DateTime('now');
                 $timesheet->setTimesheetDate($now->format('Y-m-d'));
                 
-                if($timesheetService->createTimesheetAndTask($timesheet, $task)) {
+                $timesheetId = $timesheetService->createTimesheetAndTask($timesheet, $task);
+                if($timesheetId) {
                     $message['success'] = 'New Task created.';
+                    $logger->info('Created.');
+                    $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
                 } else {
                     $message['fail'] = 'Task could not be created.';
                 }
@@ -180,7 +203,6 @@ class TimesheetsController extends \My\Control\ProtectedController
         
         // collect parameters from the timesheet details page
         if($request->getParam('from_timesheet_details_page') != null) {
-            $logger->info('Coming from timesheet details page.');
             $coming_from_timesheet_details_page = true;
             
             if($request->getParam('old_timesheet_id') != null) {
@@ -234,7 +256,7 @@ class TimesheetsController extends \My\Control\ProtectedController
         $this->_response->setBody($response); 
     }
     
-    public function _edit_task($request) {
+    /*public function _edit_task($request) {
         global $logger;
         $skeleton =  new TwigRenderer('newtask.html');
         $this->_response = new HttpResponse('none', $skeleton);
@@ -283,7 +305,7 @@ class TimesheetsController extends \My\Control\ProtectedController
             'message' => $message,
             'project_name' =>$projectName,
         )); 
-    }
+    }*/
     
     public function _search($request) {
         global $logger;
@@ -292,17 +314,21 @@ class TimesheetsController extends \My\Control\ProtectedController
         $timesheetService = \Timesheet\Timesheet\Service::getInstance();
         $taskImpl = new \Timesheet\Task\DAOImpl();
         
-        $month = date('m');
+        $userId = 1; // Get user id
         
         if($request->getParam('q')!=null) {
             $query = $request->getParam('q');
-            $temp = $timesheetService->getTimesheetsUnderProjectName($query); // convert to user specific
+            $temp = $timesheetService->getUserTimesheetsUnderProjectName($query, $userId);
         } else if($request->getParam('default') == true) {
-            $temp = $timesheetService->getTimesheetsInMonth($month); // convert to user specific
+            if($request->getParam('offset') !=null ) {
+                $offset = (int)$request->getParam('offset');
+                $temp = $timesheetService->getUserAllTimesheets($userId, $offset);
+            } else {
+                $temp = $timesheetService->getUserAllTimesheets($userId);
+            }
         } else {
             return false;
         }
-        
         
         $data = array();
             
@@ -312,7 +338,6 @@ class TimesheetsController extends \My\Control\ProtectedController
             $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
             $week  = (int)date('W', $date);
             $year  = (int)date('Y', $date);
-            $month = date('M', $date);
             
             $time = $taskImpl->getTotalWorkTimeOfTimesheet($timesheet->getTimesheetId());
             if($time) {
@@ -335,11 +360,19 @@ class TimesheetsController extends \My\Control\ProtectedController
         $skeleton =  new TwigRenderer('taskdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
+        if($request->getParam('mark') != null) {
+            
+            $markValue = (int) $request->getParam('mark');
+            $taskId = (int) $request->getParam('id');
+            
+            $returnValue = $this->_mark_task($taskId, $markValue);
+        } 
+        
         if($request->getParam('id') == null) {
             return;
         } else {
             $id = $request->getParam('id');
-        }
+        }        
         
         $taskService  = \Timesheet\Task\Service::getInstance();
         
@@ -347,12 +380,22 @@ class TimesheetsController extends \My\Control\ProtectedController
         $task = $task[0];
         $title = $task->getTaskName();
         
-        
-        
         $this->_response->setBody(array(
             'title' => $title,
-            'task' =>$task,
+            'task' => $task,
+            'is_admin' => true
         )); 
+    }
+    
+    private function _mark_task($taskId, $markValue) {
+        global $logger;
+        
+        $taskService  = \Timesheet\Task\Service::getInstance();
+        if($taskService->markTask($taskId, $markValue)) {
+            $logger->info('DONE');
+        } else {
+            $logger->info('NOT DONE');
+        }
     }
 
 }//end class

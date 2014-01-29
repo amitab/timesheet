@@ -22,10 +22,13 @@ interface DAO {
     public function getEmployeeTotalWorkTime($userId, $projectId);
     public function getEmployeeTotalPauseTime($userId, $projectId);
     public function getProjectNameById($projectId);
+    public function getProjectManagerId($projectId);
         
     // admin functions
         
-    public function addUsersToProject($projectId, $userIds);
+    public function addUsersToProject($projectId, $userIds, $notification);
     public function getProjectTotalWorkTime($projectId);
+        
+    public function markCompleted($projectId);
         
 }

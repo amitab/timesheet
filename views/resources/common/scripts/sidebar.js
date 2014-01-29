@@ -43,8 +43,13 @@ $(document).ready(function(){
         //event.preventDefault();
         
         var target = $(event.target);
-        if(target.is("a.page-link.small")) {
+        if(target.is('a.page-link.small')) {
             window.location.href = target.attr('href');
+        }
+        if(!target.is('div.inline-menu a')) {
+            if(!$('div.inline-menu').hasClass('hidden')) {
+                closeInlineMenu($('div.inline-menu'));
+            }
         }
         
         if($('#page-wrap').hasClass('active')) {

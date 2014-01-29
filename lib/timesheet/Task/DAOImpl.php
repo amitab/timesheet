@@ -75,33 +75,52 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Task\DAO {
 	    try {
             $valArr = array(
                 ':taskId' => $taskId,
-                ':mark' => $mark
+                ':taskStatus' => $mark
             );
             return $this->_executeObjectQuery('mark task', $valArr, \Native5\Core\Database\DB::UPDATE);
 	    } catch (\Exception $e) {
+	        $GLOBALS['logger']->info($e->getMessage());
 	        return false;
 	    }
 	}
 	
-	public function createTask($task, $timesheetId = null, $call = false) {
+	public function createTask($task, $timesheetId, $call = false) {
 	    try {
-	        $timesheetId == null ? $timesheetId = $task->getTaskTimesheetId() : 1;
+	        if(!$call) {
+	            $this->db->beginTransaction();
+            }
+            
             $valArr = array(
                 ':taskName' => $task->getTaskName(),
                 ':taskNotes' => $task->getTaskNotes(),
                 ':taskStartTime' =>$task->getTaskStartTime(),
-                ':taskEndTime' =>$task->getTaskEndTime(),
+                ':taskEndTime' => $task->getTaskEndTime(),
                 ':taskTimesheetId' => $timesheetId,
                 ':taskWorkTime' => $task->getTaskWorkTime(),
-                ':taskLocation' => $task->getTaskLocation()
+                ':taskLocation' => $task->getTaskLocation(),
+                ':taskStatus' => 0
             );
             
-            return $this->_executeObjectQuery('create new task', $valArr, \Native5\Core\Database\DB::INSERT);
+            $data = $this->_executeObjectQuery('create new task', $valArr, \Native5\Core\Database\DB::INSERT);
+            $GLOBALS['logger']->info('INSERT TASK ID : ' . $data);
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notification = $task->getNotification();
+            $notification->setNotificationSubjectId($data);
+            $notificationService->createNotification($notification, true);
+            
+            if(!$call){
+                $this->db->commitTransaction();
+            }
+            return $data;
             
 	    } catch (\Exception $e) {
-	        if($call) {
+	        $GLOBALS['logger']->info('ERROR AT TASK : ' . $e->getMessage());
+	        if(!$call) {
+	            $this->db->rollbackTransaction();
+	            return false;
+	        } else {
 	            throw new \Exception($e->getMessage());
-	        } else return false;
+	        } 
 	    }
 	    
 	}

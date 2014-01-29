@@ -30,12 +30,12 @@
                         {% if items.edit == true %} 
                             value="{{ items.task.taskName }}"
                         {% endif %}/>
-                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                        <span class="adjoined"><i class="fa fa-pencil-square-o"></i></span>
                     </div>
                     
                     <div class="field">
                         <label class="medium" for="start_time"><i class="fa fa-clock-o"></i>&nbsp;Start Time : </label>
-                        <input name="start_time" type="text" 
+                        <input name="start_time" type="datetime-local" 
                         {% if items.edit == true %}
                             value="{{ items.task.taskStartTime }}"
                         {% elseif items.coming_from_timer_page == true %}
@@ -44,7 +44,7 @@
                     </div>
                     <div class="field">
                         <label class="medium" for="end_time"><i class="fa fa-clock-o"></i>&nbsp;End Time : </label>
-                        <input name="end_time" type="text" 
+                        <input name="end_time" type="datetime-local" 
                         {% if items.edit == true %}
                             value="{{ items.task.taskEndTime }}"
                         {% elseif items.coming_from_timer_page == true %}

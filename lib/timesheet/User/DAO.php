@@ -27,4 +27,6 @@ interface DAO {
     public function getUserImageUrl($userId);
     
     public function getTotalUserWorkHours($userId);
+    
+    public function getUsersForProject($userName, $projectId, $userIds);
 }

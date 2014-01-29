@@ -1,4 +1,5 @@
 ---
+get manager id : SELECT DISTINCT `project`.`project_manager_id` AS `manager_id` FROM `project_timesheet` NATURAL JOIN `project` WHERE `project_timesheet`.`timesheet_id` = :timesheetId;
 
 get all timesheets : SELECT `timesheet`.* FROM `timesheet` ORDER BY `timesheet`.`timesheet_date` DESC;
 
@@ -14,20 +15,13 @@ find timesheets created in year : SELECT `timesheet`.* FROM `timesheet` WHERE EX
 
 find timesheets created in month and week : SELECT `timesheet`.* from `timesheet` WHERE MONTH(`timesheet`.`timesheet_date`) = :month AND WEEK(`timesheet`.`timesheet_date`, 5) - WEEK(DATE_SUB(`timesheet`.`timesheet_date`, INTERVAL DAYOFMONTH(`timesheet`.`timesheet_date`) - 1 DAY), 5) + 1 = :week ORDER BY `timesheet`.`timesheet_date` DESC;
 
-get recently marked timesheets : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` != 0 ORDER BY `timesheet`.`timesheet_mark_time` DESC;
-
-get recently marked timesheets with offset : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` != :status ORDER BY `timesheet`.`timesheet_mark_time` DESC OFFSET :offset;
-get timesheets with status : SELECT `timesheet`.* FROM `timesheet` WHERE `timesheet`.`timesheet_status` = :timesheetStatus LIMIT :limit OFFSET :offset;
-
-mark timesheet : UPDATE `timesheet` SET `timesheet`.`timesheet_status` = :timesheetStatus, `timesheet`.`timesheet_mark_time` = :timesheetMarkTime WHERE `timesheet`.`timesheet_id` = :timesheetId;
-
 create new timesheet : INSERT INTO `timesheet` (timesheet_date, timesheet_project_name, timesheet_status) VALUES (:timesheetDate, :timesheetProjectName, :timesheetStatus);
 edit timesheet : UPDATE `timesheet` SET timesheet_date = :timesheetDate, timesheet_project_name = :timesheetProjectName;
 delete timesheet : DELETE FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
 
 
 
-get all timesheets for user : SELECT `timesheet`.* FROM `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId ORDER BY `timesheet`.`timesheet_date` DESC;
+get all timesheets for user : SELECT `timesheet`.* FROM `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId ORDER BY `timesheet`.`timesheet_date` DESC LIMIT 10;
 
 find timesheets under project name for user : SELECT `timesheet`.* FROM `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId AND `timesheet`.`timesheet_project_name` LIKE :projectName ORDER BY `timesheet`.`timesheet_date` DESC;
 
@@ -39,11 +33,7 @@ find timesheets created in year for user : SELECT `timesheet`.* FROM `timesheet`
 
 find timesheets created in month and week for user : SELECT `timesheet`.* from `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId AND MONTH(`timesheet`.`timesheet_date`) = :month AND WEEK(`timesheet`.`timesheet_date`, 5) - WEEK(DATE_SUB(`timesheet`.`timesheet_date`, INTERVAL DAYOFMONTH(`timesheet`.`timesheet_date`) - 1 DAY), 5) + 1 = :week ORDER BY `timesheet`.`timesheet_date` DESC;
 
-find this week timesheet : SELECT `timesheet`.`timesheet_id` AS `timesheet_id` FROM `timesheet` WHERE WEEKOFYEAR(`timesheet`.`timesheet_date`) = WEEKOFYEAR(NOW()) AND `timesheet`.`timesheet_id` IN (SELECT `user_timesheet`.`timesheet_id` FROM `user_timesheet` NATURAL JOIN `project_timesheet` WHERE `user_timesheet`.`user_id` = :userId AND `project_timesheet`.`project_id` = :projectId);
-
-get recently marked timesheets for user : SELECT `timesheet`.* FROM `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId AND `timesheet`.`timesheet_status` != 0 ORDER BY `timesheet`.`timesheet_mark_time` DESC;
-
-get recently marked timesheets with offset for user : SELECT `timesheet`.* FROM `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId AND `timesheet`.`timesheet_status` != 0 ORDER BY `timesheet`.`timesheet_mark_time` DESC OFFSET :offset;
+find this week timesheet : SELECT `timesheet`.* FROM `timesheet` WHERE WEEKOFYEAR(`timesheet`.`timesheet_date`) = WEEKOFYEAR(NOW()) AND `timesheet`.`timesheet_id` IN (SELECT `user_timesheet`.`timesheet_id` FROM `user_timesheet` NATURAL JOIN `project_timesheet` WHERE `user_timesheet`.`user_id` = :userId AND `project_timesheet`.`project_id` = :projectId);
 
 get timesheets with status for user : SELECT `timesheet`.* FROM `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId AND `timesheet`.`timesheet_status` = :timesheetStatus LIMIT :limit OFFSET :offset;
 

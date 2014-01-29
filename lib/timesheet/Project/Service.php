@@ -37,13 +37,19 @@ class Service {
     public function deleteProject($projectId) {
         return $this->_dao->deleteProject($projectDetails);
     }
-    public function addUsersToProject($projectId, $userIds) {
-        return $this->_dao->addUsersToProject($projectId, $userIds);
+    public function addUsersToProject($projectId, $userIds, $notification=null) {
+        return $this->_dao->addUsersToProject($projectId, $userIds, $notification);
+    }
+    public function markCompleted($projectId) {
+        return $this->_dao->markCompleted($projectId);
     }
     
     // read only functions
     public function searchByNameUnderUserId($projectName, $userId) {
         return $this->_dao->searchByNameUnderUserId($projectName, $userId);
+    }
+    public function getProjectManagerId($projectId) {
+        return $this->_dao->getProjectManagerId($projectId);
     }
     public function getProjectNameById($projectId) {
         return $this->_dao->getProjectNameById($projectId);

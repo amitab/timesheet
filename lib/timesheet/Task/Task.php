@@ -13,6 +13,14 @@ class Task {
     private $taskLocation;
     private $taskStatus;
     
+    private $notification;
+    public $prettyWorkTime;
+    
+    private $readableTaskState;
+    const STATUS_UNCHECKED = 0;
+    const STATUS_ACCEPTED = 1;
+    const STATUS_REJECTED = 2;
+    
     public static function make($data) {
         $task = new self();
         
@@ -43,6 +51,21 @@ class Task {
 
 	public function setTaskStatus($taskStatus){
 		$this->taskStatus = $taskStatus;
+		if($taskStatus == self::STATUS_UNCHECKED) {
+		    $this->readableTaskState = 'UNCHECKED';
+		} else if($taskStatus == self::STATUS_ACCEPTED) {
+		    $this->readableTaskState = 'ACCEPTED';
+		} else if($taskStatus == self::STATUS_REJECTED) {
+		    $this->readableTaskState = 'REJECTED';
+		}
+	}
+    
+    public function getReadableTaskState(){
+		return $this->readableTaskState;
+	}
+
+	public function setReadableTaskState($readableTaskState){
+		$this->readableTaskState = $readableTaskState;
 	}
     
     public function getTaskId(){
@@ -59,7 +82,12 @@ class Task {
 
 	public function setTaskWorkTime($taskWorkTime){
 		$this->taskWorkTime = $taskWorkTime;
-	}
+		$hours = round(($taskWorkTime) / 3600);
+		$minutes = round(($taskWorkTime % (3600)) / 60);
+		$seconds = round($taskWorkTime % 60);
+		
+		$this->prettyWorkTime = $hours . ':' . $minutes . ':' . $seconds;
+	}    
 
 	public function getTaskName(){
 		return $this->taskName;
@@ -83,6 +111,14 @@ class Task {
 
 	public function setTaskTimesheetId($taskTimesheetId){
 		$this->taskTimesheetId = $taskTimesheetId;
+	}
+	
+	public function getNotification(){
+		return $this->notification;
+	}
+
+	public function setNotification($notification){
+		$this->notification = $notification;
 	}
 
 	public function getTaskStartTime(){

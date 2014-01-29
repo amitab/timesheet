@@ -71,27 +71,22 @@ class SignupController extends DefaultController
 
     }
     
-    public function _create_user($request) {
+    private function _create_user($user, $password, $roles) {
         global $logger;
-        $skeleton =  new TwigRenderer('signup.html');
-        $this->_response = new HttpResponse('none', $skeleton);
         
         try {
             $user =
-                \Native5\Services\Users\User::createBuilder('john.doe@email.com')
-                    ->setPassword('password')
-                    ->setName('John Doe')
+                \Native5\Services\Users\User::createBuilder($user->getUserMail())
+                    ->setPassword($password)
+                    ->setName($user->getUserFirstName() . ' ' . $getUserLastName())
                     ->setRoles(
-                        array(
-                            'Employer',
-                            'Employee'
-                        )
+                       $roles
                     )
                     ->setAliases(
                         array(
-                            'email' => 'john.doe@email.com',
-                            'userId' => 1
-                            'mobile' => '+91-8081-333-222'
+                            'email' => $user->getUserMail(),
+                            'userId' => $user->getUserId(),
+                            'mobile' => $user->getUserPhoneNumber()
                         )
                     )
                     ->build();
@@ -109,12 +104,6 @@ class SignupController extends DefaultController
         
         $logger->info(print_r($user, 1));
         $logger->info(print_r($return, 1));
-        
-        $this->_response->setBody(array(
-            'title' => 'Sign Up',
-            'login' => true,
-            'message' => $message
-        ));
     }
     
     public function _tester($request) {

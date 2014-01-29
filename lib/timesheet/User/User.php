@@ -4,22 +4,24 @@ namespace Timesheet\User;
 
 class User {
     private $userId;
-    private $userName;
     private $userLocation;
     private $userMail;
     private $userPhoneNumber;
     private $userImageUrl;
     private $userSex;
+    private $userFirstName;
+    private $userLastName;
     
 	public static function make($data) {
 		$user = new self();
 		$user->setUserId($data['user_id']);
-		$user->setUserName($data['user_name']);
 		$user->setUserLocation($data['user_location']);
 		$user->setUserMail($data['user_email']);
 		$user->setUserPhoneNumber($data['user_phone_number']);
 		$user->setUserImageUrl($data['user_image_url']);
 		$user->setUserSex($data['user_sex']);
+		$user->setUserFirstName($data['user_first_name']);
+		$user->setUserLastName($data['user_last_name']);
 		return $user;
 	}
 	
@@ -27,6 +29,12 @@ class User {
     public function getUserId() { return $this->userId; }
     public function setUserName($userName) { $this->userName = $userName; }
     public function getUserName() { return $this->userName; }
+    
+    public function setUserFirstName($userFirstName) { $this->userFirstName = $userFirstName; }
+    public function getUserFirstName() { return $this->userFirstName; }
+    public function setUserLastName($userLastName) { $this->userLastName = $userLastName; }
+    public function getUserLastName() { return $this->userLastName; }
+    
     public function setUserLocation($userLocation) { $this->userLocation = $userLocation; }
     public function getUserLocation() { return $this->userLocation; }
     public function setUserMail($userMail) { $this->userMail = $userMail; }

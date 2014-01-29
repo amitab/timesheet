@@ -9,7 +9,7 @@
                     <img src={{ items.image_path ~ items.user.userImageUrl }} alt="" class="image">
                 </div>
                 <div class="details">
-                    <h4>{{ items.user.userName }}</h4>
+                    <h4>{{ items.user.userFirstName ~ ' ' ~ items.user.userLastName }}</h4>
                     <p class="small">{{ items.user.userMail }}</p>
                     <p class="small"><i class="fa fa-map-marker"></i>&nbsp;{{ items.user.userLocation }}</p>
                 </div>
@@ -31,11 +31,13 @@
                         </tr>
                     </table>
                 </div>
-                <div class="options" style="padding: 10px; text-align: center;">
-                    <div class="medium primary btn">
-                        <a href={{ resolvePath("profile\\edit_profile") }} style="font-size: 14px;" >Edit Profile</a>
+                {% if items.view_profile != true %}
+                    <div class="options" style="padding: 10px; text-align: center;">
+                        <div class="medium primary btn">
+                            <a href={{ resolvePath("profile\\edit_profile") }} style="font-size: 14px;" >Edit Profile</a>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </section>
         </div>
     </div>

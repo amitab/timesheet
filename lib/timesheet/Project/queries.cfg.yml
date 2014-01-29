@@ -4,6 +4,8 @@ get project handled by user id : SELECT DISTINCT `project`.* FROM `user`, `user_
 get project created by user id : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_manager_id` = :managerId;
 find user group : SELECT `group`.* FROM `group`, `authentication` WHERE `authentication`.`group_id` = `group`.`group_id` AND  `authentication`.`user_id` = :userId;
 
+get manager id : SELECT `project`.`project_manager_id` AS `manager_id` FROM `project` WHERE `project`.`project_id` = :projectId;
+
 get all projects : SELECT `project`.* FROM `project`;
 find project by id : SELECT `project`.* FROM `project` WHERE `project`.`project_id` = :projectId;
 find project by name : SELECT `project`.* FROM `project` WHERE `project`.`project_name` LIKE :projectName;
@@ -30,5 +32,7 @@ get employee total work time : SELECT SUM(`task`.`task_work_time`) AS `total_wor
 get employee total pause time : SELECT SUM( TIMESTAMPDIFF(SECOND, `task`.`task_start_time`, `task`.`task_end_time` ) - `task`.`task_work_time` ) AS `total_work_time` FROM  `user_timesheet`, `project_timesheet`, `task` WHERE `project_timesheet`.`timesheet_id` = `task`.`task_timesheet_id` AND `project_timesheet`.`project_id` = :projectId AND `user_timesheet`.`timesheet_id` = `project_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
 
 get project total work time : SELECT SUM(`task`.`task_work_time`) AS `total_project_work_time` FROM  `project_timesheet`, `task` WHERE `project_timesheet`.`timesheet_id` = `task`.`task_timesheet_id` AND `project_timesheet`.`project_id` = :projectId;
+
+mark complete : UPDATE `project` SET `project`.`project_state` = :projectState WHERE `project`.`project_id` = :projectId;
 
 ...

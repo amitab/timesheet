@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class ProfileController extends \My\Control\ProtectedController
+class ProfileController extends DefaultController
 {
 
 
@@ -63,7 +63,7 @@ class ProfileController extends \My\Control\ProtectedController
         $skeleton =  new TwigRenderer('profile-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $userId = 1;
+        $userId = 1; // Get current user Id
         $userService = \Timesheet\User\Service::getInstance();
         $user = $userService->getUserById($userId);
         $user = $user[0];
@@ -79,6 +79,26 @@ class ProfileController extends \My\Control\ProtectedController
 
     }//end _default()
     
+    public function _view($request) {
+        global $logger;
+        $skeleton =  new TwigRenderer('profile-test.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $userId = (int) $request->getParam('id');
+        $userService = \Timesheet\User\Service::getInstance();
+        $user = $userService->getUserById($userId);
+        $user = $user[0];
+        $stats = $userService->getUserStats($userId);
+        
+        $this->_response->setBody(array(
+            'title' => 'Profile',
+            'image_path' => IMAGE_PATH,
+            'user' => $user,
+            'stats' => $stats,
+            'view_profile' => true
+        )); 
+    }
+    
     public function _edit_profile($request)
     {
         
@@ -87,7 +107,7 @@ class ProfileController extends \My\Control\ProtectedController
         $this->_response = new HttpResponse('none', $skeleton);
         
         
-        $userId = 1;
+        $userId = 1; // Get current user Id
         $userService = \Timesheet\User\Service::getInstance();
         $user = $userService->getUserById($userId);
         $user = $user[0];
@@ -109,7 +129,7 @@ class ProfileController extends \My\Control\ProtectedController
         $skeleton =  new TwigRenderer('uploadprofileimage.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $userId = 1;
+        $userId = 1; // Get current user Id
         $userService = \Timesheet\User\Service::getInstance();
         $userImagePath = $userService->getUserImageUrl($userId);
         
@@ -132,9 +152,14 @@ class ProfileController extends \My\Control\ProtectedController
                 $image_path = IMAGE_PATH . $newFileName;
                 
                 // Update database with new pic name. Delete this pic if database update fails.
-                // unlink($uploader->uploadPath . $newFileName);
+                if($userService->uploadUserImage($newFileName, $userId)) {
+                    $successful[] = 'Image has been updated.';
+                } else {
+                    $warnings[] = 'Image could not be updated.';
+                    unlink($uploader->uploadPath . $newFileName);
+                }
                 
-                $successful[] = 'Image has been updated';
+                
                 
             } catch (\Exception $e) {
                 $warnings[] = $e->getMessage();

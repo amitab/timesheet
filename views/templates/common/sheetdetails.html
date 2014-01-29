@@ -25,7 +25,7 @@
                             {% for task in items.tasks %}
                                 <tr class="task-details" id={{ task.taskId }}>
                                     <td>{{ task.taskName }}</td>
-                                    <td>{{ task.taskWorkTime }}</td>
+                                    <td>{{ task.prettyWorkTime }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

@@ -83,23 +83,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         return $this->_executeObjectQuery('find timesheets created in month and week', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
-	public function getRecentlyMarkedTimesheets($offset = NULL) {
-	    if($offset == NULL) {
-	        $valArr = array(
-                ':status' => \Timesheet\Timesheet\UNMARKED,
-            );
-            return $this->_executeObjectQuery('get recently marked timesheets', $valArr, \Native5\Core\Database\DB::SELECT);
-	        
-	    } else {
-	        
-	        $valArr = array(
-                ':offset' => $offset,
-            );
-            return $this->_executeObjectQuery('get recently marked timesheets with offset', $valArr, \Native5\Core\Database\DB::SELECT);
-	        
-	    }
-	}
-	
 	public function getTimesheetsWithStatus($timesheetStatus,$limit, $offset) {
 	    $valArr = array(
             ':timesheetStatus' => $timesheetStatus,
@@ -107,6 +90,14 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
             ':offset' => $offset
         );
         return $this->_executeObjectQuery('get timesheets with status', $valArr, \Native5\Core\Database\DB::SELECT);
+	}
+	
+	public function getProjectManagerId($timesheetId) {
+	    $valArr = array(
+            ':timesheetId' => $timesheetId,
+        );
+        $data = $this->_executeQuery('get manager id', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['manager_id'];
 	}
 	
 	// WRITE FUNCTIONS
@@ -143,7 +134,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
             
         } 
         
-        return true;
+        return $timesheetId;
 	}
 	
 	public function createTimesheetAndTask($timesheetDetails, $task) {
@@ -181,7 +172,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
             
         } 
         
-        return true;
+        return $timesheetId;
 	}
 	
 	
@@ -215,11 +206,19 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	
 	// user specific read functions 
 	
-    public function getUserAllTimesheets($userId) {
-        $varArr = array(
+    public function getUserAllTimesheets($userId, $offset=null) {
+        if($offset!=null) {
+            
+            $sql = 'SELECT `timesheet`.* FROM `timesheet`, `user_timesheet` WHERE `timesheet`.`timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = ' . $userId . ' ORDER BY `timesheet`.`timesheet_date` DESC LIMIT 10 OFFSET ' . (int)$offset . ';';
+            $data = $this->_executeObjectQueryString($sql, null, \Native5\Core\Database\DB::SELECT);
+            return $data;
+            
+        } else {
+            $varArr = array(
             ':userId' => $userId
-        );
-        return $this->_executeObjectQuery('get all timesheets for user', $varArr, \Native5\Core\Database\DB::SELECT);
+            );
+            return $this->_executeObjectQuery('get all timesheets for user', $varArr, \Native5\Core\Database\DB::SELECT);
+        }
 	}
 	
     public function getUserTimesheetsUnderProjectName($projectName, $userId) {
@@ -263,26 +262,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         return $this->_executeObjectQuery('find timesheets created in month and week for user', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
 	
-	public function getUserRecentlyMarkedTimesheets($userId, $offset = NULL) {
-	    if($offset == NULL) {
-	        $valArr = array(
-                ':status' => \Timesheet\Timesheet\UNMARKED,
-                ':userId' => $userId
-                
-            );
-            return $this->_executeObjectQuery('get recently marked timesheets for user', $valArr, \Native5\Core\Database\DB::SELECT);
-	        
-	    } else {
-	        
-	        $valArr = array(
-                ':offset' => $offset,
-                ':userId' => $userId
-            );
-            return $this->_executeObjectQuery('get recently marked timesheets with offset for user', $valArr, \Native5\Core\Database\DB::SELECT);
-	        
-	    }
-	}
-	
 	public function getUserTimesheetsWithStatus($timesheetStatus, $limit, $userId, $offset = NULL) {
 	    $valArr = array(
             ':timesheetStatus' => $timesheetStatus,
@@ -292,22 +271,4 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
         );
         return $this->_executeObjectQuery('get timesheets with status for user', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
-	
-	// project manager functions
-    
-    public function markTimesheet($status, $timesheetId, $timesheetMarkTime) {
-        $valArr = array(
-            ':status' => $status,
-            ':timesheetId' => $timesheetId,
-            ':timesheetMarkTime' => $timesheetMarkTime
-        );
-        
-        try {
-            return $this->_executeQuery('mark timesheet', $valArr, \Native5\Core\Database\DB::UPDATE);
-        } catch (\Exception $e) {
-            return false;
-        }
-        
-        return $result;
-    }
 }

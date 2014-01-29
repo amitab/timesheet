@@ -17,6 +17,8 @@ class Project {
     private $readableProjectStatus;
     private $readableProjectState;
     
+    private $notification;
+    
     const HIGH_PRIORITY = 0;
     const MEDIUM_PRIORITY = 1;
     const LOW_PRIORITY = 2;
@@ -88,6 +90,15 @@ class Project {
 
 	public function setReadableProjectState($readableProjectState){
 		$this->readableProjectState = $readableProjectState;
+	}
+	
+	
+	public function getNotification(){
+		return $this->notification;
+	}
+
+	public function setNotification($notification){
+		$this->notification = $notification;
 	}
 
 } 

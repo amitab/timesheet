@@ -3,7 +3,7 @@ namespace Timesheet\Notification;
 
 interface DAO {
     // write only functions
-    public function createNotification($notificationDetails, $fromUserId, $toUserIds);
+    public function createNotification($notificationDetails, $call);
     public function deleteNotification($notificationId);
     
     //read functions

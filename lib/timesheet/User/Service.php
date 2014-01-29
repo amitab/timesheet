@@ -40,18 +40,25 @@ class Service {
         return $this->_dao->editUserPassword($userId, $password);
     }
 	
-	
+	public function getUsersForProject($userName, $projectId, $userIds=null) {
+	    return $this->_dao->getUsersForProject($userName, $projectId, $userIds);
+	}
 	
 	public function getUserById($userId) {
 		$data = $this->_dao->getUserById($userId);
 		return $data;
 	}
 	
+	private function count_digit($number) {
+        return strlen($number);
+    }
+	
 	public function getUserStats($userId) {
+	    $hours = round($this->_dao->getTotalUserWorkHours($userId)/3600);
 	    $data = array(
 	        'timesheets' => $this->_dao->getUserTimesheetCount($userId),
 	        'projects' => $this->_dao->getUserProjectCount($userId),
-	        'hours' => ($this->_dao->getTotalUserWorkHours($userId))/3600
+	        'hours' => $hours,
 	    );
 	    return $data;
 	}
@@ -96,5 +103,11 @@ class Service {
     }
     public function getUserNameById($userId) {
         return $this->_dao->getUserNameById($userId);
+    }
+    public function uploadUserImage($imageUrl, $userId) {
+        return $this->_dao->uploadUserImage($imageUrl, $userId);
+    }
+    public function removeUserImage($userId) {
+        return $this->_dao->removeUserImage($userId);
     }
 }

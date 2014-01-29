@@ -66,8 +66,8 @@ $(document).ready(function(){
     
     function finish() {
         $('input#work_time').val(workTime);
-        $('input#start_time').val(startTime);
-        $('input#end_time').val(endTime);
+        $('input#start_time').val(startTime.getFullYear() + '-' + startTime.getDate() + '-' + startTime.getMonth() + ' ' + startTime.getHours() + ':' + startTime.getMinutes() + ':' + startTime.getSeconds());
+        $('input#end_time').val(endTime.getFullYear() + '-' + endTime.getDate() + '-' + endTime.getMonth() + ' ' + endTime.getHours() + ':' + endTime.getMinutes() + ':' + endTime.getSeconds());
         $('form').append('<input type="hidden" name="from_timer_page" value="1" />');
         $('form').submit();
     }

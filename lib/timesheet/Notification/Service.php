@@ -28,8 +28,8 @@ class Service {
 	// The Cover
 	
 	// write only functions
-    public function createNotification($notificationDetails) {
-        return $this->_dao->createNotification($notificationDetails);
+    public function createNotification($notificationDetails, $call = false) {
+        return $this->_dao->createNotification($notificationDetails, $call);
     }
     public function deleteNotification($notificationId) {
         return $this->_dao->deleteNotification($notificationId);

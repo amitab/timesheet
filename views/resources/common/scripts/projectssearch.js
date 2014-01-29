@@ -10,6 +10,27 @@ $(document).ready(function() {
             var list = '';
             var extract = value.projectDescription.substring(0,60) + '...';
             
+            var deadline = ~~(new Date(value.projectTimeAlloted)/1000);
+            var today = ~~(new Date(Date.now())/1000);
+            
+            var timeLeft = deadline - today;
+            var days = ~~(timeLeft/(3600*24))
+            var hrs = ~~(timeLeft / 3600);
+            var mins = ~~((timeLeft % 3600) / 60);
+            //var secs = ~~(timeLeft % 60);
+            
+            var timeString = '';
+            
+            if(days > 0) {
+                timeString += days + ' days left';
+            } else if (hrs > 0) {
+                timeString += hrs + ' hours left';
+            } else if (mins > 0) {
+                timeString += mins + ' minutes left';
+            } else {
+                timeString += 'Time is up.';
+            }
+            
             list += '<li class="project-link" id="' + value.projectId + '">';
             list += '<table>';
             list += '<tr>';
@@ -22,7 +43,7 @@ $(document).ready(function() {
             list += '<p class="about small">' + extract + '</p>';
             list += '<p class="time-alloted small">';
             list += '<span>Deadline : </span>';
-            list += '' + value.projectTimeAlloted + '</p>';
+            list += '' + timeString + '</p>';
             list += '</div>';
             list += '</li>';
             $('#projects-list > ul').prepend(list);

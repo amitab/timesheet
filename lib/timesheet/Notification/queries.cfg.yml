@@ -2,9 +2,9 @@
 
 find notification by id : SELECT `notification`.* FROM `notification` WHERE `notification`.`notification_id` = :notificationId;
 find notifications from user : SELECT DISTINCT `notification`.* FROM `notification`, `user_notification` WHERE `notification`.`notification_id` = `user_notification`.`notification_id` AND `user_notification`.`from_user_id` = :userId;
-find notifications to user : SELECT DISTINCT  `notification`.* ,  `user`.`user_name` AS  `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = :userId LIMIT 10;
+find notifications to user : SELECT DISTINCT  `notification`.* ,  concat(`user`.`user_first_name`, ' ', `user`.`user_last_name`) AS  `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = :userId LIMIT 10;
 
-find notifications to user by offset : SELECT DISTINCT `notification`.* , `user`.`user_name` AS `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = :userId LIMIT 10 OFFSET :offset;
+find notifications to user by offset : SELECT DISTINCT `notification`.* , concat(`user`.`user_first_name`, ' ', `user`.`user_last_name`) AS `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = :userId LIMIT 10 OFFSET :offset;
 
 find notifications by priority : SELECT `notification`.* FROM `notification` WHERE `notification`.`notification_priority` = :notificationPriority;
 
@@ -12,7 +12,7 @@ find notification count for user : SELECT DISTINCT COUNT(`notification`.*) FROM 
 
 delete notification by id : DELETE FROM `notification` WHERE `notification`.`notification_id` = :notificationId;
 
-create new notification : INSERT INTO `notification` (notification_body, notification_priority, notification_read, notification_type, notification_subject_id) VALUES (:notificationBody, :notificationPriority, :notificationRead, :notificationType, :notificationSubjectId);
+create new notification : INSERT INTO `notification` (notification_body, notification_priority, notification_read, notification_type, notification_subject_id, notification_date) VALUES (:notificationBody, :notificationPriority, :notificationRead, :notificationType, :notificationSubjectId, :notificationDate);
 
 mark notification : UPDATE `notification` SET `notification_read` = 1 WHERE `notification`.`notification_id` = :notificationId;
 
