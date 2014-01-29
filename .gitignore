@@ -15,6 +15,7 @@ local.properties
 .classpath
 .settings/
 .loadpath
+composer.lock
 
 # External tool builders
 .externalToolBuilders/
