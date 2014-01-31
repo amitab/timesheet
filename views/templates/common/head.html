@@ -166,14 +166,29 @@
                     
                 {% elseif items.search == true %}
                        
-                    <div class="header-search-pack">
+                    <div class="search">
+                        <table class="search">
+                            <tr>
+                                <td>
+                                   <input type="search" class="input closed" id="search-box" name="search" placeholder="Search"> 
+                                </td>
+                                <td>
+                                   <div class="medium btn header-search">
+                                        <a href="#search-box" id="search-button"><i class="fa fa-search" style=" margin-left: -2px;"></i></a>
+                                    </div> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div> 
+                    
+                    <!--<div class="header-search-pack">
                         <div class="append search field">
                             <input type="search" class="input closed" id="search-box" name="search" placeholder="Search">
                             <div class="medium btn header-search">
                                 <a href="#search-box" id="search-button"><i class="fa fa-search" style=" margin-left: -2px;"></i></a>
                             </div>
                         </div>
-                    </div> 
+                    </div> -->
                 
                 {% elseif items.form_save == true %}
                 

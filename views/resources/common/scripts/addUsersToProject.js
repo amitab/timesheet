@@ -137,8 +137,6 @@ $(document).ready(function() {
                 persistent:false
             });
             
-            setTimeout(function(){ window.location.href = data.message.info.redirect; }, 5000);
-            
         } else {
             native5.Notifications.show( data.message.info.response, {
                 notificationType:'toast',
