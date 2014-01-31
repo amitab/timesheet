@@ -4,9 +4,6 @@
         <div class="eight columns centered">
             <section class="new-project">
                 
-                <div class="title">
-                    <h5>{{ items.title }}</h5>
-                </div>
                 <form action="" method="post" class="timesheet-form">
                     {% if items.edit == true %}
                         <input type="hidden" value={{ items.project.projectId }} name="project_id" />

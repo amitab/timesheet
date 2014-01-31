@@ -64,7 +64,7 @@ $(document).ready(function() {
             list += '<p>' + value.notificationBody + '</p>';
             list += '</div>';
             list += '</li>';
-            $('section#notification-list > ul').append(list);
+            $('section#notification-list > ul').prepend(list);
             currentOffset++;
         });
         notificationList.activate();

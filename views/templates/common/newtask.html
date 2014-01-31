@@ -26,7 +26,11 @@
                         {% if items.message.success %}
                             <p class="alert success">{{ items.message.success }}</p>
                         {% elseif items.message.fail %}
-                            <p class="alert warning">{{ items.message.fail }}</p>
+                            
+                            {% for fail in items.message.fail %}
+                                <p class="alert warning">{{ fail }}</p>
+                            {% endfor %}
+                            
                         {% endif %}
                     </div>
                     <div class="field append">

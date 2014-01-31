@@ -8,9 +8,6 @@
             <input type="hidden" id="timesheet_id" name="timesheet_id" value="{{ items.timesheet_id }}">
             <section class="add-timesheet">
                 
-                <div class="title">
-                    <h5 style="border-bottom: 0;">{{ items.title }}</h5>
-                </div>
                 <h6 style="padding-bottom: 0.7rem; text-align: center; font-weight: bold;">{{ items.project_name }}</h6>
                     <div class="warnings"></div>
                     
@@ -46,9 +43,7 @@
             
             $(document).hammer().on('tap', 'div#add-task', function(e) {
                 e.preventDefault();
-                var url = $('input#add-task-url').attr('task-details-path') + '&old_timesheet_id=' + $('input#timesheet_id').attr('value'); 
-                url += '&project_id=' + $('input#project_id').attr('value') + '&from_timesheet_details_page=true';
-                window.location.href = url;
+                window.location.href = $('input#add-task-url').attr('task-details-path') + '&old_timesheet_id=' + $('input#timesheet_id').attr('value') + '&project_id=' + $('input#project_id').attr('value') + '&from_timesheet_details_page=true';
             });
             
         });

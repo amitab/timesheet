@@ -60,7 +60,7 @@ $(document).ready(function() {
         successHandler : successHandler
     });
     
-    $(document).on(clickevent, '.list-item' ,function(e) {
+    $(document).hammer().on('tap', '.list-item' ,function(e) {
                 
         var parent = $(this).closest('section');
         var item = $(this);

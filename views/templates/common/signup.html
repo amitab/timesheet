@@ -8,14 +8,40 @@
                     <h5>Sign Up</h5>
                 </div>
                 <form action="" method="post" class="new-user-form">
-                    <div class="warnings">{{ items.message }}</div>
+                    <div class="warnings">
+                        
+                        {% if items.info.success %}
+                        
+                            <p class="alert success">{{ items.info.success }}</p>
+                        
+                        {% endif %}
+                        
+                        {% if items.info.fail %}
+                        
+                            <p class="alert danger">{{ items.info.fail }}</p>
+                        
+                        {% endif %}
+                        
+                        {% for fail in items.message.fail %}
+                        
+                            <p class="alert warning">{{ fail }}</p>
+                        
+                        {% endfor %}
+                        
+                    </div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="First Name" name="last_name" />
+                        <input class="input" type="text" placeholder="First Name" name="first_name" />
                         <span class="adjoined"><i class="fa fa-user"></i></span>
                     </div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="Last Name" name="first_name" />
+                        <input class="input" type="text" placeholder="Last Name" name="last_name" />
                         <span class="adjoined"><i class="fa fa-user"></i></span>
+                    </div>
+                    <div style="margin-bottom: 6px;">
+                        <select name="sex" class="field">
+                            <option value="m">Male</option>
+                            <option value="f">Female</option>
+                        </select>
                     </div>
                     <div class="append field">
                         <input class="input" type="text" placeholder="Email" name="email" />
@@ -35,12 +61,22 @@
                     </div>
                     
                     <div class="submit" style="text-align: center;">
-                        <div class="medium secondary btn"><a href={{ resolvePath("home\\signup") }} id="submit">Sign Up</a></div>
+                        <div class="medium secondary btn"><a href="#" id="submit">Sign Up</a></div>
                     </div>
                 </form>
                          
             </section>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', 'a#submit', function(e) {
+                e.preventDefault();
+                $('form.new-user-form').append('<input type="hidden" name="new_user" value="1" />');
+                $('form.new-user-form').submit();
+            });
+        });
+    </script>
 
 {% include 'foot.html' %}

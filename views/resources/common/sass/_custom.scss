@@ -265,8 +265,22 @@ div.inline-menu.moving-in {
 }
 
 section.new-profile {
-    
+    margin: 0;
     border-top: 4px solid $pahdera-green;
+    select {
+        @include box-shadow(inset 0px 2px 6px -5px #888888);
+        width: 100%;
+        padding: 9px 6px;
+        font-size: 16px;
+        
+        @include respond(all-phones) {
+            font-size: 14px;
+        }
+        
+        background: white;
+        border: 1px solid #D8D8D8;
+        @include border-radius(4px);
+    }
 }
 
 
@@ -574,7 +588,6 @@ section.overview {
         padding: 6px 0;
         margin: 0;
     }
-    border-top: 4px solid $gumby-blue;
     padding: 0;
     table {
         margin-bottom: 10px;
@@ -901,7 +914,7 @@ section.timer {
                     position: absolute;
                     right: 0;
                     @include border-radius(0px);
-                    background: lighten($slate-grey, 5%);
+                    background: $slate-grey;
                 }
             }
         }
@@ -926,13 +939,20 @@ section.filter {
     width: 100%;
     left: 0;
     padding: 0;
+    
     select {
+        @include box-shadow(inset 0px 2px 6px -5px #888888);
         width: 100%;
-        padding: 10px;
-        font-size: 14px;
+        padding: 10px 6px;
+        font-size: 16px;
+        
+        @include respond(all-phones) {
+            font-size: 14px;
+        }
+        
         background: white;
         border: 1px solid #D8D8D8;
-        border-radius: 2px;
+        @include border-radius(4px);
     }
     
     td#new-project {

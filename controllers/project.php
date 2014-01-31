@@ -370,7 +370,7 @@ class ProjectController extends \My\Control\ProtectedController
             if($projectService->addUsersToProject($projectId, $userIds, $notification)) {
                 $success = true;
                 $message['response'] = "Users successfully added";
-                $message['redirect'] = 'team_list?rand_token=' . $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce');
+                $message['redirect'] = 'team_list?rand_token=' . $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&project_id=' . $projectId;
                 $logger->info('added');
             } else {
                 $success = false;

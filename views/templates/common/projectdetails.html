@@ -2,18 +2,18 @@
 
     <div class="row">
         <div class="eight columns centered">
-            <div class="messages">
-                {% if items.message.success %}
-                    <p class="alert success">{{ items.message.success }}</p>
-                {% elseif items.message.fail %}
-                    <p class="alert warning">{{ items.message.fail }}</p>
-                {% endif %}
-            </div>
             <section class="project-details">
                 <div class="title">
                     <h5>{{ items.project_details.projectName }}</h5>
                 </div>
                 <div class="wrapper">
+                <div class="messages">
+                    {% if items.message.success %}
+                        <p class="alert success">{{ items.message.success }}</p>
+                    {% elseif items.message.fail %}
+                        <p class="alert warning">{{ items.message.fail }}</p>
+                    {% endif %}
+                </div>
                     <div class="overview" style="margin-bottom: 10px;">
                         
                         <table>

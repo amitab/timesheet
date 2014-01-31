@@ -109,6 +109,19 @@ class TimesheetsController extends \My\Control\ProtectedController
         $this->_response->setBody($response); 
     }
     
+    private function _validate($request) {
+        $taskName = trim($request->getParam('task_name'));
+        if(!$taskName) {
+            $message['fail'][] = 'Task name is invalid.';
+        }
+        $startDate = strtotime($request->getParam('start_time'));
+        $endDate =  strtotime($request->getParam('end_time'));
+        if($startDate >= $endDate) {
+            $message['fail'][] = 'You could\'t have started the task in the past!';
+        }
+        return $message;
+    }
+    
     public function _new_task($request) 
     {
         global $logger;
@@ -123,82 +136,99 @@ class TimesheetsController extends \My\Control\ProtectedController
         
         if($request->getParam('new') != null) {
             
-            $task = new \Timesheet\Task\Task();
-            $task->setTaskName($request->getParam('task_name'));
-            $dateObject = new DateTime($request->getParam('start_time'));
-            $task->setTaskStartTime($dateObject->format('Y-m-d H:i:s'));
-            $dateObject = new DateTime($request->getParam('end_time'));
-            $task->setTaskEndTime($dateObject->format('Y-m-d H:i:s'));
+            $message = $this->_validate($request);
+            if(!isset($message['fail'])) {
             
-            $notification = new \Timesheet\Notification\Notification();
-            $notification->setNotificationFromUser($userId);
-            $notification->setNotificationPriority(1);
-            $notification->setNotificationType(1);
-            $today = new DateTime('now');
-            $notification->setNotificationDate($today->format('Y-m-d H:i:s'));
-            $notification->setNotificationToUser(array($projectService->getProjectManagerId($projectId)));
+                $task = new \Timesheet\Task\Task();
+                $task->setTaskName($request->getParam('task_name'));
+                $dateObject = new DateTime($request->getParam('start_time'));
+                $task->setTaskStartTime($dateObject->format('Y-m-d H:i:s'));
+                $dateObject = new DateTime($request->getParam('end_time'));
+                $task->setTaskEndTime($dateObject->format('Y-m-d H:i:s'));
+                
+                $notification = new \Timesheet\Notification\Notification();
+                $notification->setNotificationFromUser($userId);
+                $notification->setNotificationPriority(1);
+                $notification->setNotificationType(1);
+                $today = new DateTime('now');
+                $notification->setNotificationDate($today->format('Y-m-d H:i:s'));
+                $notification->setNotificationToUser(array($projectService->getProjectManagerId($projectId)));
+                
+                $notification->setNotificationBody('A new Task was added to ' . $projectName . '.');
+                
+                $task->setNotification($notification);
+                
+                if($request->getParam('work_time') != null) {
+                    $task->setTaskWorkTime($request->getParam('work_time'));
+                    $workTime = $task->getTaskWorkTime();
+                } else {
+                    $startTime = strtotime($request->getParam('start_time'));
+                    $endTime = strtotime($request->getParam('end_time'));
+                    $task->setTaskWorkTime($endTime - $startTime);
+                }
+                
+                $location = trim($request->getParam('location'));
+                if(!$location) {
+                    $task->setTaskLocation('Location Unknown.');
+                } else {
+                    $task->setTaskLocation($request->getParam('location'));
+                }
+                
+                $notes = trim($request->getParam('notes'));
+                if(!$notes) {
+                    $task->setTaskLocation('No notes written by user.');
+                } else {
+                    $task->setTaskLocation($request->getParam('notes'));
+                }
+                
+                // If new task being added to old timesheet
+                if($request->getParam('timesheet_id') != null) { 
+                    
+                    $timesheetId = (int) $request->getParam('timesheet_id');
+                    if($taskService->createTask($task, $timesheetId, false)) {
+                        $message['success'] = 'New Task created.';
+                        $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
+                    } else {
+                        $message['fail'] = 'Task could not be created.';
+                    }
+                } 
+                // Timesheet for this project this week present already
+                else if($timesheetId = $timesheetService->findThisWeekTimesheet($userId, $projectId)) { 
+                    $logger->info('Found Timesheet for this week.');
+                    if($taskService->createTask($task, $timesheetId, false)) {
+                        $message['success'] = 'New Task created.';
+                        $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
+                    } else {
+                        $message['fail'] = 'Task could not be created.';
+                    }
+                    
+                } 
+                // Make new timesheet and task in it
+                else {  
+                    
+                    $logger->info('Creating Timesheet for this week.');
+                    
+                    $timesheet = new \Timesheet\Timesheet\Timesheet();
+                    $projectService = \Timesheet\Project\Service::getInstance();
+                    $timesheet->setTimesheetProjectName($projectService->getProjectNameById($projectId));
+                    $timesheet->setUserId($userId);
+                    $timesheet->setProjectId($projectId);
+                    $now = new DateTime('now');
+                    $timesheet->setTimesheetDate($now->format('Y-m-d'));
+                    
+                    $timesheetId = $timesheetService->createTimesheetAndTask($timesheet, $task);
+                    if($timesheetId) {
+                        $message['success'] = 'New Task created.';
+                        $logger->info('Created.');
+                        $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
+                    } else {
+                        $message['fail'] = 'Task could not be created.';
+                    }
+                    
+                }
             
-            $notification->setNotificationBody('A new Task was added to ' . $projectName . '.');
-            
-            $task->setNotification($notification);
-            
-            if($request->getParam('work_time') != null) {
-                $task->setTaskWorkTime($request->getParam('work_time'));
-                $workTime = $task->getTaskWorkTime();
-            } else {
-                $startTime = strtotime($request->getParam('start_time'));
-                $endTime = strtotime($request->getParam('end_time'));
-                $task->setTaskWorkTime($endTime - $startTime);
             }
             
-            $task->setTaskLocation($request->getParam('location'));
-            $task->setTaskNotes($request->getParam('notes'));
-            
-            // If new task being added to old timesheet
-            if($request->getParam('timesheet_id') != null) { 
-                
-                $timesheetId = (int) $request->getParam('timesheet_id');
-                if($taskService->createTask($task, $timesheetId, false)) {
-                    $message['success'] = 'New Task created.';
-                    $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
-                } else {
-                    $message['fail'] = 'Task could not be created.';
-                }
-            } 
-            // Timesheet for this project this week present already
-            else if($timesheetId = $timesheetService->findThisWeekTimesheet($userId, $projectId)) { 
-                $logger->info('Found Timesheet for this week.');
-                if($taskService->createTask($task, $timesheetId, false)) {
-                    $message['success'] = 'New Task created.';
-                    $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
-                } else {
-                    $message['fail'] = 'Task could not be created.';
-                }
-                
-            } 
-            // Make new timesheet and task in it
-            else {  
-                
-                $logger->info('Creating Timesheet for this week.');
-                
-                $timesheet = new \Timesheet\Timesheet\Timesheet();
-                $projectService = \Timesheet\Project\Service::getInstance();
-                $timesheet->setTimesheetProjectName($projectService->getProjectNameById($projectId));
-                $timesheet->setUserId($userId);
-                $timesheet->setProjectId($projectId);
-                $now = new DateTime('now');
-                $timesheet->setTimesheetDate($now->format('Y-m-d'));
-                
-                $timesheetId = $timesheetService->createTimesheetAndTask($timesheet, $task);
-                if($timesheetId) {
-                    $message['success'] = 'New Task created.';
-                    $logger->info('Created.');
-                    $this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
-                } else {
-                    $message['fail'] = 'Task could not be created.';
-                }
-                
-            }
         }
         
         // collect common parameters

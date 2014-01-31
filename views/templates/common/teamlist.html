@@ -9,40 +9,41 @@
                     <ul>
                 {% endif %}
                     
-                        {% for user in items.users %}
-                            
-                            <li href={{ "profile\\view" | nonce ~ "&id=" ~ user.userId }} class="list-item" 
-                                style="border-left: 4px solid #FF6F69;">
-                                
-                                <div class="wrapper">
-                                <table><tbody><tr>
-                                <td>
-                                    <div class="display-picture">
-                                    <img src={{ items.image_path ~ user.userImageUrl }} class="image round" width="50">
-                                    </div>
-                                </td>
-                                <td>
-                                    <h5>{{ user.userFirstName ~ ' ' ~ user.userLastName }}</h5>
-                                    <p class="small email">{{ user.userMail }}&nbsp;&nbsp;<i class="fa fa-envelope"></i></p>
-                                </td>
-                                </tr></tbody></table>
-                                </div>
-                            </li>
-                            
-                        {% endfor %}
+                {% for user in items.users %}
+                    
+                    <li href={{ "profile\\view" | nonce ~ "&id=" ~ user.userId }} >
+                        <table><tbody><tr>
+                        <td>
+                            <img src={{ items.image_path ~ user.userImageUrl }}>
+                        </td>
+                        <td>
+                            <h5>{{ user.userFirstName ~ ' ' ~ user.userLastName }}</h5>
+                            <p class="small email">{{ user.userMail }}</p>
+                        </td>
+                        </tr></tbody></table>
+                    </li>
+                    
+                {% endfor %}
                     
                 </ul>
             </section>
         </div>
     </div>
     
+    
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("smart-list.js") }} ></script>
     <script>
         $(document).ready(function() {
-            $(document).on('click', 'li.list-item', function(e) {
+            $(document).hammer().on('tap', 'li.list-item', function(e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
                 window.location.href = url;
             });
+            
+            var searchList = smartList.createList({element : '#search-results'});
+            searchList.activate();
+            
         });
     </script>
     
