@@ -142,13 +142,70 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         return $data[0]['project_state'];
     }
     
+    
+    public function getProjectsIncomplete($userId) {
+        $valArr = array(
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('get projects incomplete', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    public function getProjectsComplete($userId) {
+        $valArr = array(
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('get projects complete', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    public function getProjectsOverdue($userId) {
+        $valArr = array(
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('get projects overdue', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
+    public function getAllProjectsOfUser($userId) {
+        $valArr = array(
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('get all projects of user', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
+    
+    public function searchByNameUnderIncomplete($projectName, $userId) {
+        $valArr = array(
+            ':projectName' => $projectName,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find project by name under user incomplete', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    public function searchByNameUnderComplete($projectName, $userId) {
+        $valArr = array(
+            ':projectName' => $projectName,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find project by name under user complete', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    public function searchByNameUnderOverdue($projectName, $userId) {
+        $valArr = array(
+            ':projectName' => $projectName,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('find project by name under user overdue', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
+    public function searchAllProjects($projectName, $userId) {
+        $valArr = array(
+            ':projectName' => $projectName,
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('search all projects of user', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
 	// WRITE FUNCTIONS
 	
 	public function createProject($projectDetails) {
 	    $valArr = array(
             ':projectName' => $projectDetails->getProjectName(),
             ':projectDescription' => $projectDetails->getProjectDescription(),
-            ':projectStatus' => $projectDetails->getProjectStatus(),
             ':projectTimeAlloted' => $projectDetails->getProjectTimeAlloted(),
             ':projectCreatedDate' => $projectDetails->getProjectCreatedDate(),
             ':projectManagerId' => $projectDetails->getProjectManagerId(),
@@ -181,7 +238,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             ':projectId' => $projectDetails->getProjectId(),
             ':projectName' => $projectDetails->getProjectName(),
             ':projectDescription' => $projectDetails->getProjectDescription(),
-            ':projectStatus' => $projectDetails->getProjectStatus(),
             ':projectTimeAlloted' => $projectDetails->getProjectTimeAlloted(),
         );
         try {

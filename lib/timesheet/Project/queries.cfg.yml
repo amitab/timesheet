@@ -12,9 +12,9 @@ find project by name : SELECT `project`.* FROM `project` WHERE `project`.`projec
 find project created in month : SELECT `project`.* FROM `project` WHERE EXTRACT(MONTH FROM `project`.`project_created_date`) = :month;
 find project created in year : SELECT `project`.* FROM `project` WHERE EXTRACT(YEAR FROM `project`.`project_created_date`) = :year;
 
-create new project : INSERT INTO `project` (project_name, project_description, project_status, project_time_alloted, project_created_date, project_manager_id, project_salary, project_state) VALUES(:projectName, :projectDescription, :projectStatus, :projectTimeAlloted, :projectCreatedDate, :projectManagerId, :projectSalary, :projectState);
+create new project : INSERT INTO `project` (project_name, project_description,  project_time_alloted, project_created_date, project_manager_id, project_salary, project_state) VALUES(:projectName, :projectDescription, :projectTimeAlloted, :projectCreatedDate, :projectManagerId, :projectSalary, :projectState);
 
-edit project : UPDATE `project` SET project_name = :projectName, project_description = :projectDescription, project_status = :projectStatus, project_time_alloted = :projectTimeAlloted WHERE `project`.`project_id` = :projectId;
+edit project : UPDATE `project` SET project_name = :projectName, project_description = :projectDescription, project_time_alloted = :projectTimeAlloted WHERE `project`.`project_id` = :projectId;
 
 get project name by id : SELECT `project`.`project_name` AS `project_name` FROM `project` WHERE `project`.`project_id` = :projectId;
 
@@ -38,5 +38,15 @@ get project total work time : SELECT SUM(`task`.`task_work_time`) AS `total_proj
 mark complete : UPDATE `project` SET `project`.`project_state` = :projectState WHERE `project`.`project_id` = :projectId;
 
 get project state : SELECT `project`.`project_state` AS `project_state` FROM `project` WHERE `project`.`project_id` = :projectId;
+
+get projects incomplete : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_state` = 0 AND `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId);
+get projects complete : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_state` = 1 AND `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId);
+get projects overdue : SELECT `project`.* FROM `project` WHERE TIMESTAMPDIFF(SECOND, `project`.`project_created_date`, `project`.`project_time_alloted`) <= 0 AND `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId);
+get all projects of user : SELECT DISTINCT `project`.* FROM `project` WHERE (`project`.`project_manager_id` = :userId OR `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId));
+
+find project by name under user incomplete : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_state` = 0 AND `project`.`project_name` LIKE :projectName AND `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId);
+find project by name under user complete : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_state` = 1 AND `project`.`project_name` LIKE :projectName AND `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId);
+find project by name under user overdue : SELECT DISTINCT `project`.* FROM `project` WHERE TIMESTAMPDIFF(SECOND, `project`.`project_created_date`, `project`.`project_time_alloted`) <= 0 AND AND `project`.`project_name` LIKE :projectName `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId);
+search all projects of user : SELECT DISTINCT `project`.* FROM `project` WHERE (`project`.`project_manager_id` = :userId OR `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId)) AND `project`.`project_name` LIKE :projectName;
 
 ...

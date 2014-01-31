@@ -75,7 +75,11 @@
     
     <script>
         $(document).ready(function() {
-            $(document).on('click', 'div#save-form', function(e) {
+            
+            var ua = navigator.userAgent,
+            clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
+            
+            $(document).on(clickevent, 'div#save-form', function(e) {
                 e.preventDefault();
                 $('form').append('<input type="hidden" name="{% if items.edit == true %}edit{% else %}new{% endif %}" value="1">');
                 $('form').submit();

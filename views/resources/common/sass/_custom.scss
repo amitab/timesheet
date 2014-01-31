@@ -94,9 +94,6 @@ table.summary {
     @include border-radius(2px);
     font-weight: 300;
 }
-.btn:active {
-    @include box-shadow(inset 0 0px rgba(0,0,0,0),0 0px rgba(0,0,0,0));
-}
 
 .btn.disabled {
     background: #ECECEC!important;
@@ -584,6 +581,9 @@ section.overview {
         tbody tr {
             border-bottom: 1px solid $border-grey;
         }
+        tbody tr:last-child {
+            border-bottom: 0;
+        }
         th {
             width: 50%;
         }
@@ -820,9 +820,14 @@ section.timer {
         }
     }
     .header-item.inline-menu-trigger {
-        i.fa-ellipsis-v {
-            font-size: 24px!important;
+        h5 {
+            width: 20px;
+            text-align: center!important;
+            i.fa-ellipsis-v {
+                font-size: 28px!important;
+            }
         }
+        
     }
     .header-item.trigger, .header-item.option, .header-item.inline-menu-trigger {
         float: right;
@@ -879,6 +884,8 @@ section.timer {
         }
         
         .header-search-pack {
+            overflow: hidden;
+            width: 100%;
             .search.field {
                 position: relative;
                 min-width: 35px;
@@ -888,7 +895,7 @@ section.timer {
                 }
                 input.closed {
                     width: 0;
-                    padding: 0;
+                    margin: -2px;
                 }
                 .btn.header-search {
                     position: absolute;
@@ -910,3 +917,42 @@ section.timer {
 #page-wrap {
     padding-top: 62px;
 }
+
+section.filter {
+    z-index: 90;
+    margin: 0;
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    left: 0;
+    padding: 0;
+    select {
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        background: white;
+        border: 1px solid #D8D8D8;
+        border-radius: 2px;
+    }
+    
+    td#new-project {
+        width: 120px;
+        td.text {
+            text-align: right; 
+            width: 60px; 
+            padding-right: 0;
+        }
+        td.icon {
+            text-align: right;
+            width: 40px;
+            padding-bottom: 5px;
+            i {
+                font-size: 26px!important;
+            }
+        }
+    }
+    td#new-project:active > table {
+        background: darken(white, 5%);
+    }
+}
+

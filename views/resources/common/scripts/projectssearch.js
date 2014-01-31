@@ -1,5 +1,9 @@
 $(document).ready(function() {
     
+    var selectedOption = 0;
+    var ua = navigator.userAgent,
+    clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
+    
     var searchList = smartList.createList({element : '#projects-list'});
     
     // success handler must be declared before app is constructed
@@ -33,18 +37,18 @@ $(document).ready(function() {
             
             var state;
             if(mins <= 0 && value.projectState != 1) {
-                state = '<i class="fa fa-times-circle" style="color: #FF6F69;"></i>&nbsp;Overdue';
+                state = '<i class="fa fa-times-circle" style="color: #FF6F69;"></i>&nbsp;&nbsp;Overdue';
             } else if(value.projectState == 0) {
-                state = '<i class="fa fa-circle" style="color: #FFCC5C;"></i>&nbsp;' + value.readableProjectState;
+                state = '<i class="fa fa-circle" style="color: #FFCC5C;"></i>&nbsp;&nbsp;' + value.readableProjectState;
             } else if(value.projectState == 1) {
-                state = '<i class="fa fa-check-circle" style="color: #00A388;"></i>&nbsp;' + value.readableProjectState;
+                state = '<i class="fa fa-check-circle" style="color: #00A388;"></i>&nbsp;&nbsp;' + value.readableProjectState;
             }
             
             list += '<li class="project-link" id="' + value.projectId + '">';
             list += '<table>';
             list += '<tr>';
-            list += '<td><h6 class="no-padding"><a href="#"';
-            list += '">' + value.projectName + '</a></h6></td>';
+            list += '<td><h6 class="no-padding"><span style="color: #d04526;">';
+            list += '' + value.projectName + '</span></h6></td>';
             list += '<td><p class="right small">' + state + '</p></td>';
             list += '</tr>';
             list += '</table>';
@@ -83,7 +87,7 @@ $(document).ready(function() {
     
     var prevQuery = '';
     
-    $('#search-button').click(function(e){
+    $(document).on(clickevent, '#search-button', function(e){
         e.preventDefault();
         var searchBox = $($(this).attr('href'));
         
@@ -92,7 +96,7 @@ $(document).ready(function() {
                 openSearchBox(searchBox);
             } else {
                 if(prevQuery != '') {
-                    communicator.serviceObject.invoke({getWorking:true});
+                    communicator.serviceObject.invoke({option:selectedOption});
                     searchList.emptyListCheck();
                 }
                 closeSearchBox(searchBox);
@@ -111,7 +115,7 @@ $(document).ready(function() {
             // Search using ajax
             var args = {};
             args.q = query;
-            args.getWorking = true;
+            args.option = selectedOption;
             args.ids = [];
             communicator.serviceObject.invoke(args);
         }
@@ -119,14 +123,28 @@ $(document).ready(function() {
     });
     
     // Load initial data
-    communicator.serviceObject.invoke({getWorking:true});
+    communicator.serviceObject.invoke({option:selectedOption});
     searchList.emptyListCheck();
     
     // Link to the details page
-    $(document).on('click', 'li.project-link', function(e) {
+    $(document).hammer().on('tap', 'li.project-link', function(e) {
         e.preventDefault();
         var url = $('input#url').attr('project-details-path') + '&id=' + $(this).attr('id');
         window.location.href = url;
+    });
+    
+    
+    $('select#filter').change(function(e) {
+        var args = {};
+        selectedOption = $(this).val();
+        args.option = selectedOption;
+        prevQuery = '';
+        communicator.serviceObject.invoke(args);
+    });
+    
+    $(document).on(clickevent, 'td#new-project', function(e) {
+        e.preventDefault();
+        window.location.href = $(this).attr('href');
     });
     
 });

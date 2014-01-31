@@ -13,13 +13,9 @@ interface DAO {
     public function getProjectsInMonth($month);
     public function getProjectsInYear($year);
     public function findProjectByName($projectName);
-    public function getProjectsHandledByUserId($userId);
-    public function getProjectsCreatedByUserId($userId);
     public function getProjectsWithSalaryGreaterThan($projectSalary);
     public function getProjectsWithSalaryLessThan($projectSalary);
     public function getProjectOfTimesheet($timesheetId);
-    public function searchByNameUnderUserId($projectName, $userId);
-    public function searchByNameUnderManagerId($projectName, $userId);
     public function getEmployeeTotalWorkTime($userId, $projectId);
     public function getEmployeeTotalPauseTime($userId, $projectId);
     public function getProjectNameById($projectId);
@@ -32,5 +28,21 @@ interface DAO {
     public function getProjectTotalWorkTime($projectId);
         
     public function markCompleted($projectId);
+        
+        
+    public function getProjectsHandledByUserId($userId);
+    public function getProjectsCreatedByUserId($userId);
+    public function getProjectsIncomplete($userId);
+    public function getProjectsComplete($userId);
+    public function getProjectsOverdue($userId);
+    public function getAllProjectsOfUser($userId);
+        
+        
+    public function searchByNameUnderUserId($projectName, $userId);
+    public function searchByNameUnderManagerId($projectName, $userId);
+    public function searchByNameUnderIncomplete($projectName, $userId);
+    public function searchByNameUnderComplete($projectName, $userId);
+    public function searchByNameUnderOverdue($projectName, $userId);
+    public function searchAllProjects($projectName, $userId);
         
 }

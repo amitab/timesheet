@@ -122,6 +122,12 @@ class ProfileController extends \My\Control\ProtectedController
         $this->_response = new HttpResponse('none', $skeleton);
         
         if($request->getParam('edit') != null) {
+            
+            $upload = $this->_save_image();
+            if(!$upload) {
+                $message['fail'] = 'Could not update profile picture.';
+            } 
+            
             $user = $this->user;
             $user->setUserFirstName($request->getParam('first_name'));
             $user->setUserLastName($request->getParam('last_name'));
@@ -134,14 +140,13 @@ class ProfileController extends \My\Control\ProtectedController
             } else {
                 $message['fail'] = 'Could not update.';
             }
+            
         }
         
         $user = $this->user;
         
         $this->_response->setBody(array(
             'title' => 'Edit Profile',
-            'inline_menu' => true,
-            'form_save' => true,
             'user' => $user,
             'message' => $message,
             // The sidebar and header data
@@ -150,6 +155,49 @@ class ProfileController extends \My\Control\ProtectedController
             'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         )); 
 
+    }
+    
+    private function _save_image() {
+        $userId = $this->user->getUserId(); // Get current user Id
+        $userService = \Timesheet\User\Service::getInstance();
+        $userImagePath = $userService->getUserImageUrl($userId);
+        
+        if(isset($_FILES['user_image'])) {
+                
+            try {
+                $uploader = new \Database\Upload();
+                $uploader->uploadPath = UPLOAD_PATH;
+                $uploader->arrayName = 'user_image';
+                $uploader->maxFileSize = 10000000;
+                
+                // For Resizing
+                $uploader->thumbUploadPath = THUMB_UPLOAD_PATH;
+                $uploader->crop = true;
+                $uploader->width = 100;
+                $uploader->height = 100;
+                
+                $newFileName = $uploader->upload();
+                
+                $image_path = IMAGE_PATH . $newFileName;
+                
+                // Update database with new pic name. Delete this pic if database update fails.
+                if($userService->uploadUserImage($newFileName, $userId)) {
+                    $successful[] = 'Image has been updated.';
+                    $this->user->setUserImageUrl($newFileName);
+                    return $newFileName;
+                } else {
+                    $warnings[] = 'Image could not be updated.';
+                    unlink($uploader->uploadPath . $newFileName);
+                    return false;
+                }
+                
+            } catch (\Exception $e) {
+                return false;
+            }
+            
+        } else {
+            return false;
+        }
     }
     
     public function _upload_image($request) {

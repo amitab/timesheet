@@ -98,5 +98,31 @@ class Service {
     public function getProjectTotalWorkTime($projectId) {
         return $this->_dao->getProjectTotalWorkTime($projectId);
     }
+    
+    
+    public function searchByNameUnderIncomplete($projectName, $userId) {
+        return $this->_dao->searchByNameUnderIncomplete($projectName, $userId);
+    }
+    public function searchByNameUnderComplete($projectName, $userId) {
+        return $this->_dao->searchByNameUnderComplete($projectName, $userId);
+    }
+    public function searchByNameUnderOverdue($projectName, $userId) {
+        return $this->_dao->searchByNameUnderOverdue($projectName, $userId);
+    }
+    public function searchAllProjects($projectName, $userId) {
+        return $this->_dao->searchAllProjects($projectName, $userId);
+    }
+    public function getProjectsIncomplete($userId) {
+        return $this->_dao->getProjectsIncomplete($userId);
+    }
+    public function getProjectsComplete($userId) {
+        return $this->_dao->getProjectsComplete($userId);
+    }
+    public function getProjectsOverdue($userId) {
+        return $this->_dao->getProjectsOverdue($userId);
+    }
+    public function getAllProjectsOfUser($userId) {
+        return $this->_dao->getAllProjectsOfUser($userId);
+    }
 	
 }

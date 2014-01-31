@@ -38,13 +38,13 @@
     <script>
         $(document).ready(function() {
             
-            $(document).on('click', 'tr.task-details', function(e) {
+            $(document).hammer().on('tap', 'tr.task-details', function(e) {
                 e.preventDefault();
                 var url = $('input#details-url').attr('task-details-path') + '&id=' + $(this).attr('id');
                 window.location.href = url;
             });
             
-            $(document).on('click', 'div#add-task', function(e) {
+            $(document).hammer().on('tap', 'div#add-task', function(e) {
                 e.preventDefault();
                 var url = $('input#add-task-url').attr('task-details-path') + '&old_timesheet_id=' + $('input#timesheet_id').attr('value'); 
                 url += '&project_id=' + $('input#project_id').attr('value') + '&from_timesheet_details_page=true';

@@ -16,6 +16,9 @@ class Task {
     private $notification;
     public $prettyWorkTime;
     
+    public $prettyStartTime;
+    public $prettyEndTime;
+    
     private $readableTaskState;
     const STATUS_UNCHECKED = 0;
     const STATUS_ACCEPTED = 1;
@@ -129,6 +132,9 @@ class Task {
 		
 		$time = new \DateTime();
         $time = $time->format($taskStartTime);
+        
+        $date = new \DateTime($taskStartTime);
+        $this->prettyStartTime = $date->format('dS M y, h:i a');
 		
 		$this->taskStartTime = $time;
 	}
@@ -141,6 +147,9 @@ class Task {
 		
 		$time = new \DateTime();
         $time = $time->format($taskEndTime);
+        
+        $date = new \DateTime($taskEndTime);
+        $this->prettyEndTime = $date->format('dS M y, h:i a');
 		
 		$this->taskEndTime = $time;
 	}

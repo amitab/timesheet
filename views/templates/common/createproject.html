@@ -15,7 +15,9 @@
                         {% if items.message.success %}
                             <p class="alert success">{{ items.message.success }}</p>
                         {% elseif items.message.fail %}
-                            <p class="alert warning">{{ items.message.fail }}</p>
+                            {% for fail in items.message.fail %}
+                                <p class="alert warning">{{ fail }}</p>
+                            {% endfor %}
                         {% endif %}
                     </div>
                     <div class="append field">
@@ -25,27 +27,6 @@
                                {% endif %}
                         />
                         <span class="adjoined"><i class="fa fa-file"></i></span>
-                    </div>
-                    <div class="append field">
-                        <div class="picker">
-                            <select name="status">
-                                <option value="0"
-                                    {% if items.project.projectStatus == 0 %}
-                                        selected="selected"
-                                    {% endif %}
-                                >High Priority</option>
-                                <option value="1"
-                                    {% if items.project.projectStatus == 1 %}
-                                        selected="selected"
-                                    {% endif %}
-                                >Medium Priority</option>
-                                <option value="2"
-                                    {% if items.project.projectStatus == 2 %}
-                                        selected="selected"
-                                    {% endif %}
-                                >Low Priority</option>
-                            </select>
-                        </div>
                     </div>
                     <div class="field">
                         <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;Deadline : </label>

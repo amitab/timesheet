@@ -9,6 +9,9 @@ $(document).ready(function(){
     var workTime = 0;
     var seconds = 0;
     
+    var ua = navigator.userAgent,
+    clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
+    
     function minuteUp() {
         var minute = parseInt($('#minute').text());
         var res;
@@ -82,7 +85,7 @@ $(document).ready(function(){
         $('form').submit();
     }
     
-    $('#start-button').click(function(e) {
+    $(document).on(clickevent, '#start-button', function(e) {
         if($(this).hasClass('stopped')) {
             startClock();
             $(this).removeClass('stopped').addClass('started');
@@ -107,7 +110,7 @@ $(document).ready(function(){
         e.preventDefault();
     });
     
-    $('#pause-button').click(function(e) {
+    $(document).on(clickevent, '#pause-button', function(e) {
         if($(this).parent().hasClass('disabled')) {
             e.preventDefault();
             return false;

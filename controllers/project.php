@@ -72,7 +72,7 @@ class ProjectController extends \My\Control\ProtectedController
 
     }//end _default()
     
-    public function _created_projects($request)
+    /*public function _created_projects($request)
     {
         global $logger;
         $skeleton =  new TwigRenderer('createdprojects.html');
@@ -87,7 +87,7 @@ class ProjectController extends \My\Control\ProtectedController
             'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         ));      
 
-    }//end _default()
+    }*///end _default()
     
     public function _details($request) {
         
@@ -161,10 +161,10 @@ class ProjectController extends \My\Control\ProtectedController
             'is_admin' => $isAdmin,
             'is_employee' => $isEmployee,
             'project_details' => $projectData,
-            'expenses' => $expenses, // for employee, salary * pausetime; for employer, salary * total work hours
+            'expenses' => number_format($expenses), // for employee, salary * pausetime; for employer, salary * total work hours
             'total_time' => $totalTime,
             'pause_time' => $slackOffTime, // for admin null
-            'total_salary' => $salary, // for admin null
+            'total_salary' => number_format($salary), // for admin null
             'employer_name' => $employerName,
             'project_id' => $id,
             'edit_option' => $isAdmin, // only if user is admin
@@ -190,29 +190,56 @@ class ProjectController extends \My\Control\ProtectedController
         
         if($request->getParam('new') != null) {
             $project = new \Timesheet\Project\Project();
-            $project->setProjectName($request->getParam('project_name'));
+            $createdDate = new DateTime('now');
+            $projectName = trim($request->getParam('project_name'));
+            if(!$projectName) {
+                $message['fail'][] = 'Project name can\'t be empty.';
+            } else {
+                $project->setProjectName($projectName);
+            }
             
-            $dateObject = new DateTime($request->getParam('deadline'));
+            $deadline = trim($request->getParam('deadline'));
+            if(!$deadline) {
+                $message['fail'][] = 'Deadline date can\'t be empty.';
+            } else {
+                $deadlineDate = new DateTime($deadline);
+                
+                if(strtotime($deadline) <= strtotime('now')) {
+                    $message['fail'][] = 'Deadline date can\'t be in the past!';
+                } else {
+                    $project->setProjectTimeAlloted($deadlineDate->format('Y-m-d H:i:s'));
+                }
+            }
             
-            $project->setProjectTimeAlloted($dateObject->format('Y-m-d H:i:s'));
-            $project->setProjectSalary($request->getParam('salary'));
-            $project->setProjectDescription($request->getParam('description'));
+            $salary = intval($request->getParam('salary'));
+            $logger->info('SALARY : ' . $salary);
+            if(!$salary) {
+                $message['fail'][] = 'Salary input is invalid.';
+            } else {
+                $project->setProjectSalary($request->getParam('salary'));
+            }
             
-            $dateObject = new DateTime('now');
+            $description = $request->getParam('description');
+            if(!$description) {
+                $project->setProjectDescription('No description given.');
+            } else {
+                $project->setProjectDescription($description);
+            }
             
-            $project->setProjectCreatedDate($dateObject->format('Y-m-d H:i:s'));
-            $project->setProjectStatus($request->getParam('status'));
+            $project->setProjectCreatedDate($createdDate->format('Y-m-d H:i:s'));
             $project->setProjectManagerId($userId);
             
             // Insert
             
-            $projectService = \Timesheet\Project\Service::getInstance();
-            $projectId = $projectService->createProject($project);
-            if($projectId) {
-                $message['success'] = 'Project successfuly created.';
-                $this->_response->redirectTo('project/details?id=' . $projectId);
-            } else {
-                $message['fail'] = 'Project could not be created.';
+            if(!isset($message['fail'])) {
+                $projectService = \Timesheet\Project\Service::getInstance();
+                $projectId = $projectService->createProject($project);
+                if($projectId) {
+                    $message['success'] = 'Project successfuly created.';
+                    $this->_response->redirectTo('project/details?id=' . $projectId);
+                } else {
+                    $message['fail'] = 'Project could not be created.';
+                }
             }
             
         }
@@ -237,25 +264,62 @@ class ProjectController extends \My\Control\ProtectedController
         // Check if user owns this project else kick
         
         if($request->getParam('edit') != null) {
-            $project = new \Timesheet\Project\Project();
-            $project->setProjectId($request->getParam('project_id'));
-            $project->setProjectName($request->getParam('project_name'));
             
-            $dateObject = new DateTime($request->getParam('deadline'));
-            
-            $project->setProjectTimeAlloted($dateObject->format('Y-m-d H:i:s'));
-            $project->setProjectSalary($request->getParam('salary'));
-            $project->setProjectDescription($request->getParam('description'));
-            
-            $project->setProjectStatus($request->getParam('status'));
-            $project->setProjectManagerId($userId);
-            
-            // Update
-            
-            if($projectService->editProject($project)) {
-                $message['success'] = 'Project successfuly updated.';
+            $projectId = intval($request->getParam('project_id'));
+            if($projectId > 0) {
+                $project = $projectService->getProjectById($projectId);
+                $project = $project[0];
+                
+                $createdDate = new DateTime($project->getProjectCreatedDate());
+                $projectName = trim($request->getParam('project_name'));
+                if(!$projectName) {
+                    $message['fail'][] = 'Project name can\'t be empty.';
+                } else {
+                    $project->setProjectName($projectName);
+                }
+                
+                $deadline = trim($request->getParam('deadline'));
+                if(!$deadline) {
+                    $message['fail'][] = 'Deadline date can\'t be empty.';
+                } else {
+                    $deadlineDate = new DateTime($deadline);
+                    
+                    if(strtotime($deadline) <= strtotime('now')) {
+                        $message['fail'][] = 'Deadline date can\'t be in the past!';
+                    } else {
+                        $project->setProjectTimeAlloted($deadlineDate->format('Y-m-d H:i:s'));
+                    }
+                }
+                
+                $salary = intval($request->getParam('salary'));
+                $logger->info('SALARY : ' . $salary);
+                if(!$salary) {
+                    $message['fail'][] = 'Salary input is invalid.';
+                } else {
+                    $project->setProjectSalary($request->getParam('salary'));
+                }
+                
+                $description = $request->getParam('description');
+                if(!$description) {
+                    $project->setProjectDescription('No description given.');
+                } else {
+                    $project->setProjectDescription($description);
+                }
+                
+                $project->setProjectCreatedDate($createdDate->format('Y-m-d H:i:s'));
+                $project->setProjectManagerId($userId);
+                
+                if(!isset($message['fail'])) {
+                    if($projectService->editProject($project)) {
+                        $message['success'] = 'Project successfuly updated.';
+                        $this->_response->redirectTo('project/details?id=' . $projectId);
+                    } else {
+                        $message['fail'] = 'Project could not be updated.';
+                    }
+                }
+                
             } else {
-                $message['fail'] = 'Project could not be updated.';
+                // Id does not exist
             }
             
         }
@@ -377,7 +441,7 @@ class ProjectController extends \My\Control\ProtectedController
         $userId = $this->user->getUserId(); // Get current user
         $projectService = \Timesheet\Project\Service::getInstance();
         
-        if($request->getParam('getWorking') != null) {
+        /*if($request->getParam('getWorking') != null) {
             // if employee use this. else get projects created by user id
             
             if(!empty($query)) {
@@ -392,9 +456,60 @@ class ProjectController extends \My\Control\ProtectedController
             } else {
                 $data = $projectService->getProjectsCreatedByUserId($userId);
             }
-        }
+        } else return;*/
         
-        else return;
+        $option = (int) $request->getParam('option');
+        $query = $request->getParam('q');
+        
+        switch($option) {
+            case 0: // All
+                if(!empty($query)) {
+                    $data = $projectService->searchAllProjects($query, $userId);
+                } else {
+                    $data = $projectService->getAllProjectsOfUser($userId);
+                }
+            break;
+            
+            case 1: // Created
+                if(!empty($query)) {
+                    $data = $projectService->searchByNameUnderManagerId($query, $userId);
+                } else {
+                    $data = $projectService->getProjectsCreatedByUserId($userId);
+                }
+            break;
+            
+            case 2: // Working For
+                if(!empty($query)) {
+                    $data = $projectService->searchByNameUnderUserId($query, $userId);
+                } else {
+                    $data = $projectService->getProjectsHandledByUserId($userId);
+                }
+            break;
+            
+            case 3: // Completed
+                if(!empty($query)) {
+                    $data = $projectService->searchByNameUnderComplete($query, $userId);
+                } else {
+                    $data = $projectService->getProjectsComplete($userId);
+                }
+            break;
+            
+            case 4: // In Progress
+                if(!empty($query)) {
+                    $data = $projectService->searchByNameUnderIncomplete($query, $userId);
+                } else {
+                    $data = $projectService->getProjectsIncomplete($userId);
+                }
+            break;
+            
+            case 5: // Overdue
+                if(!empty($query)) {
+                    $data = $projectService->searchByNameUnderOverdue($query, $userId);
+                } else {
+                    $data = $projectService->getProjectsOverdue($userId);
+                }
+            break;
+        }        
         
         $data = \Database\Converter::getArray($data);
         

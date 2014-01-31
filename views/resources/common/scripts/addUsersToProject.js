@@ -2,7 +2,8 @@ $(document).ready(function() {
     
     var searchList = smartList.createList({element : '#search-results'});
     var resultList = smartList.createList({element : '#selected-users'});
-    
+    var ua = navigator.userAgent,
+    clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
     // success handler must be declared before app is constructed
     
     var successHandler = function(data) {
@@ -59,7 +60,7 @@ $(document).ready(function() {
         successHandler : successHandler
     });
     
-    $(document).on('click', '.list-item' ,function(e) {
+    $(document).on(clickevent, '.list-item' ,function(e) {
                 
         var parent = $(this).closest('section');
         var item = $(this);
@@ -157,7 +158,7 @@ $(document).ready(function() {
         successHandler : addSuccessHandler
     });
     
-    $(document).on('click', 'a#add_users', function(e) {
+    $(document).on(clickevent, 'a#add_users', function(e) {
         e.preventDefault();
         var args = {};
         args.add_users = true;

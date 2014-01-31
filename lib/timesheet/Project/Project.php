@@ -13,6 +13,9 @@ class Project {
     private $projectSalary;
     private $projectState;
     
+    private $prettyCreatedDate;
+    private $prettyDeadline;
+    
     private $readableProjectStatus;
     private $readableProjectState;
     
@@ -55,7 +58,7 @@ class Project {
     public function setProjectState($projectState) {
         $this->projectState = $projectState;
         if($projectState == self::STATE_INCOMPLETE) {
-            $this->readableProjectState = 'Incomplete';
+            $this->readableProjectState = 'In Progress';
         } else if($projectState == self::STATE_COMPLETE) {
             $this->readableProjectState = 'Complete';
         } else if($projectState == self::STATE_OVERDUE) {
@@ -76,7 +79,11 @@ class Project {
         }
     }
     public function getProjectStatus() { return $this->projectStatus; }
-    public function setProjectTimeAlloted($projectTimeAlloted) { $this->projectTimeAlloted = $projectTimeAlloted; }
+    public function setProjectTimeAlloted($projectTimeAlloted) { 
+        $this->projectTimeAlloted = $projectTimeAlloted; 
+        $date = new \DateTime($projectTimeAlloted);
+        $this->prettyDeadline = $date->format('dS M y');
+    }
     
     public function getProjectSalary() { return $this->projectSalary; }
     public function setProjectSalary($projectSalary) { $this->projectSalary = $projectSalary; }
@@ -84,7 +91,11 @@ class Project {
     public function getProjectTimeAlloted() { return $this->projectTimeAlloted; }
     public function setProjectDescription($projectDescription) { $this->projectDescription = $projectDescription; }
     public function getProjectDescription() { return $this->projectDescription; }
-    public function setProjectCreatedDate($projectCreatedDate) { $this->projectCreatedDate = $projectCreatedDate; }
+    public function setProjectCreatedDate($projectCreatedDate) { 
+        $this->projectCreatedDate = $projectCreatedDate; 
+        $date = new \DateTime($projectCreatedDate);
+        $this->prettyCreatedDate = $date->format('dS M y');
+    }
     public function getProjectCreatedDate() { return $this->projectCreatedDate; }
     public function setProjectTimesheets($projectTimesheets) { $this->projectTimesheets = $projectTimesheets; }
     public function getProjectTimesheets() { return $this->projectTimesheets; }
@@ -107,5 +118,21 @@ class Project {
 	public function setNotification($notification){
 		$this->notification = $notification;
 	}
+    
+    public function getPrettyCreatedDate(){
+		return $this->prettyCreatedDate;
+	}
 
+	public function setPrettyCreatedDate($prettyCreatedDate){
+		$this->prettyCreatedDate = $prettyCreatedDate;
+	}
+
+	public function getPrettyDeadline(){
+		return $this->prettyDeadline;
+	}
+
+	public function setPrettyDeadline($prettyDeadline){
+		$this->prettyDeadline = $prettyDeadline;
+	}
+    
 } 
