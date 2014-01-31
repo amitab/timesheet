@@ -34,7 +34,8 @@
                 {% if items.view_profile != true %}
                     <div class="options" style="padding: 10px; text-align: center;">
                         <div class="medium primary btn">
-                            <a href={{ resolvePath("profile\\edit_profile") }} style="font-size: 14px;" >Edit Profile</a>
+                            <a href={{ "profile\\edit_profile" | nonce }} style="font-size: 14px;" >
+                            <i class="fa fa-edit"></i>&nbsp;Edit Profile</a>
                         </div>
                     </div>
                 {% endif %}

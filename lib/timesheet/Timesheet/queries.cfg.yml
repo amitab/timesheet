@@ -1,5 +1,5 @@
 ---
-get manager id : SELECT DISTINCT `project`.`project_manager_id` AS `manager_id` FROM `project_timesheet` NATURAL JOIN `project` WHERE `project_timesheet`.`timesheet_id` = :timesheetId;
+get manager id : SELECT DISTINCT `project`.`project_manager_id` AS `manager_id` FROM `project` NATURAL JOIN `project_timesheet` WHERE `project_timesheet`.`timesheet_id` = :timesheetId;
 
 get all timesheets : SELECT `timesheet`.* FROM `timesheet` ORDER BY `timesheet`.`timesheet_date` DESC;
 
@@ -15,7 +15,7 @@ find timesheets created in year : SELECT `timesheet`.* FROM `timesheet` WHERE EX
 
 find timesheets created in month and week : SELECT `timesheet`.* from `timesheet` WHERE MONTH(`timesheet`.`timesheet_date`) = :month AND WEEK(`timesheet`.`timesheet_date`, 5) - WEEK(DATE_SUB(`timesheet`.`timesheet_date`, INTERVAL DAYOFMONTH(`timesheet`.`timesheet_date`) - 1 DAY), 5) + 1 = :week ORDER BY `timesheet`.`timesheet_date` DESC;
 
-create new timesheet : INSERT INTO `timesheet` (timesheet_date, timesheet_project_name, timesheet_status) VALUES (:timesheetDate, :timesheetProjectName, :timesheetStatus);
+create new timesheet : INSERT INTO `timesheet` (timesheet_date, timesheet_project_name) VALUES (:timesheetDate, :timesheetProjectName);
 edit timesheet : UPDATE `timesheet` SET timesheet_date = :timesheetDate, timesheet_project_name = :timesheetProjectName;
 delete timesheet : DELETE FROM `timesheet` WHERE `timesheet`.`timesheet_id` = :timesheetId;
 

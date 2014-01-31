@@ -218,7 +218,7 @@ label.medium {
 
 div.inline-menu {
     background: $slate-grey;
-    position: absolute;
+    position: fixed;
     width: 200px;
     z-index: 100;
     top: 70px;
@@ -388,6 +388,7 @@ section.projects-list, section.notifications-list, section.message-list, section
     }
     li.project-list-item, li.notifications-list-item, li.message-list-item, li.list-item {
         padding: 0;
+        margin-bottom: -1px;
         .wrapper {
             padding: 1rem;
             border-bottom: 1px solid $border-grey;
@@ -803,8 +804,9 @@ section.timer {
                 text-overflow: ellipsis;
                 display: block;
                 overflow: hidden;
+                height: 21px;
                 @include respond(all-phones) {
-                    width: 100px;
+                    width: 120px;
                 }
             }
         }
@@ -819,7 +821,7 @@ section.timer {
     }
     .header-item.inline-menu-trigger {
         i.fa-ellipsis-v {
-            font-size: 28px!important;
+            font-size: 24px!important;
         }
     }
     .header-item.trigger, .header-item.option, .header-item.inline-menu-trigger {

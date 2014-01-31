@@ -12,7 +12,7 @@ get number of timesheets : SELECT COUNT(*) as `timesheet_count` from `user_times
 
 create new user : INSERT INTO `user` (user_first_name, user_last_name, user_email, user_location, user_phone_number, user_image_url, user_sex) VALUES (:userFirstName, :userLastName, :userMail, :userLocation, :userPhoneNumber, :userImageUrl, :userSex);
 
-edit user : UPDATE `user` SET `user`.`user_first_name` = :userFirstName, `user`.`user_last_name` = :userLastName, `user`.`user_email` = :userMail, `user`.`user_location` = :userLocation, `user`.`user_phone_number` = :user_phone_number, `user`.`user_image_url` = :userPhoneNumber, `user`.`user_sex` = :userSex WHERE `user`.`user_id` = :userId; 
+edit user : UPDATE `user` SET `user`.`user_first_name` = :userFirstName, `user`.`user_last_name` = :userLastName, `user`.`user_location` = :userLocation, `user`.`user_phone_number` = :userPhoneNumber, `user`.`user_sex` = :userSex WHERE `user`.`user_id` = :userId; 
 
 edit user password : UPDATE `authentication` SET `authentication`.`password` = :password WHERE `authentication`.`user_id` = :userId;
 delete user : DELETE FROM `user` WHERE `user`.`user_id` = :userId;
@@ -33,6 +33,12 @@ select user image url : SELECT `user`.`user_image_url` AS `user_image_url` FROM 
 
 get total user work hours : SELECT SUM(`task`.`task_work_time`) AS `total_work_hours` FROM `task`, `user_timesheet` WHERE `task`.`task_timesheet_id` = `user_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
 
-find users for project : SELECT `user`.* FROM `user` where `user`.`user_first_name` LIKE :userName OR `user`.`user_last_name` LIKE :userName OR concat(`user`.`user_first_name`, ' ', `user`.`user_last_name`) LIKE :userName AND `user`.`user_id` NOT IN (SELECT `user_project`.`user_id` FROM `user_project` WHERE `user_project`.`project_id` = :projectId);
+find users for project : SELECT `user`.* FROM `user` WHERE (`user`.`user_first_name` LIKE :userName OR `user`.`user_last_name` LIKE :userName OR concat(`user`.`user_first_name`, ' ', `user`.`user_last_name`) LIKE :userName) AND `user`.`user_id` NOT IN (SELECT `user_project`.`user_id` FROM `user_project` WHERE `user_project`.`project_id` = :projectId);
+
+user work time on project : SELECT SUM(`task`.`task_work_time`) AS `total_time` FROM `task` WHERE `task`.`task_timesheet_id` IN (SELECT `user_timesheet`.`timesheet_id` FROM `user_timesheet` NATURAL JOIN `project_timesheet` WHERE `project_timesheet`.`project_id` = :projectId AND `user_timesheet`.`user_id` = :userId);
+
+time paused by user on project : SELECT SUM( TIMESTAMPDIFF(SECOND, `task`.`task_start_time`, `task`.`task_end_time` ) - `task`.`task_work_time` ) AS `pause_time` FROM `task` WHERE `task`.`task_timesheet_id` IN (SELECT `user_timesheet`.`timesheet_id` FROM `user_timesheet` NATURAL JOIN `project_timesheet` WHERE `project_timesheet`.`project_id` = :projectId AND `user_timesheet`.`user_id` = :userId);
+
+get user by email : SELECT `user`.* FROM `user` WHERE `user`.`user_email` LIKE :userEmail;
 
 ...

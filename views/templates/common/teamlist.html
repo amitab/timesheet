@@ -1,0 +1,49 @@
+{% include 'head.html' %}
+
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="list" id="search-results" style="margin: 10% 0;">
+                {% if items.users|length == 0 %}
+                    <ul class="empty-list">
+                {% else %}
+                    <ul>
+                {% endif %}
+                    
+                        {% for user in items.users %}
+                            
+                            <li href={{ "profile\\view" | nonce ~ "&id=" ~ user.userId }} class="list-item" 
+                                style="border-left: 4px solid #FF6F69;">
+                                
+                                <div class="wrapper">
+                                <table><tbody><tr>
+                                <td>
+                                    <div class="display-picture">
+                                    <img src={{ items.image_path ~ user.userImageUrl }} class="image round" width="50">
+                                    </div>
+                                </td>
+                                <td>
+                                    <h5>{{ user.userFirstName ~ ' ' ~ user.userLastName }}</h5>
+                                    <p class="small email">{{ user.userMail }}&nbsp;&nbsp;<i class="fa fa-envelope"></i></p>
+                                </td>
+                                </tr></tbody></table>
+                                </div>
+                            </li>
+                            
+                        {% endfor %}
+                    
+                </ul>
+            </section>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', 'li.list-item', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                window.location.href = url;
+            });
+        });
+    </script>
+    
+{% include 'foot.html' %}

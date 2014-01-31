@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class TimesheetsController extends DefaultController
+class TimesheetsController extends \My\Control\ProtectedController
 {
 
 
@@ -66,6 +66,9 @@ class TimesheetsController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Timesheets',
             'search' =>true,
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         ));  
 
     }
@@ -99,6 +102,9 @@ class TimesheetsController extends DefaultController
             'project_name' => $projectName,
             'project_id' => $timesheetService->getTimesheetProjectId($id),
             'timesheet_id' => $id,
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         );
         $this->_response->setBody($response); 
     }
@@ -110,7 +116,7 @@ class TimesheetsController extends DefaultController
         $this->_response = new HttpResponse('none', $skeleton);
         $timesheetService = \Timesheet\Timesheet\Service::getInstance();
         $taskService = \Timesheet\Task\Service::getInstance();
-        $userId = 2;
+        $userId = $this->user->getUserId();
         $projectId = (int)$request->getParam('project_id');
         $projectService = \Timesheet\Project\Service::getInstance();
         $projectName = $projectService->getProjectNameById($projectId);
@@ -138,6 +144,7 @@ class TimesheetsController extends DefaultController
             
             if($request->getParam('work_time') != null) {
                 $task->setTaskWorkTime($request->getParam('work_time'));
+                $workTime = $task->getTaskWorkTime();
             } else {
                 $startTime = strtotime($request->getParam('start_time'));
                 $endTime = strtotime($request->getParam('end_time'));
@@ -251,6 +258,12 @@ class TimesheetsController extends DefaultController
             // common parameters
             'sent_project_id' => $getParamProjectId,
             'project_name' =>$projectName,
+            
+            //If for some reason creation of new task failed. Restore the worktime
+            'work_time' => $workTime,
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         );
         
         $this->_response->setBody($response); 
@@ -314,7 +327,7 @@ class TimesheetsController extends DefaultController
         $timesheetService = \Timesheet\Timesheet\Service::getInstance();
         $taskImpl = new \Timesheet\Task\DAOImpl();
         
-        $userId = 1; // Get user id
+        $userId = $this->user->getUserId(); // Get user id
         
         if($request->getParam('q')!=null) {
             $query = $request->getParam('q');
@@ -360,12 +373,19 @@ class TimesheetsController extends DefaultController
         $skeleton =  new TwigRenderer('taskdetails.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
+        $userId = $this->user->getUserId();
+        
         if($request->getParam('mark') != null) {
             
             $markValue = (int) $request->getParam('mark');
             $taskId = (int) $request->getParam('id');
             
             $returnValue = $this->_mark_task($taskId, $markValue);
+            if($returnValue) {
+                $message['success'] = 'An Error occured.';
+            } else {
+                $message['fail'] = 'Task successfuly marked!';
+            }
         } 
         
         if($request->getParam('id') == null) {
@@ -375,15 +395,34 @@ class TimesheetsController extends DefaultController
         }        
         
         $taskService  = \Timesheet\Task\Service::getInstance();
+        $timesheetService  = \Timesheet\Timesheet\Service::getInstance();
         
         $task = $taskService->getTaskById($id);
         $task = $task[0];
+        
+        $managerId = $timesheetService->getProjectManagerId($task->getTaskTimesheetId());
+        $logger->info('MANAGER : ' . $managerId);
+        if($managerId == $userId) {
+            $isAdmin = true;
+        } else {
+            $isAdmin = false;
+        }
+        
         $title = $task->getTaskName();
+        
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
         
         $this->_response->setBody(array(
             'title' => $title,
             'task' => $task,
-            'is_admin' => true
+            'is_admin' => $isAdmin,
+            'message' => $message,
+            
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
         )); 
     }
     

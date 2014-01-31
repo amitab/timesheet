@@ -177,7 +177,7 @@ var native5 = (function($, native5) {
             });
             $(".progress-bar", notification).width(progressComplete);
         } else {
-            notification.append("<div class='toast-body'><div class='toast-image " + messageType + "'></div><div class='toast-cancel'>x</div><div class='toast-title'>" + title + "</div><div>" + content + "</div></div>");
+            notification.append("<div class='toast-body'><div class='toast-image " + messageType + "'></div><div class='toast-cancel'>x</div><div class='toast-title'>" + title + "</div><div><p class=\"small\">" + content + "</p></div></div>");
             $(".toast-cancel", notification).on("click", function() {
                 native5.Notifications.hide();
             });
@@ -208,7 +208,7 @@ var native5 = (function($, native5) {
     	$(".top").css("top", "1%");
     	$(".bottom").css("bottom", "1%");
     	$(".toast-title").css({
-    		"font-size": "1.125em",
+    		"font-size": "1em",
     		"color": "#000"
     	});
     	$(".toast-body").css({

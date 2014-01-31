@@ -49,9 +49,9 @@ $(document).ready(function() {
                 $.each(value, function(key, value) {
                     
                     var time = value.timesheetDuration;
-                    var hrs = ~~(time / 3600);
-                    var mins = ~~((time % 3600) / 60);
-                    var secs = ~~(time % 60);
+                    var hrs = Math.round(time / 3600);
+                    var mins = Math.round((time % 3600) / 60);
+                    var secs = Math.round(time % 60);
                     
                     row += '<tr class="timesheet-details" id="' + value.timesheetId + '">';
                     row += '<td>' + value.timesheetProjectName + '</td>';
@@ -126,7 +126,7 @@ $(document).ready(function() {
     
     $(document).on('click', 'tr.timesheet-details', function(e) {
         e.preventDefault();
-        var url = $('input#url').attr('timesheet-details-path') + '?id=' + $(this).attr('id');
+        var url = $('input#url').attr('timesheet-details-path') + '&id=' + $(this).attr('id');
         window.location.href = url;
     });
     

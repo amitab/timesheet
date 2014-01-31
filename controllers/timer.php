@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class TimerController extends DefaultController
+class TimerController extends \My\Control\ProtectedController
 {
 
 
@@ -63,9 +63,16 @@ class TimerController extends DefaultController
         $skeleton =  new TwigRenderer('timer.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+        
         $this->_response->setBody(array(
             'title' => 'Project a',
-            'project_id' => $request->getParam('project_id')
+            'project_id' => (int) $request->getParam('id'),
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
         ));  
 
     }//end _default()

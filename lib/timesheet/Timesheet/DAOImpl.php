@@ -105,7 +105,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	public function createTimesheet($timesheetDetails) {
 	    $valArr = array(
             ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
-            ':timesheetStatus' => 0,
             ':timesheetDate' => $timesheetDetails->getTimesheetDate(),
         );
         
@@ -140,7 +139,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
 	public function createTimesheetAndTask($timesheetDetails, $task) {
 	    $valArr = array(
             ':timesheetProjectName' => $timesheetDetails->getTimesheetProjectName(),
-            ':timesheetStatus' => 0,
             ':timesheetDate' => $timesheetDetails->getTimesheetDate(),
         );
         

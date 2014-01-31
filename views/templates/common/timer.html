@@ -29,7 +29,7 @@
         </div>
     </div>
     
-    <form action={{ resolvePath("timesheets\\new_task") }} method="post">
+    <form action={{ "timesheets\\new_task" | nonce }} method="post">
         <input type="hidden" id="project_id" name="project_id" value="{{ items.project_id }}" />
         <input type="hidden" id="work_time" name="work_time" value="" />
         <input type="hidden" id="start_time" name="start_time" value="" />

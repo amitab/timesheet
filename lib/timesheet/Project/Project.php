@@ -9,7 +9,6 @@ class Project {
     private $projectTimeAlloted;
     private $projectDescription;
     private $projectCreatedDate;
-    private $projectTimesheets;
     private $projectManagerId;
     private $projectSalary;
     private $projectState;
@@ -39,6 +38,14 @@ class Project {
         $project->setProjectManagerId($data['project_manager_id']);
         $project->setProjectSalary($data['project_salary']);
         $project->setProjectState($data['project_state']);
+        
+        $startTime = strtotime($data['project_created_date']);
+        $endTime = strtotime($data['project_time_alloted']);
+        $duration = ($endTime - $startTime); 
+        
+        if($duration < 0) {
+            $project->setProjectState(self::STATE_OVERDUE);
+        } 
         
         return $project;
     }

@@ -32,7 +32,6 @@ use Native5\Identity\UsernamePasswordToken;
 use Native5\Identity\AuthenticationException;
 use Native5\Identity\SecurityUtils;
 
-use Timesheet\User\DAOImpl as UserDAOImpl;
 /**
  * Home Controller
  *
@@ -46,7 +45,7 @@ use Timesheet\User\DAOImpl as UserDAOImpl;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class HomeController extends \My\Control\ProtectedController
+class HomeController extends DefaultController
 {
 
 
@@ -60,7 +59,14 @@ class HomeController extends \My\Control\ProtectedController
      */
     public function _default($request)
     {
-        $this->_response->redirectTo('profile');
+        global $logger;
+        $skeleton =  new TwigRenderer('auth.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $this->_response->setBody(array(
+            'title' => 'Login',
+            'login' => true,
+        ));
 
     }//end _default()
 	

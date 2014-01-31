@@ -4,10 +4,7 @@
     <!--    Keep project id hidden here -->
     <div class="row">
         <div class="six columns centered card">
-            
-            <div class="warnings" style="margin-top: 20px;">
-                
-            </div>
+
             <input type="hidden" name="project_id" id="project_id" value="{{ items.project_id }}">
             <h5 class="left-padding" style="padding-top: 20px;">You have selected : </h5>
             
@@ -27,12 +24,13 @@
             
             
             <div class="submit" style="margin: 1rem 0; text-align: center;">
-                <div class="medium primary btn"><a href={{ resolvePath("project\\add_users") }} id="add_users">Add Users</a></div>
+                <div class="medium primary btn"><a href={{ "project\\add_users" | nonce }} id="add_users">Add Users</a></div>
             </div>
         </div>
     </div>
     
     <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("native5.notifications.js") }} ></script>
     <script src={{ resolvePath("smart-list.js") }} ></script>
     <script src={{ resolvePath("addUsersToProject.js") }} ></script>
     

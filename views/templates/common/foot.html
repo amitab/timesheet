@@ -7,22 +7,24 @@
                 <table border="0">
                     <tr>
                         <td class="user-image">
-                            <img class="image" src={{ resolvePath("pic.jpg") }} alt="">
+                            <img class="image" src="{{ items.image }}" alt="" width="100">
                         </td>
                         <td class="user-details">
-                            <h5>John Doe</h5>
-                            <p class="small">johndoe@gmail.com</p>
+                            <h5>{{ items.name }}</h5>
+                            <p class="small">{{ items.email }}</p>
                         </td>
                     </tr>
                 </table>
             </div>
             <nav class="nav">
                 <ul>
-                    <li><a href={{ resolvePath("project") }} class="page-link small"><i class="fa fa-edit"></i>Projects</a>
-                    </li><li><a href={{ resolvePath("project\\create_new") }} class="page-link small"><i class="fa fa-plus"></i>New Project</a>
-                    </li><li><a href={{ resolvePath("timesheets") }} class="page-link small"><i class="fa fa-puzzle-piece"></i>Timesheets</a>
-                    </li><li><a href={{ resolvePath("profile") }} class="page-link small"><i class="fa fa-user"></i>Profile</a>
-                    </li><li><a href={{ resolvePath("logout") }} class="page-link small"><i class="fa fa-sign-out"></i>Logout</a>
+                    <li><a href={{ "project" | nonce }} class="page-link small"><i class="fa fa-folder-open"></i>Working Projects</a>
+                    </li><li><a href={{ "project\\created_projects" | nonce }} class="page-link small"><i class="fa fa-briefcase">
+                    </i>Created Projects</a>
+                    </li><li><a href={{ "project\\create_new" | nonce }} class="page-link small"><i class="fa fa-plus"></i>New Project</a>
+                    </li><li><a href={{ "timesheets" | nonce }} class="page-link small"><i class="fa fa-puzzle-piece"></i>Timesheets</a>
+                    </li><li><a href={{ "profile" | nonce }} class="page-link small"><i class="fa fa-user"></i>Profile</a>
+                    </li><li><a href={{ "logout" | nonce }} class="page-link small"><i class="fa fa-sign-out"></i>Logout</a>
                     </li>
                 </ul>
             </nav>

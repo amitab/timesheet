@@ -29,4 +29,8 @@ interface DAO {
     public function getTotalUserWorkHours($userId);
     
     public function getUsersForProject($userName, $projectId, $userIds);
+    public function getTotalTimeSpentByUserOnProject($userId, $projectId);
+    public function getTotalTimePausedByUserOnProject($userId, $projectId);
+    
+    public function getUserByEmail($email);
 }

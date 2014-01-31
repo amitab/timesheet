@@ -92,7 +92,7 @@ $(document).ready(function() {
                 openSearchBox(searchBox);
             } else {
                 if(prevQuery != '') {
-                    communicator.serviceObject.invoke({getWorking:true});
+                    communicator.serviceObject.invoke({getCreated:true});
                     searchList.emptyListCheck();
                 }
                 closeSearchBox(searchBox);
@@ -111,7 +111,7 @@ $(document).ready(function() {
             // Search using ajax
             var args = {};
             args.q = query;
-            args.getWorking = true;
+            args.getCreated = true;
             args.ids = [];
             communicator.serviceObject.invoke(args);
         }
@@ -119,7 +119,7 @@ $(document).ready(function() {
     });
     
     // Load initial data
-    communicator.serviceObject.invoke({getWorking:true});
+    communicator.serviceObject.invoke({getCreated:true});
     searchList.emptyListCheck();
     
     // Link to the details page

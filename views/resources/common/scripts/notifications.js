@@ -23,27 +23,35 @@ $(document).ready(function() {
             var today = ~~(new Date(Date.now()).getTime()/1000);
             
             var timeLeft = today - notificationDate;
-            var days = ~~(timeLeft/(3600*24));
-            var hrs = ~~(timeLeft / 3600);
-            var mins = ~~((timeLeft % 3600) / 60);
-            var secs = ~~(timeLeft % 60);
+            var days = Math.round(timeLeft/(3600*24));
+            var hrs = Math.round(timeLeft / 3600);
+            var mins = Math.round((timeLeft % 3600) / 60);
+            var secs = Math.round(timeLeft % 60);
             
             var timeString = '';
             
             if(days > 0) {
-                timeString += days + ' days ago';
+                timeString += days;
+                if(days == 1) timeString  += ' day ago';
+                else timeString  += ' days ago';
             } else if (hrs > 0) {
-                timeString += hrs + ' hours ago';
+                timeString += hrs;
+                if(hrs == 1) timeString  += ' hour ago';
+                else timeString  += ' hours ago';
             } else if (mins > 0) {
-                timeString += mins + ' minutes ago';
+                timeString += mins;
+                if(hrs == 1) timeString  += ' minute ago';
+                else timeString  += ' minutes ago';
             } else if (secs > 0) {
-                timeString += secs + 'seconds ago';
+                timeString += secs;
+                if(hrs == 1) timeString  += ' second ago';
+                else timeString  += ' seconds ago';
             } else {
                 timeString += 'Just Now';
             }
             
             var list = '';
-            list += '<li class="notification-link" id="' + value.notificationId +'" url="\\' + path + '\\' + value.url + '?id=' + value.notificationSubjectId + '">';
+            list += '<li class="notification-link" id="' + value.notificationId +'" url="\\' + path + '\\' + value.url + '&id=' + value.notificationSubjectId + '">';
             list += '<div class="content">';
             list += '<div class="content-header">';
             list += '<p class="small"><span class="from">' + value.notificationFromUser + '</span>, <span class="time">'; 

@@ -116,6 +116,7 @@
     <!-- Loading custom js files -->    
     <script src={{ resolvePath("jquery.hammer.min.js") }} ></script>
     <script src={{ resolvePath("sidebar.js") }} ></script>
+    <script src={{ resolvePath("require.js") }}></script>
     
     {% if items.login != true %}
     <div id="header">
@@ -130,7 +131,7 @@
                 </div>
                 <div class="item title">
                     <h5>&nbsp;{{ items.title }}</h5>
-                    <p class="very-small">&nbsp;&nbsp;johndoe@gmail.com</p>
+                    <p class="very-small">&nbsp;&nbsp;{{ items.email }}</p>
                 </div>
             </div>
             
@@ -150,7 +151,7 @@
             <div class="header-item option" id="save-form" style="height: 68px; position: relative">
             {% elseif items.add_task == true %}
             <div class="header-item option" id="add-task" style="height: 68px; position: relative">
-            {% elseif items.edit_option == true %}
+            {% elseif (items.edit_option == true) and (items.is_admin == true) %}
             <div class="header-item option" id="edit_option" style="height: 68px; position: relative">
             {% elseif items.refresh == true %}
             <div class="header-item option" id="load-notitfications" style="height: 68px; position: relative">
@@ -182,7 +183,7 @@
                         </a>
                     </div>
                     
-                {% elseif items.edit_option == true %}
+                {% elseif (items.edit_option == true) and (items.is_admin == true) %}
                 
                     <div>
                         <a href="#" >
@@ -200,8 +201,10 @@
                 
                 {% else %}
                     
-                    <a href={{ resolvePath("notifications") }} >
-                        <p class="notifications small">21</p>
+                    <a href={{ "notifications" | nonce }} >
+                        {% if items.unread_notification != 0 %}
+                        <p class="notifications small">{{ items.unread_notification }}</p>
+                        {% endif %}
                         <h5><i class="fa fa-globe"></i></h5>
                     </a>
                     

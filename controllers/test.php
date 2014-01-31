@@ -61,12 +61,10 @@ class TestController extends DefaultController
 	public function _default($request)
     {
         global $logger;
-        $offset = 2;
-        $userId = 1;
-        $notificationService = \Timesheet\Notification\Service::getInstance();
-        $data = $notificationService->getNotificationsToUser($userId, $offset);
-        $data = \Database\Converter::getArray($data); 
-        $logger->info(print_r($data,1));  
+        $startTime = strtotime('2014-01-08 01:00:20');
+        $endTime = strtotime('2014-01-08 01:00:10');
+        $duration = ($endTime - $startTime); 
+        $logger->info('DURATION : ' . $duration);
     }
 
 }//end class

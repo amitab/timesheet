@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div id="timesheet-control" style="margin-bottom: 30px;">
-                <form action={{ resolvePath("addsheet") }} method="post">
+                <form action={{ "addsheet" | nonce }} method="post">
                     <input type="hidden" name="timesheetId" value="12" />
                     <table border="0" style="margin-top: 40px;">
                         <tr>

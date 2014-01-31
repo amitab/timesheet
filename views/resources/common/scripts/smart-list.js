@@ -3,7 +3,7 @@ var app = (function (app, native5) {
     
     var createService = function(url, config, successHandler) {
         var service =  new native5.core.Service(url, config);
-        service.successHandler = successHandler;
+        service.configureHandlers(successHandler, function(){console.log(this);});
         return service;
     };
     
@@ -13,7 +13,6 @@ var app = (function (app, native5) {
             method : args.method,
             mode : 'ui'
         };
-        
         return {
             config : this.config,
             serviceObject : createService(args.url, this.config, args.successHandler),
@@ -27,7 +26,9 @@ var app = (function (app, native5) {
 var smartList = (function(smartList) {
     var domElement;
     var randomColors = function() {
-        var colour = ['#4cc2e4', '#FFCC5C', '#FF6F69', '#77C4D3', '#00A388', '#3085d6'];
+        var colour = ['#4CC2E4', '#FFCC5C', '#FF6F69', '#77C4D3', '#00A388', '#3085D6', '#404040', '#468966', '#FFF0A5'
+                      , '#225378', '#1695A3', '#ACF0F2', '#CCCC9F', '#C9D787', '#263248', '#263248', '#FF6138' ,
+                     '#FFFF9D', '#BEEB9F', '#BEEB9F', '#00A388'];
         return colour[Math.floor(Math.random() * colour.length)];
     };
     
@@ -92,102 +93,3 @@ var smartList = (function(smartList) {
 
 // ----------------------------------------------------------------------------------------------------------------------- //
 
-/*
-$(document).ready(function() {
-    
-    var searchList = smartList.createList({element : '#search-results'});
-    var resultList = smartList.createList({element : '#selected-users'});
-    
-    // success handler must be declared before app is constructed
-    
-    var successHandler = function(data) {
-        $('#search-results > ul').html('');
-        var list = '';
-        $.each(data.message.users, function(key, value) {
-            var matcher = value.userMail.match(/@+.+/);
-            var domain = matcher[0];
-            var mail = value.userMail.substring(0,matcher.index);
-            if(mail.length > 10) {
-                var extract = mail.substring(0,10) + '...';
-            } else {
-                var extract = mail;
-            }
-            list += '<li userid="' + value.userId + '">';
-            list += '<table>';
-            list += '<tbody>';
-            list += '<tr>';
-            list += '<td>';
-            list += '<img src="' + data.message.image_location + value.userImageUrl + '">';
-            list += '</td>';
-            list += '<td>';
-            list += '<h5>' + value.userName + '</h5>';
-            list += '<p class="small email">' + extract + domain + '</p>';
-            list += '</td>';
-            list += '</tr>';
-            list += '</tbody>';
-            list += '</table>';
-            list += '</li>';
-        });
-        $('#search-results > ul').append(list);
-        searchList.activate();
-        console.log('appended data');
-    };
-    
-    var communicator = app.construct({
-        path : 'timesheet',
-        method : 'POST',
-        url : 'project/search_to_add',
-        successHandler : successHandler
-    });
-    
-    $(document).on('click', '.list-item' ,function(e) {
-                
-        var parent = $(this).closest('section');
-        var item = $(this);
-        item.remove();
-        if(parent.is('#search-results')) {
-            $('#selected-users > ul').append(item);
-        } else {
-            $('#search-results > ul').append(item);
-        }
-        searchList.emptyListCheck();
-        resultList.emptyListCheck();
-        
-    });  
-    
-    function openSearchBox(searchBox) {
-        searchBox.removeClass('closed');
-        $('div.header-item:first').addClass('fade-out');
-    }
-    
-    function closeSearchBox(searchBox) {
-        searchBox.addClass('closed');
-        $('#search-box').val('');
-        $('div.header-item:first').removeClass('fade-out');
-    }
-    
-    $('#search-button').click(function(e){
-        e.preventDefault();
-        var searchBox = $($(this).attr('href'));
-        
-        if(searchBox.val().length <= 0) {
-            if(searchBox.hasClass('closed')) {
-                openSearchBox(searchBox);
-            } else {
-                closeSearchBox(searchBox);
-            }
-        }
-        
-        else {
-           var query = '%' + $('#search-box').val() + '%';
-            // Search using ajax
-            var args = {};
-            args.q = query;
-            args.ids = [];
-            communicator.serviceObject.invoke(args);
-        }
-        
-    });
-    
-});
-*/

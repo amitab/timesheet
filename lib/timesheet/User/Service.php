@@ -26,7 +26,15 @@ class Service {
     }
 	
 	// The Cover
-	
+    
+    public function getTotalTimeSpentByUserOnProject($userId, $projectId) {
+        return $this->_dao->getTotalTimeSpentByUserOnProject($userId, $projectId);
+    }
+    
+    public function getTotalTimePausedByUserOnProject($userId, $projectId) {
+        return $this->_dao->getTotalTimePausedByUserOnProject($userId, $projectId);
+    }
+    
     public function createUser($userDetails) {
         return $this->_dao->createUser($userDetails);
     }
@@ -109,5 +117,8 @@ class Service {
     }
     public function removeUserImage($userId) {
         return $this->_dao->removeUserImage($userId);
+    }
+    public function getUserByEmail($email) {
+        return $this->_dao->getUserByEmail($email);
     }
 }

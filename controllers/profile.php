@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class ProfileController extends DefaultController
+class ProfileController extends \My\Control\ProtectedController
 {
 
 
@@ -63,17 +63,24 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('profile-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $userId = 1; // Get current user Id
+        $userId = $this->user->getUserId(); // Get current user Id
         $userService = \Timesheet\User\Service::getInstance();
-        $user = $userService->getUserById($userId);
-        $user = $user[0];
         $stats = $userService->getUserStats($userId);
+        
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
         
         $this->_response->setBody(array(
             'title' => 'Profile',
             'image_path' => IMAGE_PATH,
-            'user' => $user,
-            'stats' => $stats
+            'user' => $this->user,
+            'stats' => $stats,
+            // The sidebar and header data
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
+            
         )); 
 
 
@@ -90,12 +97,20 @@ class ProfileController extends DefaultController
         $user = $user[0];
         $stats = $userService->getUserStats($userId);
         
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+        
         $this->_response->setBody(array(
             'title' => 'Profile',
             'image_path' => IMAGE_PATH,
             'user' => $user,
             'stats' => $stats,
-            'view_profile' => true
+            'view_profile' => true,
+            // The sidebar and header data
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
         )); 
     }
     
@@ -106,17 +121,33 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('editprofile.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
+        if($request->getParam('edit') != null) {
+            $user = $this->user;
+            $user->setUserFirstName($request->getParam('first_name'));
+            $user->setUserLastName($request->getParam('last_name'));
+            $user->setUserPhoneNumber($request->getParam('phone_number'));
+            $user->setUserLocation($request->getParam('location'));
+            
+            $userService = \Timesheet\User\Service::getInstance();
+            if($userService->editUser($user)) {
+                $message['success'] = 'Updated successfuly.';
+            } else {
+                $message['fail'] = 'Could not update.';
+            }
+        }
         
-        $userId = 1; // Get current user Id
-        $userService = \Timesheet\User\Service::getInstance();
-        $user = $userService->getUserById($userId);
-        $user = $user[0];
+        $user = $this->user;
         
         $this->_response->setBody(array(
             'title' => 'Edit Profile',
             'inline_menu' => true,
             'form_save' => true,
-            'user' => $user
+            'user' => $user,
+            'message' => $message,
+            // The sidebar and header data
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         )); 
 
     }
@@ -129,7 +160,7 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('uploadprofileimage.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
-        $userId = 1; // Get current user Id
+        $userId = $this->user->getUserId(); // Get current user Id
         $userService = \Timesheet\User\Service::getInstance();
         $userImagePath = $userService->getUserImageUrl($userId);
         
@@ -159,8 +190,6 @@ class ProfileController extends DefaultController
                     unlink($uploader->uploadPath . $newFileName);
                 }
                 
-                
-                
             } catch (\Exception $e) {
                 $warnings[] = $e->getMessage();
                 $image_path = IMAGE_PATH . $userImagePath; // Show default pic
@@ -169,11 +198,19 @@ class ProfileController extends DefaultController
             $image_path = IMAGE_PATH . $userImagePath; // Show default pic
         }
         
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+        
         $this->_response->setBody(array(
             'title' => 'Upload Image',
             'image_path' => $image_path,
             'warnings' => $warnings,
             'successful' => $successful,
+            // The sidebar and header data
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
         )); 
     }
     
@@ -183,8 +220,20 @@ class ProfileController extends DefaultController
         $skeleton =  new TwigRenderer('change-password.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+        
+        if($request->getParam('edit') != null) {
+            
+        }
+        
         $this->_response->setBody(array(
             'title' => 'Change Password',
+            // The sidebar and header data
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
         ));
     }
 

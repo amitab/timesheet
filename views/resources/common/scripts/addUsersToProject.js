@@ -8,6 +8,20 @@ $(document).ready(function() {
     var successHandler = function(data) {
         $('#search-results > ul').html('');
         var list = '';
+        
+        if(data.message.users.length == 0) {
+            native5.Notifications.show( data.message.reason, {
+                notificationType:'toast',
+                title:'Error',
+                position:'bottom',
+                distance:'0px',
+                timeout: 5000,
+                persistent:false
+            });
+            
+            return;
+        }
+        
         $.each(data.message.users, function(key, value) {
             var matcher = value.userMail.match(/@+.+/);
             var domain = matcher[0];
@@ -112,10 +126,28 @@ $(document).ready(function() {
     
     var addSuccessHandler = function(data) {
         $('div.warnings').html('');
-        if(data.message.success == true)
-            $('div.warnings').append('<p class="alert success">' + data.message.info + '</p>');
-        else 
-            $('div.warnings').append('<p class="alert warning">' + data.message.info + '</p>');
+        if(data.message.success == true) {
+            native5.Notifications.show( data.message.info.response, {
+                notificationType:'toast',
+                title:'Success',
+                position:'bottom',
+                distance:'0px',
+                timeout: 5000,
+                persistent:false
+            });
+            
+            setTimeout(function(){ window.location.href = data.message.info.redirect; }, 5000);
+            
+        } else {
+            native5.Notifications.show( data.message.info.response, {
+                notificationType:'toast',
+                title:'Error',
+                position:'bottom',
+                distance:'0px',
+                timeout: 5000,
+                persistent:false
+            });
+        }
     };
     
     var adder = app.construct({
@@ -137,8 +169,15 @@ $(document).ready(function() {
         });
         
         if(args.ids.length == 0) {
-            $('div.message').html('');
-            $('div.message').append('<p class="alert warning">You haven\'t selected anyone!</p>');
+            native5.Notifications.show( "You haven't selected anyone!", {
+                notificationType:'toast',
+                title:'Error',
+                position:'bottom',
+                distance:'0px',
+                timeout: 5000,
+                persistent:false
+            });
+            
             return;
         }
         

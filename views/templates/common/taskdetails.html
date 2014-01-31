@@ -4,6 +4,14 @@
     <div class="row">
         <div class="eight columns centered">
             <section class="task-details">
+                <div class="warnings">
+                    {% if items.message.success %}
+                        <p class="alert success">{{ items.message.success }}</p>
+                    {% elseif items.message.fail %}
+                        <p class="alert warning">{{ items.message.fail }}</p>
+                    {% endif %}
+                </div>
+                
                 <div class="title">
                     <h5>
                         Details of {{ items.task.taskName }}
@@ -25,12 +33,24 @@
                         </tr>
                         <tr>
                             <td>Work Time</td>
-                            <td>{{ items.task.taskWorkTime }}</td>
+                            <td>{{ items.task.prettyWorkTime }}</td>
                         </tr>
                         <tr>
                             <td>Location</td>
                             <td>{{ items.task.taskLocation }}</td>
                         </tr>
+    
+                        <tr>
+                            <td>Status</td>
+                        {% if items.task.taskStatus == 0 %}
+                                <td><i class="fa fa-circle" style="color: #FFCC5C;"></i>&nbsp;Not Checked</td>
+                        {% elseif items.task.taskStatus == 1 %}
+                                <td><i class="fa fa-check-circle" style="color: #00A388;"></i>&nbsp;Accepted</td>
+                        {% elseif items.task.taskStatus == 2 %}
+                                <td><i class="fa fa-times-circle" style="color: #FF6F69;"></i>&nbsp;Rejected</td>
+                        {% endif %}
+                        </tr>
+                        
                     </tbody>
                 </table>
                 <div class="notes">
@@ -41,30 +61,18 @@
         </div>
     </div>
     
-    {% if items.is_admin == true %}
-                
-        {% if items.task.taskStatus == 0 %}
-            <div class="task-options" style="text-align: center;">
-                <div class="medium secondary btn">
-                    <a href={{ resolvePath("timesheets\\task_details?mark=1&id=" ~ items.task.taskId) }}>Accept</a>
-                </div>
-                <div class="medium danger btn">
-                    <a href={{ resolvePath("timesheets\\task_details?mark=2&id=" ~ items.task.taskId) }}>Reject</a>
-                </div>
-            </div> 
-        {% elseif items.task.taskStatus == 1 %}
-            <div class="task-options" style="text-align: center;">
-                <div class="medium btn disabled">
-                    <a href="#" style="color: #404040;">Accepted</a>
-                </div>
+    {% if (items.is_admin == true) and (items.task.taskStatus == 0) %}
+            
+        <div class="task-options" style="text-align: center;">
+            <div class="medium secondary btn">
+                <a href={{ "timesheets\\task_details" | nonce ~ "&mark=1&id=" ~ items.task.taskId }}>
+                <i class="fa fa-check"></i>&nbsp;Accept</a>
             </div>
-        {% elseif items.task.taskStatus == 2 %}
-            <div class="task-options" style="text-align: center;">
-                <div class="medium disabled btn">
-                    <a href="#" style="color: #404040;">Rejected</a>
-                </div>
+            <div class="medium danger btn">
+                <a href={{ "timesheets\\task_details" | nonce ~ "&mark=2&id=" ~ items.task.taskId }}>
+                <i class="fa fa-times"></i>&nbsp;Reject</a>
             </div>
-        {% endif %}
+        </div> 
             
     {% endif %}
     

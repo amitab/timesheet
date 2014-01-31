@@ -28,6 +28,14 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         return $this->_executeObjectQuery('find project by name under user', $valArr, \Native5\Core\Database\DB::SELECT);
     }
     
+    public function searchByNameUnderManagerId($projectName, $userId) {
+        $valArr = array(
+            ':projectName' => $projectName,
+            ':projectManagerId' => $userId
+        );
+        return $this->_executeObjectQuery('find project by name created under user', $valArr, \Native5\Core\Database\DB::SELECT);
+    }
+    
 	public function getAllProjects() {
         return $this->_executeObjectQuery('get all projects', null, \Native5\Core\Database\DB::SELECT);
 	}
@@ -75,7 +83,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
 	
 	public function getProjectsCreatedByUserId($userId) {
 		$valArr = array(
-            ':userId' => $userId
+            ':projectManagerId' => $userId
         );
         return $this->_executeObjectQuery('get project created by user id', $valArr, \Native5\Core\Database\DB::SELECT);
 	}
@@ -126,6 +134,14 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         return $data[0]['project_name'];
 	}
     
+    public function getProjectState($projectId) {
+        $valArr = array(
+            ':projectId' => $projectId,
+        );
+        $data = $this->_executeQuery('get project state', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['project_state'];
+    }
+    
 	// WRITE FUNCTIONS
 	
 	public function createProject($projectDetails) {
@@ -148,14 +164,14 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
 	}
 	
 	public function markCompleted($projectId) {
-	    $valArr = array(
-            ':projectState' => 1,
-            ':projectId' => $project
-        );
-        
         try {
+            $valArr = array(
+                ':projectState' => 1,
+                ':projectId' => $projectId
+            );
             return $this->_executeQuery('mark complete', $valArr, \Native5\Core\Database\DB::UPDATE);
         } catch (\Exception $e) {
+            $GLOBALS['logger']->info($e->getMessage());
             return false;
         }
 	}
@@ -167,7 +183,6 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
             ':projectDescription' => $projectDetails->getProjectDescription(),
             ':projectStatus' => $projectDetails->getProjectStatus(),
             ':projectTimeAlloted' => $projectDetails->getProjectTimeAlloted(),
-            ':projectManagerId' => $projectDetails->getProjectManagerId()
         );
         try {
             return $this->_executeQuery('edit project', $valArr, \Native5\Core\Database\DB::UPDATE);

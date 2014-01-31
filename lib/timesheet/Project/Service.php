@@ -45,8 +45,12 @@ class Service {
     }
     
     // read only functions
+    
     public function searchByNameUnderUserId($projectName, $userId) {
         return $this->_dao->searchByNameUnderUserId($projectName, $userId);
+    }
+    public function searchByNameUnderManagerId($projectName, $userId) {
+        return $this->_dao->searchByNameUnderManagerId($projectName, $userId);
     }
     public function getProjectManagerId($projectId) {
         return $this->_dao->getProjectManagerId($projectId);

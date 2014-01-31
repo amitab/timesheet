@@ -144,13 +144,38 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
                 ':projectId' => $projectId
             );
             
-            $sql = 'SELECT `user`.* FROM `user` WHERE `user`.`user_first_name` LIKE :userName OR `user`.`user_last_name` LIKE :userName OR concat(`user`.`user_first_name`, \' \', `user`.`user_last_name`) LIKE :userName AND `user`.`user_id` NOT IN (';
+            $sql = 'SELECT `user`.* FROM `user` WHERE (`user`.`user_first_name` LIKE :userName OR `user`.`user_last_name` LIKE :userName OR concat(`user`.`user_first_name`, \' \', `user`.`user_last_name`) LIKE :userName) AND `user`.`user_id` NOT IN (';
             $sql .= implode(', ', $userIds);
             $sql .= ') AND `user`.`user_id` NOT IN (SELECT `user_project`.`user_id` FROM `user_project` WHERE `user_project`.`project_id` = :projectId);';
             
             return $this->_executeObjectQueryString($sql, $valArr, \Native5\Core\Database\DB::SELECT);
         }
         
+    }
+    
+    public function getTotalTimeSpentByUserOnProject($userId, $projectId) {
+        $valArr = array(
+            ':userId' => $userId,
+            ':projectId' => $projectId
+        );
+        $data = $this->_executeQuery('user work time on project', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['total_time'];
+    }
+    
+    public function getTotalTimePausedByUserOnProject($userId, $projectId) {
+        $valArr = array(
+            ':userId' => $userId,
+            ':projectId' => $projectId
+        );
+        $data = $this->_executeQuery('time paused by user on project', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['pause_time'];
+    }
+    
+    public function getUserByEmail($email) {
+        $valArr = array(
+            ':userEmail' => $email
+        );
+        return $this->_executeObjectQuery('get user by email', $valArr, \Native5\Core\Database\DB::SELECT);
     }
 	
 	// WRITE FUNCTIONS
@@ -178,15 +203,15 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
             ':userId' => $userDetails->getUserId(),
             ':userFirstName' => $userDetails->getUserFirstName(),
             ':userLastName' => $userDetails->getUserLastName(),
-            ':userMail' => $userDetails->getUserMail(),
             ':userLocation' => $userDetails->getUserLocation(),
             ':userPhoneNumber' => $userDetails->getUserPhoneNumber(),
             ':userSex' => $userDetails->getUserSex()
         );
         
         try {
-            return $this->_executeQuery('edit user', $valArr, \Native5\Core\Database\DB::UPDATE);
+            return $this->_executeQuery('edit user', $userArr, \Native5\Core\Database\DB::UPDATE);
         } catch (\Exception $e) {
+            $GLOBALS['logger']->info('ERROR : ' . $e->getMessage());
             return false;
         }
 	}
@@ -198,7 +223,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
         );
         
         try {
-            return $this->_executeQuery('edit user password', $valArr, \Native5\Core\Database\DB::UPDATE);
+            return $this->_executeQuery('edit user password', $userArr, \Native5\Core\Database\DB::UPDATE);
         } catch (\Exception $e) {
             return false;
         }

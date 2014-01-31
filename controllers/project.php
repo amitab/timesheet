@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class ProjectController extends DefaultController
+class ProjectController extends \My\Control\ProtectedController
 {
     /**
      * _default 
@@ -64,6 +64,27 @@ class ProjectController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'Projects',
             'search' =>true,
+            
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+        ));      
+
+    }//end _default()
+    
+    public function _created_projects($request)
+    {
+        global $logger;
+        $skeleton =  new TwigRenderer('createdprojects.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        $this->_response->setBody(array(
+            'title' => 'Projects',
+            'search' => true,
+            
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         ));      
 
     }//end _default()
@@ -81,35 +102,80 @@ class ProjectController extends DefaultController
         $projectData = $projectService->getProjectById($id);
         $projectData = $projectData[0];
         
+        $userId = $this->user->getUserId();
+        
         // Check if user owns this project or is working for this project
-        // $isAdmin
-        // $isEmployee
+        if($projectData->getProjectManagerId() == $userId) {
+            $isAdmin = true;
+            $isEmployee = false;
+        } else {
+            $isAdmin = false;
+            $isEmployee = true;
+        }
         
         $employerName = $userService->getUserNameById($projectData->getProjectManagerId());
-        $totalTime = $projectService->getProjectTotalWorkTime($id);
-        if($totalTime == null) {
-            $totalTime = 0;
-        } else {
-            $totalTime = round($totalTime/3600);  // Converting seconds to hours since money is per hour
+        
+        if($isAdmin) {
+            $totalTime = $projectService->getProjectTotalWorkTime($id);
+            if($totalTime == null) {
+                $totalTime = 0;
+            } else {
+                $totalTime = round($totalTime/3600);  // Converting seconds to hours since money is per hour
+            }
+            // If admin, get total time spent by all employees and total money spent on the project
+            // If employee, get total time spent by him and total salary
+            $expenses = $projectData->getProjectSalary() * $totalTime;
+        } 
+        else if($isEmployee) {
+            
+            $totalTime = $userService->getTotalTimeSpentByUserOnProject($userId, $id);
+            $slackOffTime = $userService->getTotalTimePausedByUserOnProject($userId, $id);
+            if($totalTime == null) {
+                $totalTime = 0;
+            } else {
+                $totalTime = round($totalTime/3600);  // Converting seconds to hours since money is per hour
+            }
+            if($slackOffTime == null) {
+                $slackOffTime = 0;
+            } else {
+                $slackOffTime = round($slackOffTime/3600);  // Converting seconds to hours since money is per hour
+            }
+            
+            $salary = $projectData->getProjectSalary() * $totalTime;
+            $expenses = $projectData->getProjectSalary() * $slackOffTime;
+        
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+            
         }
-        // If admin, get total time spent by all employees and total money spent on the project
-        // If employee, get total time spent by him and total salary
-        $expenses = $projectData->getProjectSalary() * $totalTime;
+            
+        
+        if((int) $request->getParam('error') == 1) {
+            $message['fail'] = 'Error';
+        } else if((int) $request->getParam('success') == 1) {
+            $message['success'] = 'Success';
+        }
         
         $response = array(
             'title' => 'Project Details',
-            'is_admin' => true,
-            'is_employee' => false,
+            'is_admin' => $isAdmin,
+            'is_employee' => $isEmployee,
             'project_details' => $projectData,
             'expenses' => $expenses, // for employee, salary * pausetime; for employer, salary * total work hours
             'total_time' => $totalTime,
-            'pause_time' => null, // for admin null
-            'total_salary' => null, // for admin null
+            'pause_time' => $slackOffTime, // for admin null
+            'total_salary' => $salary, // for admin null
             'employer_name' => $employerName,
             'project_id' => $id,
-            'edit_option' => true // only if user is admin
+            'edit_option' => $isAdmin, // only if user is admin
+            'inline_menu' => true,
+            'message' => $message,
+            
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
         );
-        
         
         $this->_response->setBody($response);  
     }
@@ -119,7 +185,7 @@ class ProjectController extends DefaultController
         global $logger;
         $skeleton =  new TwigRenderer('createproject.html');
         $this->_response = new HttpResponse('none', $skeleton);
-        $userId = 1; // Get current User
+        $userId = $this->user->getUserId(); // Get current User
         // Also check if user is admin else kick
         
         if($request->getParam('new') != null) {
@@ -154,7 +220,10 @@ class ProjectController extends DefaultController
         $this->_response->setBody(array(
             'title' => 'New Project',
             'form_save' => true,
-            'message' => $message
+            'message' => $message,
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         ));  
     }
     
@@ -162,7 +231,7 @@ class ProjectController extends DefaultController
         global $logger;
         $skeleton =  new TwigRenderer('createproject.html');
         $this->_response = new HttpResponse('none', $skeleton);
-        $userId = 1;
+        $userId = $this->user->getUserId();
         $projectService = \Timesheet\Project\Service::getInstance();
         
         // Check if user owns this project else kick
@@ -205,14 +274,18 @@ class ProjectController extends DefaultController
             'form_save' => true,
             'edit' => true,
             'project' => $editproject,
-            'message' => $message
+            'message' => $message,
+            
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         ));  
     }
     
     public function _add_users($request) {
         
         global $logger;
-        $userId = 1;
+        $userId = $this->user->getUserId();
         // Check if user owns this project else kick
         
         if($request->getParam('add_users') != null) {
@@ -232,11 +305,12 @@ class ProjectController extends DefaultController
             
             if($projectService->addUsersToProject($projectId, $userIds, $notification)) {
                 $success = true;
-                $message = "Users successfully added";
+                $message['response'] = "Users successfully added";
+                $message['redirect'] = 'team_list?rand_token=' . $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce');
                 $logger->info('added');
             } else {
                 $success = false;
-                $message = "Could not add users. You are a problem.";
+                $message['response'] = "Could not add users. Please try again later.";
                 $logger->info('fail');
             }
             
@@ -252,7 +326,11 @@ class ProjectController extends DefaultController
             $this->_response->setBody(array(
                 'title' => 'Add People',
                 'search' =>true,
-                'project_id' => $request->getParam('id')
+                'project_id' => $request->getParam('id'),
+                
+                'email' => $this->user->getUserMail(),
+                'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+                'image' => IMAGE_PATH . $this->user->getUserImageUrl()
             ));  
         }
         
@@ -279,10 +357,15 @@ class ProjectController extends DefaultController
         
         $data = \Database\Converter::getArray($data);
         
+        if(empty($data)) {
+            $reason = 'Person may already be a part of your project or doesn\'t exist.';
+        }
+        
         $this->_response->setBody(array(
             'users' => $data,
             'image_location' => IMAGE_PATH,
-            'thumb_image_location' => THUMB_IMAGE_PATH
+            'thumb_image_location' => THUMB_IMAGE_PATH,
+            'reason' => $reason
         ));
     }
     
@@ -291,17 +374,26 @@ class ProjectController extends DefaultController
         $this->_response = new HttpResponse('json');
         
         $query = $request->getParam('q');
-        $userId = 7; // Get current user
+        $userId = $this->user->getUserId(); // Get current user
         $projectService = \Timesheet\Project\Service::getInstance();
         
-        if(!empty($query)) {
-            // if employee search projects handled by him. Else search projects handled by him
-            $data = $projectService->searchByNameUnderUserId($query, $userId);
-        }
-        else if($request->getParam('default') == true) {
+        if($request->getParam('getWorking') != null) {
             // if employee use this. else get projects created by user id
-            $data = $projectService->getProjectsHandledByUserId($userId);
+            
+            if(!empty($query)) {
+                $data = $projectService->searchByNameUnderUserId($query, $userId);
+            } else {
+                $data = $projectService->getProjectsHandledByUserId($userId);
+            }
+            
+        } else if($request->getParam('getCreated') != null) {
+            if(!empty($query)) {
+                $data = $projectService->searchByNameUnderManagerId($query, $userId);
+            } else {
+                $data = $projectService->getProjectsCreatedByUserId($userId);
+            }
         }
+        
         else return;
         
         $data = \Database\Converter::getArray($data);
@@ -310,7 +402,47 @@ class ProjectController extends DefaultController
             'projects' => $data,
         ));
     }
-
+    
+    public function _mark_complete($request) {
+        if($request->getParam('id') == null) {
+            return;
+        } else {
+            $projectId = (int) $request->getParam('id');
+            $projectService = \Timesheet\Project\Service::getInstance();
+            if($projectService->markCompleted($projectId)) {
+                $this->_response->redirectTo('project/details?success=1&id=' . $projectId);
+            } else {
+                $this->_response->redirectTo('project/details?error=1&id=' . $projectId);
+            }
+        }
+    }
+    
+    public function _team_list($request) {
+        global $logger;
+        $skeleton =  new TwigRenderer('teamlist.html');
+        $this->_response = new HttpResponse('none', $skeleton);
+        
+        if($request->getParam('id') == null) {
+            return;
+        } else {
+            $projectId = (int) $request->getParam('id');
+            $userService = \Timesheet\User\Service::getInstance();
+            $data = $userService->getUsersUnderProjectId($projectId);
+        }
+        
+        $notificationService = \Timesheet\Notification\Service::getInstance();
+        $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+        
+        $this->_response->setBody(array(
+            'title' => 'Team',
+            'users' => $data,
+            'image_path' => IMAGE_PATH,
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications
+        )); 
+    }
 
 }//end class
 

@@ -1,7 +1,7 @@
 ---
 
 get project handled by user id : SELECT DISTINCT `project`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `user`.`user_id` = :userId;
-get project created by user id : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_manager_id` = :managerId;
+get project created by user id : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_manager_id` = :projectManagerId;
 find user group : SELECT `group`.* FROM `group`, `authentication` WHERE `authentication`.`group_id` = `group`.`group_id` AND  `authentication`.`user_id` = :userId;
 
 get manager id : SELECT `project`.`project_manager_id` AS `manager_id` FROM `project` WHERE `project`.`project_id` = :projectId;
@@ -14,7 +14,7 @@ find project created in year : SELECT `project`.* FROM `project` WHERE EXTRACT(Y
 
 create new project : INSERT INTO `project` (project_name, project_description, project_status, project_time_alloted, project_created_date, project_manager_id, project_salary, project_state) VALUES(:projectName, :projectDescription, :projectStatus, :projectTimeAlloted, :projectCreatedDate, :projectManagerId, :projectSalary, :projectState);
 
-edit project : UPDATE `project` SET project_name = :projectName, project_description = :projectDescription, project_status = :projectStatus, project_time_alloted = :projectTimeAlloted, project_manager_id = :projectManagerId WHERE `project`.`project_id` = :projectId;
+edit project : UPDATE `project` SET project_name = :projectName, project_description = :projectDescription, project_status = :projectStatus, project_time_alloted = :projectTimeAlloted WHERE `project`.`project_id` = :projectId;
 
 get project name by id : SELECT `project`.`project_name` AS `project_name` FROM `project` WHERE `project`.`project_id` = :projectId;
 
@@ -25,7 +25,9 @@ get project with salary less than : SELECT `project`.* FROM `project` WHERE `pro
 
 get project of timesheet : SELECT `project`.* FROM `timesheet`, `project`, `project_timesheet` WHERE `timesheet`.`timesheet_id` = `project_timesheet`.`timesheet_id` AND `project`.`project_id` = `project_timesheet`.`project_id` AND `timesheet`.`timesheet_id` = :timesheetId;
 
-find project by name under user : SELECT `project`.* FROM `project`, `user_project` WHERE `user_project`.`project_id` = `project`.`project_id` AND `user_project`.`user_id` = :userId AND `project`.`project_name` LIKE :projectName;
+find project by name under user : SELECT DISTINCT `project`.* FROM `project`, `user_project` WHERE `user_project`.`project_id` = `project`.`project_id` AND `user_project`.`user_id` = :userId AND `project`.`project_name` LIKE :projectName;
+
+find project by name created under user : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_name` LIKE :projectName AND `project`.`project_manager_id` = :projectManagerId;
 
 get employee total work time : SELECT SUM(`task`.`task_work_time`) AS `total_work_time` FROM `user_timesheet`, `project_timesheet`, `task` WHERE `project_timesheet`.`timesheet_id` = `task`.`task_timesheet_id` AND `project_timesheet`.`project_id` = :projectId AND `user_timesheet`.`timesheet_id` = `project_timesheet`.`timesheet_id` AND `user_timesheet`.`user_id` = :userId;
 
@@ -34,5 +36,7 @@ get employee total pause time : SELECT SUM( TIMESTAMPDIFF(SECOND, `task`.`task_s
 get project total work time : SELECT SUM(`task`.`task_work_time`) AS `total_project_work_time` FROM  `project_timesheet`, `task` WHERE `project_timesheet`.`timesheet_id` = `task`.`task_timesheet_id` AND `project_timesheet`.`project_id` = :projectId;
 
 mark complete : UPDATE `project` SET `project`.`project_state` = :projectState WHERE `project`.`project_id` = :projectId;
+
+get project state : SELECT `project`.`project_state` AS `project_state` FROM `project` WHERE `project`.`project_id` = :projectId;
 
 ...

@@ -7,6 +7,7 @@ $(document).ready(function(){
     // in seconds
     var pauseTime = 0;
     var workTime = 0;
+    var seconds = 0;
     
     function minuteUp() {
         var minute = parseInt($('#minute').text());
@@ -53,10 +54,15 @@ $(document).ready(function(){
     }
     
     function resultTime() {
-        var elapsed = Math.ceil((endTime.getTime() - startTime.getTime()) / 1000); 
-        var pauseTime = Math.ceil(elapsed - workTime);
+        var elapsed = Math.round((endTime.getTime() - startTime.getTime()) / 1000); 
+        var minute = parseInt($('#minute').text());
+        var hour = parseInt($('#hour').text());
+        var time = minute * 60 + hour * 3600 + workTime;
+        
+        var pauseTime = Math.round(elapsed - time);
+        
         logger('Elapsed : ' + elapsed);
-        logger('Work Time : ' + workTime);
+        logger('Work Time : ' + time);
         logger('Pause Time : ' + pauseTime);
     }
     
@@ -65,7 +71,11 @@ $(document).ready(function(){
     }
     
     function finish() {
-        $('input#work_time').val(workTime);
+        var minute = parseInt($('#minute').text());
+        var hour = parseInt($('#hour').text());
+        
+        var time = minute * 60 + hour * 3600 + workTime;
+        $('input#work_time').val(time);
         $('input#start_time').val(startTime.getFullYear() + '-' + startTime.getDate() + '-' + startTime.getMonth() + ' ' + startTime.getHours() + ':' + startTime.getMinutes() + ':' + startTime.getSeconds());
         $('input#end_time').val(endTime.getFullYear() + '-' + endTime.getDate() + '-' + endTime.getMonth() + ' ' + endTime.getHours() + ':' + endTime.getMinutes() + ':' + endTime.getSeconds());
         $('form').append('<input type="hidden" name="from_timer_page" value="1" />');
@@ -92,8 +102,6 @@ $(document).ready(function(){
             $('#pause-button').text("Pause");
             $('#pause-button').parent().addClass('warning');
             $('#pause-button').removeClass('paused primary');
-            
-            // load addsheet page and set the fields in addsheet
             
         }
         e.preventDefault();

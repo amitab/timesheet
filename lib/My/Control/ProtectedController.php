@@ -55,7 +55,6 @@ abstract class ProtectedController extends \Native5\Control\ProtectedController 
     public function execute($request)
     {
         $this->request = $request;
-
         // Set the protected user variable, before controller execution begins
         $this->_setUser();
 
@@ -107,11 +106,24 @@ abstract class ProtectedController extends \Native5\Control\ProtectedController 
     }
 
     private function _setUser() {
-        // Create the (helper) user object from the authenticated subject if present
-        $subject = \Native5\Identity\SecurityUtils::getSubject();
-        $this->user = $subject;
-
-        // Can wrap the subject using a model object and use it instead
-        //$this->user = new \My\User($subject);
+        try {
+            // Create the (helper) user object from the authenticated subject if present
+            $subject = \Native5\Identity\SecurityUtils::getSubject();
+            //$this->user = $subject;
+            
+            $principals = $subject->getPrincipals();
+            $email = $principals[1]['email'];
+            
+            $userService = \Timesheet\User\Service::getInstance();
+            $user = $userService->getUserByEmail($email);
+            
+            $this->user = $user[0];
+            $this->user->setSubject($subject);
+            
+            // Can wrap the subject using a model object and use it instead
+            //$this->user = new \My\User($subject);
+        } catch (\Exception $e) {
+            $this->_response->redirectTo('home');
+        }
     }
 }

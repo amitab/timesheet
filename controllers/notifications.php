@@ -45,7 +45,7 @@ use Native5\Identity\SecurityUtils;
  * Created : 27-11-2012
  * Last Modified : Fri Dec 21 09:11:53 2012
  */
-class NotificationsController extends DefaultController
+class NotificationsController extends \My\Control\ProtectedController
 {
 
 
@@ -66,7 +66,11 @@ class NotificationsController extends DefaultController
         
         $this->_response->setBody(array(
             'title' => 'Notifications',
-            'refresh' => true
+            'refresh' => true,
+            
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
         )); 
     }
     
@@ -74,7 +78,7 @@ class NotificationsController extends DefaultController
         
         global $logger;
         
-        $userId = 9; // Get current user
+        $userId = $this->user->getUserId(); // Get current user
         $notificationService = \Timesheet\Notification\Service::getInstance();
         
         $this->_response = new HttpResponse('json');

@@ -8,7 +8,13 @@
                     <h5>Edit Profile</h5>
                 </div>
                 <form action="" method="post" class="edit-profile-form">
-                    <div class="warnings"></div>
+                    <div class="warnings">
+                        {% if items.message.success %}
+                            <p class="alert success">{{ items.message.success }}</p>
+                        {% elseif items.message.fail %}
+                            <p class="alert warning">{{ items.message.fail }}</p>
+                        {% endif %}
+                    </div>
                     <div class="append field">
                         <input class="input" type="text" placeholder="First Name" name="first_name" 
                             value="{{ items.user.userFirstName }}"
@@ -20,12 +26,6 @@
                             value="{{ items.user.userLastName }}"
                         />
                         <span class="adjoined"><i class="fa fa-user"></i></span>
-                    </div>
-                    <div class="append field">
-                        <input class="input" type="text" placeholder="Email" name="email" 
-                            value="{{ items.user.userMail }}"
-                        />
-                        <span class="adjoined"><i class="fa fa-envelope"></i></span>
                     </div>
                     <div class="field append">
                         <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" 
@@ -39,10 +39,6 @@
                         />
                         <span class="adjoined"><i class="fa fa-map-marker"></i></span>
                     </div>
-                    <div class="append field">
-                        <input class="input" type="password" placeholder="Current Password" name="current_password" />
-                        <span class="adjoined"><i class="fa fa-lock"></i></span>
-                    </div>
                 </form>
                          
             </section>
@@ -52,9 +48,20 @@
     
     <div id="edit-inline-menu" class="inline-menu hidden">
         <ul>
-            <li><a href={{ resolvePath("profile\\change_password") }} >Edit Password</a></li>
-            <li><a href={{ resolvePath("profile\\upload_image") }} >Change Image</a></li>
+            <li><a href={{ "profile\\change_password" | nonce }} >Edit Password</a></li>
+            <li><a href={{ "profile\\upload_image" | nonce }} >Change Image</a></li>
+            <li><a href={{ "profile" | nonce }} >Profile</a></li>
         </ul>
     </div> 
+    
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', 'div#save-form', function(e) {
+                e.preventDefault();
+                $('form').append('<input type="hidden" name="edit" value="1" />');
+                $('form').submit();
+            });
+        });
+    </script>
 
 {% include 'foot.html' %}

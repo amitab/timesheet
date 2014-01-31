@@ -140,6 +140,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
         $valArr = array(
             ':userId' => $userId
         );
-        return $this->_executeObjectQuery('find notification count for user', $valArr, \Native5\Core\Database\DB::SELECT);
+        $data = $this->_executeQuery('find notification count for user', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['count'];
     }
 }

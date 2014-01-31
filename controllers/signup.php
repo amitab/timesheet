@@ -101,16 +101,16 @@ class SignupController extends DefaultController
             $message = 'Failed to create user.';
             $logger->info($e->getMessage());
         }
-        
-        $logger->info(print_r($user, 1));
-        $logger->info(print_r($return, 1));
     }
     
     public function _tester($request) {
         global $logger;
         $userService = \Timesheet\User\Service::getInstance();
         $users = $userService->getAllUsers();
-        $logger->info(print_r($users,1));
+        
+        foreach($users as $user) {
+            $this->_create_user($user, $password, $roles);
+        }
     }
 
 }//end class

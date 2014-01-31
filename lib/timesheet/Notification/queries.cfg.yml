@@ -8,7 +8,7 @@ find notifications to user by offset : SELECT DISTINCT `notification`.* , concat
 
 find notifications by priority : SELECT `notification`.* FROM `notification` WHERE `notification`.`notification_priority` = :notificationPriority;
 
-find notification count for user : SELECT DISTINCT COUNT(`notification`.*) FROM `notification`, `user_notification` WHERE `notification`.`notification_id` = `user_notification`.`notification_id` AND `user_notification`.`to_user_id` = :userId ORDER BY `notification`.`notification_read` ASC;
+find notification count for user : SELECT COUNT( DISTINCT `notification`.`notification_id` ) AS `count` FROM `notification` NATURAL JOIN `user_notification` WHERE `user_notification`.`to_user_id` = :userId AND `notification`.`notification_read` = 0;
 
 delete notification by id : DELETE FROM `notification` WHERE `notification`.`notification_id` = :notificationId;
 

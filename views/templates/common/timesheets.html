@@ -2,7 +2,7 @@
     
     <div class="row">
         <div class="eight columns centered">
-            <input type="hidden" id="url" timesheet-details-path={{ resolvePath("timesheets\\details") }}>
+            <input type="hidden" id="url" timesheet-details-path={{ "timesheets\\details" | nonce }}>
             <section class="overview">
             
                 <div class="title">
@@ -20,7 +20,7 @@
     
     <div style="padding: 10px; text-align: center;">
         <div class="medium primary btn" id="load-more">
-            <a href={{ resolvePath("profile\\edit_profile") }} style="font-size: 14px;" >Load More</a>
+            <a href="#" style="font-size: 14px;" ><i class="fa fa-refresh"></i>&nbsp;Load More</a>
         </div>
     </div>
     

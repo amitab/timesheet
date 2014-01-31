@@ -12,6 +12,8 @@ class User {
     private $userFirstName;
     private $userLastName;
     
+    private $subject;
+    
 	public static function make($data) {
 		$user = new self();
 		$user->setUserId($data['user_id']);
@@ -46,6 +48,9 @@ class User {
     public function getUserImageUrl() { return $this->userImageUrl; }
     public function setUserSex($userSex) { $this->userSex = $userSex; }
     public function getUserSex() { return $this->userSex; }
+    
+    public function getSubject() { return $this->subject; }
+    public function setSubject($subject) { $this->subject = $subject; }
     
     // validation
     

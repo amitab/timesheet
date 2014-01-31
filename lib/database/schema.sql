@@ -6,14 +6,12 @@ CREATE TABLE user(
 	user_email VARCHAR(100) UNIQUE,
 	user_location VARCHAR(255),
     user_phone_number VARCHAR(13),
-    user_image_url VARCHAR(255),
-    user_country_code CHAR(2)
+    user_image_url VARCHAR(255)
 );
 
 CREATE TABLE project(
 	project_id INT(20) PRIMARY KEY AUTO_INCREMENT,
 	project_name VARCHAR(100),
-	project_about VARCHAR(100),
 	project_description VARCHAR(255),
 	project_status INT(1),
 	project_time_alloted DATETIME,

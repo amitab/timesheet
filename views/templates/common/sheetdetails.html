@@ -2,8 +2,8 @@
     
     <div class="row">
         <div class="eight columns centered">
-            <input type="hidden" id="details-url" task-details-path={{ resolvePath("timesheets\\task_details") }}>
-            <input type="hidden" id="add-task-url" task-details-path={{ resolvePath("timesheets\\new_task") }}>
+            <input type="hidden" id="details-url" task-details-path={{ "timesheets\\task_details" | nonce }}>
+            <input type="hidden" id="add-task-url" task-details-path={{ "timesheets\\new_task" | nonce }}>
             <input type="hidden" id="project_id" name="project_id" value="{{ items.project_id }}">
             <input type="hidden" id="timesheet_id" name="timesheet_id" value="{{ items.timesheet_id }}">
             <section class="add-timesheet">
@@ -40,13 +40,13 @@
             
             $(document).on('click', 'tr.task-details', function(e) {
                 e.preventDefault();
-                var url = $('input#details-url').attr('task-details-path') + '?id=' + $(this).attr('id');
+                var url = $('input#details-url').attr('task-details-path') + '&id=' + $(this).attr('id');
                 window.location.href = url;
             });
             
             $(document).on('click', 'div#add-task', function(e) {
                 e.preventDefault();
-                var url = $('input#add-task-url').attr('task-details-path') + '?old_timesheet_id=' + $('input#timesheet_id').attr('value'); 
+                var url = $('input#add-task-url').attr('task-details-path') + '&old_timesheet_id=' + $('input#timesheet_id').attr('value'); 
                 url += '&project_id=' + $('input#project_id').attr('value') + '&from_timesheet_details_page=true';
                 window.location.href = url;
             });

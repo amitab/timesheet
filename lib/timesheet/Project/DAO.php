@@ -19,10 +19,12 @@ interface DAO {
     public function getProjectsWithSalaryLessThan($projectSalary);
     public function getProjectOfTimesheet($timesheetId);
     public function searchByNameUnderUserId($projectName, $userId);
+    public function searchByNameUnderManagerId($projectName, $userId);
     public function getEmployeeTotalWorkTime($userId, $projectId);
     public function getEmployeeTotalPauseTime($userId, $projectId);
     public function getProjectNameById($projectId);
     public function getProjectManagerId($projectId);
+    public function getProjectState($projectId);
         
     // admin functions
         

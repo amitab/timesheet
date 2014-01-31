@@ -9,7 +9,7 @@
     },
      "autoload": {
         "psr-0": {
-            "Hello-World\\": [
+            "timesheet\\": [
                 "lib/",
                 "models/"
             ] 

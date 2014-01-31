@@ -2,7 +2,8 @@
 
     <div class="row">
         <div class="eight columns centered">
-            <section class="list" id="notification-list">
+            <input type="hidden" id="url" project-details-path={{ "project\\details" | nonce }}>
+            <section class="list" id="projects-list">
                 <ul>
                     
                     
@@ -13,9 +14,7 @@
     </div>
     
     <script src={{ resolvePath("native5.core.js") }} ></script>
-    <script src={{ resolvePath("native5.notifications.js") }} ></script>
     <script src={{ resolvePath("smart-list.js") }} ></script>
-    <script src={{ resolvePath("notifications.js") }} ></script>
-    
+    <script src={{ resolvePath("createdprojectssearch.js") }} ></script>
     
 {% include 'foot.html' %}
