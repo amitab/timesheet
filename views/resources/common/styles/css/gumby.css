@@ -1915,7 +1915,7 @@ section.timer .start-button-container a { font-weight: lighter; }
 #header .header-item .item.title h5 { padding: 0; width: 150px; white-space: nowrap; text-overflow: ellipsis; display: block; overflow: hidden; height: 21px; }
 @media only screen and (max-width: 767px) { #header .header-item .item.title h5 { width: 120px; } }
 #header .header-item h5 { color: white; }
-#header .header-item.trigger i.fa-bars, #header .header-item.trigger i.fa-times { font-size: 18px !important; margin-top: 6px; }
+#header .header-item.trigger i.fa-bars, #header .header-item.trigger i.fa-times { font-size: 20px !important; margin-top: 3px; }
 #header .header-item.inline-menu-trigger h5 { width: 20px; text-align: center !important; }
 #header .header-item.inline-menu-trigger h5 i.fa-ellipsis-v { font-size: 28px !important; }
 #header .header-item.trigger, #header .header-item.option, #header .header-item.inline-menu-trigger { float: right; cursor: pointer; }

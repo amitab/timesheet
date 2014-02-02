@@ -68,7 +68,8 @@ class TimesheetsController extends \My\Control\ProtectedController
             'search' =>true,
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'timesheets' => true
         ));  
 
     }
@@ -94,6 +95,14 @@ class TimesheetsController extends \My\Control\ProtectedController
         $title = date('M', $date) . ' ' . date('Y', $date) . ', Week ' . date('W', $date);
         $projectName = $timesheet->getTimesheetProjectName();
         
+        $managerId = $timesheetService->getProjectManagerId($id);
+        
+        if($managerId == $this->user->getUserId()) {
+            $isAdmin = true;
+        } else {
+            $isAdmin = false;
+        }
+        
         $response = array(
             'title' => $title,
             'add_task' => true,
@@ -102,9 +111,12 @@ class TimesheetsController extends \My\Control\ProtectedController
             'project_name' => $projectName,
             'project_id' => $timesheetService->getTimesheetProjectId($id),
             'timesheet_id' => $id,
+            'is_admin' => $isAdmin,
+            
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'timesheets' => true
         );
         $this->_response->setBody($response); 
     }
@@ -293,62 +305,12 @@ class TimesheetsController extends \My\Control\ProtectedController
             'work_time' => $workTime,
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'timesheets' => true
         );
         
         $this->_response->setBody($response); 
     }
-    
-    /*public function _edit_task($request) {
-        global $logger;
-        $skeleton =  new TwigRenderer('newtask.html');
-        $this->_response = new HttpResponse('none', $skeleton);
-        
-        if($request->getParam('id') == null) {
-            return;
-        } else {
-            $projectService = \Timesheet\Project\Service::getInstance();
-            $id = $request->getParam('id');
-            $projectName = $projectService->getProjectNameById($id);
-        }
-        
-        $taskService = \Timesheet\Task\Service::getInstance();
-        
-        if($request->getParam('edit') != null) {
-            
-            $task = new \Timesheet\Task\Task();
-            $task->setTaskName($request->getParam('task_name'));
-            $dateObject = new DateTime($request->getParam('start_time'));
-            $task->setTaskStartTime($dateObject->format('Y-m-d H:i:s'));
-            $dateObject = new DateTime($request->getParam('end_time'));
-            $task->setTaskEndTime($dateObject->format('Y-m-d H:i:s'));
-            
-            $startTime = strtotime($request->getParam('start_time'));
-            $endTime = strtotime($request->getParam('end_time'));
-            $task->setTaskWorkTime($endTime - $startTime);
-            
-            $task->setTaskLocation($request->getParam('location'));
-            $task->setTaskNotes($request->getParam('notes'));
-            
-            if($taskService->editTask($task)) {
-                $message['success'] = 'Task successfuly edited.';
-            } else {
-                $message['fail'] = 'Task could not be edited.';
-            }
-        }
-        
-        $task = $taskService->getTaskById($id);
-        $task = $task[0];
-        
-        $this->_response->setBody(array(
-            'title' => 'Edit Task',
-            'form_save' => true,
-            'task' => $task,
-            'edit' => true,
-            'message' => $message,
-            'project_name' =>$projectName,
-        )); 
-    }*/
     
     public function _search($request) {
         global $logger;
@@ -431,7 +393,7 @@ class TimesheetsController extends \My\Control\ProtectedController
         $task = $task[0];
         
         $managerId = $timesheetService->getProjectManagerId($task->getTaskTimesheetId());
-        $logger->info('MANAGER : ' . $managerId);
+        
         if($managerId == $userId) {
             $isAdmin = true;
         } else {
@@ -448,11 +410,13 @@ class TimesheetsController extends \My\Control\ProtectedController
             'task' => $task,
             'is_admin' => $isAdmin,
             'message' => $message,
+            'author' => $timesheetService->getAuthorOfTimesheet($task->getTaskTimesheetId()),
             
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
             'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'unread_notification' => $notifications
+            'unread_notification' => $notifications,
+            'timesheets' => true,
         )); 
     }
     

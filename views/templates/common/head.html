@@ -115,8 +115,9 @@
     
     <!-- Loading custom js files -->    
     <script src={{ resolvePath("jquery.hammer.min.js") }} ></script>
+    <script src={{ resolvePath("native5.core.js") }}></script>
+    <script src={{ resolvePath("smart-list.js") }}></script>
     <script src={{ resolvePath("sidebar.js") }} ></script>
-    <script src={{ resolvePath("require.js") }}></script>
     
     {% if items.login != true %}
     <div id="header">
@@ -149,7 +150,7 @@
                 <div class="header-item option wide" style="height: 68px; position: relative">
             {% elseif items.form_save == true %}
             <div class="header-item option" id="save-form" style="height: 68px; position: relative">
-            {% elseif items.add_task == true %}
+            {% elseif items.add_task == true and ((items.is_admin != true) or (items.timer == true)) %}
             <div class="header-item option" id="add-task" style="height: 68px; position: relative">
             {% elseif (items.edit_option == true) and (items.is_admin == true) %}
             <div class="header-item option" id="edit_option" style="height: 68px; position: relative">
@@ -158,7 +159,7 @@
             {% else %}
                 <div class="header-item option" style="height: 68px; position: relative">
             {% endif %}
-                {% if items.add_task == true %}
+                {% if items.add_task == true and ((items.is_admin != true) or (items.timer == true)) %}
                     
                     <a href="#">
                         <h5><i class="fa fa-plus"></i></h5>

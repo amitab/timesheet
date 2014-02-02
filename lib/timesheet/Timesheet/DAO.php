@@ -20,6 +20,7 @@ interface DAO {
     public function getTimesheetsInYear($year);
     public function getTimesheetsInMonthWeek($month, $week);
     public function getTimesheetsWithStatus($timesheetStatus, $limit, $offset);
+    public function getAuthorOfTimesheet($timesheetId);
     
     // user specific function
     public function getUserTimesheetsUnderProjectId($projectId, $userId);

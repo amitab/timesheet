@@ -146,7 +146,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\User\DAO {
             
             $sql = 'SELECT `user`.* FROM `user` WHERE (`user`.`user_first_name` LIKE :userName OR `user`.`user_last_name` LIKE :userName OR concat(`user`.`user_first_name`, \' \', `user`.`user_last_name`) LIKE :userName) AND `user`.`user_id` NOT IN (';
             $sql .= implode(', ', $userIds);
-            $sql .= ') AND `user`.`user_id` NOT IN (SELECT `user_project`.`user_id` FROM `user_project` WHERE `user_project`.`project_id` = :projectId);';
+            $sql .= ') AND (`user`.`user_id` NOT IN (SELECT `user_project`.`user_id` FROM `user_project` WHERE `user_project`.`project_id` = :projectId) AND `user`.`user_id` != (SELECT `project`.`project_manager_id` FROM `project` WHERE `project`.`project_id` = :projectId));';
             
             return $this->_executeObjectQueryString($sql, $valArr, \Native5\Core\Database\DB::SELECT);
         }

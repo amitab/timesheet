@@ -19,6 +19,15 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Timesheet\DAO {
     }
 	
 	// READ FUNCTIONS
+	
+	public function getAuthorOfTimesheet($timesheetId) {
+	    $valArr = array(
+            ':timesheetId' => $timesheetId
+        );
+        $data = $this->_executeQuery('find timesheet author', $valArr, \Native5\Core\Database\DB::SELECT);
+        return $data[0]['author'];
+	}
+	
 	public function getTimesheetProjectId($timesheetId) {
 	    $valArr = array(
             ':timesheetId' => $timesheetId,

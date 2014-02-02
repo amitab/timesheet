@@ -67,27 +67,65 @@ class ProjectController extends \My\Control\ProtectedController
             
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'project' => true
         ));      
 
     }//end _default()
     
-    /*public function _created_projects($request)
-    {
+    public function _timesheets($request) {
         global $logger;
-        $skeleton =  new TwigRenderer('createdprojects.html');
-        $this->_response = new HttpResponse('none', $skeleton);
         
-        $this->_response->setBody(array(
-            'title' => 'Projects',
-            'search' => true,
+        if($request->getParam('get_timesheets') != null) {
             
-            'email' => $this->user->getUserMail(),
-            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
-        ));      
+            $projectId = (int) $request->getParam('get_timesheets');
+            $timesheetService = \Timesheet\Timesheet\Service::getInstance();
+            $taskImpl = new \Timesheet\Task\DAOImpl();
+            $temp = $timesheetService->getTimesheetsUnderProjectId($projectId);
+            
+            $data = array();
+            
+            foreach($temp as $timesheet) {
+                $ddate = $timesheet->getTimesheetDate();
+                $duedt = explode("-", $ddate);
+                $date  = mktime(0, 0, 0, $duedt[1], $duedt[2], $duedt[0]);
+                $week  = (int)date('W', $date);
+                $year  = (int)date('Y', $date);
+                
+                $time = $taskImpl->getTotalWorkTimeOfTimesheet($timesheet->getTimesheetId());
+                if($time) {
+                    $timesheet->setTimesheetDuration($time);
+                } else {
+                    $timesheet->setTimesheetDuration(0);
+                }
+                
+                $timesheet = \Database\Converter::getSingleArray($timesheet);
+                $data[$year][$week][] = $timesheet;
+            }
+            
+            $this->_response = new HttpResponse('json');
+            $this->_response->setBody(array(
+                'timesheets' => $data
+            ));  
+            
+        } else {
+            $projectService = \Timesheet\Project\Service::getInstance();
+            $projectId = (int) $request->getParam('id');
+            $projectName = $projectService->getProjectNameById($projectId);
+            $skeleton =  new TwigRenderer('timesheetsunderproject.html');
+            $this->_response = new HttpResponse('none', $skeleton);
+            $this->_response->setBody(array(
+                'title' => $projectName,
+                'project_id' => $projectId,
+                
+                'email' => $this->user->getUserMail(),
+                'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+                'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+                'timesheets' => true
+            ));  
+        } 
 
-    }*///end _default()
+    }
     
     public function _details($request) {
         
@@ -174,7 +212,8 @@ class ProjectController extends \My\Control\ProtectedController
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
             'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'unread_notification' => $notifications
+            'unread_notification' => $notifications,
+            'project' => true
         );
         
         $this->_response->setBody($response);  
@@ -250,7 +289,8 @@ class ProjectController extends \My\Control\ProtectedController
             'message' => $message,
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'project' => true
         ));  
     }
     
@@ -342,7 +382,8 @@ class ProjectController extends \My\Control\ProtectedController
             
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'project' => true
         ));  
     }
     
@@ -394,7 +435,8 @@ class ProjectController extends \My\Control\ProtectedController
                 
                 'email' => $this->user->getUserMail(),
                 'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-                'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+                'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+                'project' => true
             ));  
         }
         
@@ -440,23 +482,6 @@ class ProjectController extends \My\Control\ProtectedController
         $query = $request->getParam('q');
         $userId = $this->user->getUserId(); // Get current user
         $projectService = \Timesheet\Project\Service::getInstance();
-        
-        /*if($request->getParam('getWorking') != null) {
-            // if employee use this. else get projects created by user id
-            
-            if(!empty($query)) {
-                $data = $projectService->searchByNameUnderUserId($query, $userId);
-            } else {
-                $data = $projectService->getProjectsHandledByUserId($userId);
-            }
-            
-        } else if($request->getParam('getCreated') != null) {
-            if(!empty($query)) {
-                $data = $projectService->searchByNameUnderManagerId($query, $userId);
-            } else {
-                $data = $projectService->getProjectsCreatedByUserId($userId);
-            }
-        } else return;*/
         
         $option = (int) $request->getParam('option');
         $query = $request->getParam('q');
@@ -555,7 +580,8 @@ class ProjectController extends \My\Control\ProtectedController
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
             'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'unread_notification' => $notifications
+            'unread_notification' => $notifications,
+            'project' => true
         )); 
     }
 

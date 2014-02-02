@@ -65,10 +65,14 @@ class TimerController extends \My\Control\ProtectedController
         
         $notificationService = \Timesheet\Notification\Service::getInstance();
         $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+        $projectService = \Timesheet\Project\Service::getInstance();
         
         $this->_response->setBody(array(
-            'title' => 'Project a',
+            'title' => $projectService->getProjectNameById((int) $request->getParam('id')),
             'project_id' => (int) $request->getParam('id'),
+            'add_task' => true,
+            'timer' => true,
+			
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
             'image' => IMAGE_PATH . $this->user->getUserImageUrl(),

@@ -26,6 +26,10 @@ class Service {
     }
 	
 	// The Cover
+	public function getAuthorOfTimesheet($timesheetId) {
+	    $data = $this->_dao->getAuthorOfTimesheet($timesheetId);
+	    return $data;
+	}
 	public function getProjectManagerId($timesheetId) {
 	    return $this->_dao->getProjectManagerId($timesheetId);
 	}

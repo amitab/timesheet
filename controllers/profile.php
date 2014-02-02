@@ -79,7 +79,8 @@ class ProfileController extends \My\Control\ProtectedController
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
             'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'unread_notification' => $notifications
+            'unread_notification' => $notifications,
+            'profile' => true
             
         )); 
 
@@ -110,7 +111,8 @@ class ProfileController extends \My\Control\ProtectedController
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
             'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'unread_notification' => $notifications
+            'unread_notification' => $notifications,
+            'profile' => true
         )); 
     }
     
@@ -152,7 +154,8 @@ class ProfileController extends \My\Control\ProtectedController
             // The sidebar and header data
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl()
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'profile' => true
         )); 
 
     }
@@ -281,7 +284,8 @@ class ProfileController extends \My\Control\ProtectedController
             'email' => $this->user->getUserMail(),
             'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
             'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'unread_notification' => $notifications
+            'unread_notification' => $notifications,
+            'profile' => true
         ));
     }
 

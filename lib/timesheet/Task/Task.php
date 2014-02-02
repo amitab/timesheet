@@ -134,7 +134,7 @@ class Task {
         $time = $time->format($taskStartTime);
         
         $date = new \DateTime($taskStartTime);
-        $this->prettyStartTime = $date->format('dS M y, h:i a');
+        $this->prettyStartTime = $date->format('dS M y, H:i');
 		
 		$this->taskStartTime = $time;
 	}
@@ -149,7 +149,7 @@ class Task {
         $time = $time->format($taskEndTime);
         
         $date = new \DateTime($taskEndTime);
-        $this->prettyEndTime = $date->format('dS M y, h:i a');
+        $this->prettyEndTime = $date->format('dS M y, H:i');
 		
 		$this->taskEndTime = $time;
 	}

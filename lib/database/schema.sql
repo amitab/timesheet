@@ -13,7 +13,6 @@ CREATE TABLE project(
 	project_id INT(20) PRIMARY KEY AUTO_INCREMENT,
 	project_name VARCHAR(100),
 	project_description VARCHAR(255),
-	project_status INT(1),
 	project_time_alloted DATETIME,
 	project_created_date DATETIME,
 	project_manager_id INT(20),
@@ -43,7 +42,7 @@ CREATE TABLE task(
 
 CREATE TABLE user_timesheet(
 	user_id INT(20),
-	timesheet_id INT(20),
+	timesheet_id INT(20) UNIQUE,
 	FOREIGN KEY(user_id) REFERENCES user(user_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	FOREIGN KEY(timesheet_id) REFERENCES timesheet(timesheet_id) ON DELETE CASCADE ON UPDATE CASCADE
 );

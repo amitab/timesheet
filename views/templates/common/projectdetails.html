@@ -82,6 +82,7 @@
         <ul>
             
             <li><a href={{ "project\\team_list" | nonce ~ "&id=" ~ items.project_details.projectId }} >View Team</a></li>
+			<li><a href={{ "project\\timesheets" | nonce ~ "&id="  ~ items.project_id }} >View All Timesheets</a></li>
             
             {% if items.is_employee == true %}
                 
