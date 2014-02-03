@@ -64,9 +64,23 @@
             var successHandler = function(data) {
                 
                 if(data.message.success == true) {
-                    console.log('true');
+                    native5.Notifications.show( "Project successfuly created.", {
+                        notificationType:'toast',
+                        title:'Success',
+                        position:'bottom',
+                        distance:'0px',
+                        timeout: 5000,
+                        persistent:false
+                    });
                 } else if(data.message.success == false) {
-                    console.log('false');
+                    native5.Notifications.show( "Project creation Failed.", {
+                        notificationType:'toast',
+                        title:'Error',
+                        position:'bottom',
+                        distance:'0px',
+                        timeout: 5000,
+                        persistent:false
+                    });
                 } else {
                     console.log(data);
                     $('#projectname').val(data.message.project.projectName);

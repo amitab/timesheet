@@ -22,11 +22,11 @@
                     
                     <div class="field">
                         <label class="medium" for="start_time"><i class="fa fa-clock-o"></i>&nbsp;Start Time : </label>
-                        <input name="start_time" type="datetime-local" id="starttime">
+                        <input name="start_time" type="text" id="starttime">
                     </div>
                     <div class="field">
                         <label class="medium" for="end_time"><i class="fa fa-clock-o"></i>&nbsp;End Time : </label>
-                        <input name="end_time" type="datetime-local" id="endtime">
+                        <input name="end_time" type="text" id="endtime">
                     </div>
                     <div class="field">
                         <textarea class="input textarea" placeholder="Notes" name="notes" id="notes"></textarea>
@@ -87,8 +87,24 @@
             var result = getJsonFromUrl();
             var successHandler = function(data) {
                if(data.message.success == true) {
+                    native5.Notifications.show( "Task successfuly created.", {
+                        notificationType:'toast',
+                        title:'Success',
+                        position:'bottom',
+                        distance:'0px',
+                        timeout: 5000,
+                        persistent:false
+                    });
                     return;
                 } else if (data.message.success == false) {
+                    native5.Notifications.show( "Task creation failed.", {
+                        notificationType:'toast',
+                        title:'Error',
+                        position:'bottom',
+                        distance:'0px',
+                        timeout: 5000,
+                        persistent:false
+                    });
                     return;
                 } else {
                     $('#projectname').text(data.message.project_name);
@@ -112,9 +128,21 @@
             if(typeof workTime === 'undefined') {
                 workTime = null;
             }
-            var startTime = decodeURIComponent(result['start_time']);
-            var endTime = decodeURIComponent(result['end_time']);
             
+            var startTime = decodeURIComponent(result['start_time']);
+            if(typeof startTime === 'undefined') {
+                startTime = null;
+            } else {
+                startTime = startTime.replace(/\+/g, ' ');
+                $('#starttime').val(startTime);
+            }
+            var endTime = decodeURIComponent(result['end_time']);
+            if(typeof endTime === 'undefined') {
+                endTime = null;
+            } else {
+                endTime = endTime.replace(/\+/g, ' ');
+                $('#endtime').val(endTime);
+            }
             
             communicator.serviceObject.invoke({project_id: projectId});
             
@@ -124,6 +152,8 @@
                 formData.project_id = projectId;
                 formData.timesheet_id = timesheetId;
                 formData.work_time = workTime;
+                //formData.start_time = startTime;
+                //formData.end_time = endTime;
                 formData.new = true;
                 communicator.serviceObject.invoke(formData);
             });
