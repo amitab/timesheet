@@ -9,10 +9,17 @@
     },
      "autoload": {
         "psr-0": {
-            "timesheet\\": [
+            "My\\" : [
                 "lib/",
                 "models/"
-            ] 
+            ],
+            "Timesheet\\" : [
+                "lib/",
+                "models/"
+            ],
+            "Database\\" : [
+                "lib/"
+            ]
         }   
     }
 }

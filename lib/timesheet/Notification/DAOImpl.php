@@ -111,7 +111,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Notification\DAO
     
     public function getNotificationsToUser($userId, $offset=null) {
         if($offset != null) {
-            $sql = 'SELECT DISTINCT `notification`.* , concat(`user`.`user_first_name`, \' \', `user`.`user_last_name`) AS `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = ' . $userId . ' LIMIT 10 OFFSET ' . (int)$offset . ';';
+            $sql = 'SELECT DISTINCT `notification`.* , concat(`user`.`user_first_name`, \' \', `user`.`user_last_name`) AS `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = ' . $userId . ' ORDER BY `notification`.`notification_date` DESC LIMIT 10 OFFSET ' . (int)$offset . ';';
             $data = $this->_executeObjectQueryString($sql, null, \Native5\Core\Database\DB::SELECT);
             return $data;
         } else {

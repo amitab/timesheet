@@ -9,7 +9,7 @@ var app = (function (app, native5) {
     
     app.construct = function(args) {
         this.config = {
-            path : args.path,
+            path : 'timesheet',
             method : args.method,
             mode : 'ui'
         };

@@ -1,6 +1,6 @@
 ---
 app :
-    name        : timesheet # Application context e.g. if you host your application at http://localhost/hello-world then hello-world is the application context.
+    name        : zbdGs8Z2U1389602848 # Application context e.g. if you host your application at http://localhost/hello-world then hello-world is the application context.
     logLevel    : info # Log Levels, supports levels, such as warn, info, trace, error, debug.
     defaultGrade: D001 # Application wide fallback view in case device cannot be identified. Note, D001 defaults to desktop. See http://docs.native5.com/app.html#device-matrix for grade related details.
 api:
@@ -10,8 +10,8 @@ api:
 #environment : local # Uncomment when developing locally.
 database:
     type        : mysql
-    host        : "127.0.0.1"
+    host        : "192.168.0.5"
     port        : 3306
-    user        : root
-    password    : mydatabase
-    name        : timesheet
+    user        : native5
+    password    : Ens0L0g1c
+    name        : native5_sample_timesheet

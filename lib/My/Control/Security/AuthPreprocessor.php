@@ -40,7 +40,7 @@ class AuthPreprocessor implements \Native5\Control\PreProcessor
      * @access public
      * @return void
      */
-    public function process($request)
+    public function process(&$request)
     {
         if (!(\Native5\Identity\SecurityUtils::getSubject()->isAuthenticated()))
            throw new \Native5\Control\AuthenticationException;

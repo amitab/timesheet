@@ -1719,6 +1719,8 @@ table.rounded thead th, table.rounded thead td, table.rounded caption + tbody tr
 ul { margin-bottom: 0 !important; }
 
 @media only screen and (max-width: 767px) { #page-wrap div.row { padding: 0 2%; } }
+tbody.empty:after { content: "No Results"; padding: 10px; display: block; color: #c5c0c0; }
+
 table.summary thead th { border-bottom: 1px solid #e5e5e5; }
 table.summary tr td:first-child { font-weight: normal; }
 
@@ -1931,6 +1933,11 @@ section.timer .start-button-container a { font-weight: lighter; }
 #header .header-item.option i.fa-plus { font-size: 20px !important; margin-top: 6px; }
 #header .header-item.option i.fa-pencil, #header .header-item.option i.fa-refresh { font-size: 20px !important; }
 #header .header-item.option .notifications.small { position: absolute; z-index: 80; background: red; padding: 0.1rem 0.2rem; top: 10px; left: 26px; font-size: 8px !important; line-height: 14px; color: white; }
+#header .header-item.option table.search td { padding: 0; }
+#header .header-item.option table.search td div.header-search { height: 34px; line-height: 34px; background: #404040; margin-left: -1px; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
+#header .header-item.option table.search td:first-child { text-align: right; width: 100%; overflow: hidden; }
+#header .header-item.option table.search td:first-child input { border: 1px solid #d8d8d8; padding: 8px 6px; width: 100%; border-radius: 4px 0 0 4px; }
+#header .header-item.option table.search td:first-child input.closed { width: 0; margin-right: -20px; }
 #header .header-item.option .header-search-pack { overflow: hidden; width: 100%; }
 #header .header-item.option .header-search-pack .search.field { position: relative; min-width: 35px; text-align: right; }
 #header .header-item.option .header-search-pack .search.field input { width: 100%; }
@@ -1949,9 +1956,3 @@ section.filter td#new-project td.text { text-align: right; width: 60px; padding-
 section.filter td#new-project td.icon { text-align: right; width: 40px; padding-bottom: 5px; }
 section.filter td#new-project td.icon i { font-size: 26px !important; }
 section.filter td#new-project:active > table { background: #f2f2f2; }
-
-table.search td { padding: 0; }
-table.search td div.header-search { height: 34px; line-height: 34px; background: #404040; margin-left: -1px; -webkit-border-radius: 0; -moz-border-radius: 0; -ms-border-radius: 0; -o-border-radius: 0; border-radius: 0; }
-table.search td:first-child { text-align: right; width: 100%; overflow: hidden; }
-table.search td:first-child input { border: 1px solid #d8d8d8; padding: 8px 6px; width: 100%; border-radius: 4px 0 0 4px; }
-table.search td:first-child input.closed { width: 0; margin-right: -20px; }

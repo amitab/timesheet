@@ -2,7 +2,7 @@
 
 find notification by id : SELECT `notification`.* FROM `notification` WHERE `notification`.`notification_id` = :notificationId;
 find notifications from user : SELECT DISTINCT `notification`.* FROM `notification`, `user_notification` WHERE `notification`.`notification_id` = `user_notification`.`notification_id` AND `user_notification`.`from_user_id` = :userId;
-find notifications to user : SELECT DISTINCT  `notification`.* ,  concat(`user`.`user_first_name`, ' ', `user`.`user_last_name`) AS  `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = :userId LIMIT 10;
+find notifications to user : SELECT DISTINCT  `notification`.* ,  concat(`user`.`user_first_name`, ' ', `user`.`user_last_name`) AS  `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = :userId ORDER BY `notification`.`notification_date` DESC LIMIT 10;
 
 find notifications to user by offset : SELECT DISTINCT `notification`.* , concat(`user`.`user_first_name`, ' ', `user`.`user_last_name`) AS `from_user` FROM `notification` NATURAL JOIN `user_notification` INNER JOIN `user` ON `user_notification`.`from_user_id` = `user`.`user_id` WHERE `user_notification`.`to_user_id` = :userId LIMIT 10 OFFSET :offset;
 

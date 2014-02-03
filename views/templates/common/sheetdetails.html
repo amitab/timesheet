@@ -1,4 +1,6 @@
 {% include 'head.html' %}
+{% include 'header.html' %}
+    <div id="page-wrap">
     
     <div class="row">
         <div class="eight columns centered">
@@ -18,7 +20,11 @@
                                 <th>Duration</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        {% if items.tasks|length == 0 %}
+                        <tbody class="empty">
+						{% else %}
+						<tbody>
+						{% endif %}
                             {% for task in items.tasks %}
                                 <tr class="task-details" id={{ task.taskId }}>
                                     <td>{{ task.taskName }}</td>

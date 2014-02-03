@@ -26,17 +26,18 @@
  */
 
 require 'vendor/autoload.php';
-require 'lib/loader.php';
-
-define('UPLOAD_PATH', getcwd() . '/static/');
-define('THUMB_UPLOAD_PATH', getcwd() . '/static/thumbs/' );
-define('IMAGE_PATH', "http://" . $_SERVER['HTTP_HOST'] . DIRECTORY_SEPARATOR . 'timesheet' . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR );
-define('THUMB_IMAGE_PATH', "http://" . $_SERVER['HTTP_HOST'] . DIRECTORY_SEPARATOR . 'timesheet' . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR );
+//require 'lib/loader.php';
 
 use Native5\Application;
 use Native5\Route\HttpRequest;
 
 $app = Application::init();
+
+$serverUrl = (isset($_SERVER['HTTP_X_FORWARDED_HOST']) && !empty($_SERVER['HTTP_X_FORWARDED_HOST'])) ? $_SERVER['HTTP_X_FORWARDED_HOST'] : $_SERVER['HTTP_HOST'];
+define('UPLOAD_PATH', getcwd() . '/static/');
+define('THUMB_UPLOAD_PATH', getcwd() . '/static/thumbs/' );
+define('IMAGE_PATH', "http://" . $serverUrl . DIRECTORY_SEPARATOR . $GLOBALS['app']->getConfiguration()->getApplicationContext() . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR );
+define('THUMB_IMAGE_PATH', "http://" . $serverUrl . DIRECTORY_SEPARATOR . $GLOBALS['app']->getConfiguration()->getApplicationContext() . DIRECTORY_SEPARATOR . 'static' . DIRECTORY_SEPARATOR . 'thumbs' . DIRECTORY_SEPARATOR );
+
 $app->route(new HttpRequest());
 
-?>
