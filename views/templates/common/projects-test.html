@@ -53,4 +53,23 @@
     <script src={{ resolvePath("smart-list.js") }} ></script>
     <script src={{ resolvePath("projectssearch.js") }} ></script>
     
+    <script>
+        $(document).ready(function() {
+            
+            var headerHandler = function(data) {
+                $('#header > .wrapper').append(data.message.header_options);
+            };
+            
+            var headerLoader = app.construct({
+                path : 'timesheet',
+                method : 'POST',
+                url : 'headerdata',
+                successHandler : headerHandler
+            });
+            
+            headerLoader.serviceObject.invoke({for: 'project'});
+            
+        });
+    </script>
+    
 {% include 'foot.html' %}

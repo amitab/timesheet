@@ -5,7 +5,7 @@
     <div class="row">
         <div class="eight columns centered">
             <input type="hidden" id="url" timesheet-details-path={{ "timesheets\\details" | nonce }}>
-            <input type="hidden" id="project_id" value="{{ items.project_id }}">
+            <input type="hidden" id="project_id" value="">
             <section class="overview">
                 <div id="timesheet-list" class="empty-list">
                     
@@ -16,9 +16,29 @@
         </div>
     </div>
     
+    
     <script src={{ resolvePath("native5.core.js") }} ></script>
     <script src={{ resolvePath("native5.notifications.js") }} ></script>
     <script src={{ resolvePath("smart-list.js") }} ></script>
     <script src={{ resolvePath("projecttimesheets.js") }} ></script>
+    
+    <script>
+        $(document).ready(function() {
+            
+            var headerHandler = function(data) {
+                $('#header > .wrapper').append(data.message.header_options);
+            };
+            
+            var headerLoader = app.construct({
+                path : 'timesheet',
+                method : 'POST',
+                url : 'headerdata',
+                successHandler : headerHandler
+            });
+            
+            headerLoader.serviceObject.invoke({for: 'project/timesheets'});
+            
+        });
+    </script>
     
 {% include 'foot.html' %}

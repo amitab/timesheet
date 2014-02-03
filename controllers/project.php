@@ -55,8 +55,7 @@ class ProjectController extends \My\Control\ProtectedController
      * @access public
      * @return void
      */
-    public function _default($request)
-    {
+    public function _default($request) {
         global $logger;
         $skeleton =  new TwigRenderer('projects-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
@@ -105,7 +104,7 @@ class ProjectController extends \My\Control\ProtectedController
             
             $this->_response = new HttpResponse('json');
             $this->_response->setBody(array(
-                'timesheets' => $data
+                'timesheets' => $data,
             ));  
             
         } else {
@@ -116,7 +115,6 @@ class ProjectController extends \My\Control\ProtectedController
             $this->_response = new HttpResponse('none', $skeleton);
             $this->_response->setBody(array(
                 'title' => $projectName,
-                'project_id' => $projectId,
                 
                 'email' => $this->user->getUserMail(),
                 'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
@@ -219,6 +217,109 @@ class ProjectController extends \My\Control\ProtectedController
         $this->_response->setBody($response);  
     }
     
+    public function _details_data($request) {
+        
+        $this->_response = new HttpResponse('json');
+        $renderer =  new TwigRenderer('inline-menu.html');
+        
+        $projectService = \Timesheet\Project\Service::getInstance();
+        $taskService = \Timesheet\Task\Service::getInstance();
+        $userService = \Timesheet\User\Service::getInstance();
+        $id = $request->getParam('id');
+        $projectData = $projectService->getProjectById($id);
+        $projectData = $projectData[0];
+        
+        $userId = $this->user->getUserId();
+        
+        // Check if user owns this project or is working for this project
+        if($projectData->getProjectManagerId() == $userId) {
+            $isAdmin = true;
+            $isEmployee = false;
+        } else {
+            $isAdmin = false;
+            $isEmployee = true;
+        }
+        
+        $employerName = $userService->getUserNameById($projectData->getProjectManagerId());
+        
+        if($isAdmin) {
+            $totalTime = $projectService->getProjectTotalWorkTime($id);
+            if($totalTime == null) {
+                $totalTime = 0;
+            } else {
+                $totalTime = round($totalTime/3600);  // Converting seconds to hours since money is per hour
+            }
+            // If admin, get total time spent by all employees and total money spent on the project
+            // If employee, get total time spent by him and total salary
+            $expenses = $projectData->getProjectSalary() * $totalTime;
+            $slackOffTime = 0;
+        } 
+        else if($isEmployee) {
+            
+            $totalTime = $userService->getTotalTimeSpentByUserOnProject($userId, $id);
+            $slackOffTime = $userService->getTotalTimePausedByUserOnProject($userId, $id);
+            if($totalTime == null) {
+                $totalTime = 0;
+            } else {
+                $totalTime = round($totalTime/3600);  // Converting seconds to hours since money is per hour
+            }
+            if($slackOffTime == null) {
+                $slackOffTime = 0;
+            } else {
+                $slackOffTime = round($slackOffTime/3600);  // Converting seconds to hours since money is per hour
+            }
+            
+            $salary = $projectData->getProjectSalary() * $totalTime;
+            $expenses = $projectData->getProjectSalary() * $slackOffTime;
+        
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+            
+        }
+            
+        
+        if((int) $request->getParam('error') == 1) {
+            $message['fail'] = 'Error';
+        } else if((int) $request->getParam('success') == 1) {
+            $message['success'] = 'Success';
+        }
+        
+        $inlineMenu = $renderer->render(array(
+            'is_admin' => $isAdmin,
+            'is_employee' => $isEmployee,
+            'project_details' => $projectData,
+            'project_id' => $id,
+            'project_details_page' => true
+        ));
+        
+        $projectData = \Database\Converter::getSingleArray($projectData);
+        
+        $response = array(
+            'title' => 'Project Details',
+            'is_admin' => $isAdmin,
+            'is_employee' => $isEmployee,
+            'project_details' => $projectData,
+            'expenses' => number_format($expenses), // for employee, salary * pausetime; for employer, salary * total work hours
+            'total_time' => $totalTime,
+            'pause_time' => $slackOffTime, // for admin null
+            'total_salary' => number_format($salary), // for admin null
+            'employer_name' => $employerName,
+            'project_id' => $id,
+            'edit_option' => $isAdmin, // only if user is admin
+            'inline_menu' => true,
+            'message' => $message,
+            'inlinemenu' => $inlineMenu,
+            
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'unread_notification' => $notifications,
+            'project' => true
+        );
+        
+        $this->_response->setBody($response);
+    }
+    
     public function _create_new($request) {
         
         global $logger;
@@ -227,7 +328,28 @@ class ProjectController extends \My\Control\ProtectedController
         $userId = $this->user->getUserId(); // Get current User
         // Also check if user is admin else kick
         
+        
+        
+        $this->_response->setBody(array(
+            'title' => 'New Project',
+            'form_save' => true,
+            'message' => $message,
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+            'project' => true
+        ));  
+    }
+    
+    public function _create_new_data($request) {
+        
+        global $logger;
+        
+        $this->_response = new HttpResponse('json');
+        $userId = $this->user->getUserId(); // Get current User
+        
         if($request->getParam('new') != null) {
+            
             $project = new \Timesheet\Project\Project();
             $createdDate = new DateTime('now');
             $projectName = trim($request->getParam('project_name'));
@@ -274,24 +396,105 @@ class ProjectController extends \My\Control\ProtectedController
                 $projectService = \Timesheet\Project\Service::getInstance();
                 $projectId = $projectService->createProject($project);
                 if($projectId) {
-                    $message['success'] = 'Project successfuly created.';
-                    $this->_response->redirectTo('project/details?id=' . $projectId);
+                    //$this->_response->redirectTo('project/details?id=' . $projectId);
+                    $this->_response->setBody(array('success' => true, 'redirect' => 'project/details?rand_token=' . 
+                    $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId));
+                    
                 } else {
-                    $message['fail'] = 'Project could not be created.';
+                    $this->_response->setBody(array('success' => false));
                 }
+            } else {
+                $this->_response->setBody(array('success' => false));
             }
             
-        }
-        
-        $this->_response->setBody(array(
-            'title' => 'New Project',
-            'form_save' => true,
-            'message' => $message,
-            'email' => $this->user->getUserMail(),
-            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'project' => true
-        ));  
+        } // new project
+        else if ($request->getParam('edit') != null) {
+            
+            $projectId = intval($request->getParam('project_id'));
+            if($projectId > 0) {
+                $projectService = \Timesheet\Project\Service::getInstance();
+                $project = $projectService->getProjectById($projectId);
+                $project = $project[0];
+                
+                $createdDate = new DateTime($project->getProjectCreatedDate());
+                $projectName = trim($request->getParam('project_name'));
+                if(!$projectName) {
+                    $message['fail'][] = 'Project name can\'t be empty.';
+                } else {
+                    $project->setProjectName($projectName);
+                }
+                
+                $deadline = trim($request->getParam('deadline'));
+                if(!$deadline) {
+                    $message['fail'][] = 'Deadline date can\'t be empty.';
+                } else {
+                    $deadlineDate = new DateTime($deadline);
+                    
+                    if(strtotime($deadline) <= strtotime('now')) {
+                        $message['fail'][] = 'Deadline date can\'t be in the past!';
+                    } else {
+                        $project->setProjectTimeAlloted($deadlineDate->format('Y-m-d H:i:s'));
+                    }
+                }
+                
+                $salary = intval($request->getParam('salary'));
+                $logger->info('SALARY : ' . $salary);
+                if(!$salary) {
+                    $message['fail'][] = 'Salary input is invalid.';
+                } else {
+                    $project->setProjectSalary($request->getParam('salary'));
+                }
+                
+                $description = $request->getParam('description');
+                if(!$description) {
+                    $project->setProjectDescription('No description given.');
+                } else {
+                    $project->setProjectDescription($description);
+                }
+                
+                $project->setProjectCreatedDate($createdDate->format('Y-m-d H:i:s'));
+                $project->setProjectManagerId($userId);
+                
+                if(!isset($message['fail'])) {
+                    if($projectService->editProject($project)) {
+                        //$this->_response->redirectTo('project/details?id=' . $projectId);
+                        $this->_response->setBody(array(
+                        'success' => true, 
+                        'redirect' => 'project/details?rand_token=' . 
+                        $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId 
+                        ));
+                    } else {
+                        $this->_response->setBody(array('success' => false, 'message' => $message));
+                    }
+                } else {
+                    $this->_response->setBody(array('success' => false, 'message' => $message));
+                }
+                
+                
+            } else {
+                $this->_response->setBody(array('success' => false, 'message' => 'Project does not exist.'));
+            }
+            
+        } // edit project
+        else {
+            if($request->getparam('id') == null) {
+                return;
+            } else {
+                $id = $request->getparam('id');
+            }
+            
+            $projectService = \Timesheet\Project\Service::getInstance();
+            
+            $editproject = $projectService->getProjectById($id);
+            $editproject = \Database\Converter::getSingleArray($editproject[0]);
+            
+            $this->_response->setBody(array(
+                'title' => 'Edit Project',
+                'form_save' => true,
+                'edit' => true,
+                'project' => $editproject,
+            ));  
+        } // Show editable data
     }
     
     public function _edit_project($request) {
@@ -430,13 +633,10 @@ class ProjectController extends \My\Control\ProtectedController
             $this->_response = new HttpResponse('none', $skeleton);
             $this->_response->setBody(array(
                 'title' => 'Add People',
-                'search' =>true,
-                'project_id' => $request->getParam('id'),
                 
                 'email' => $this->user->getUserMail(),
                 'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
                 'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-                'project' => true
             ));  
         }
         
@@ -544,15 +744,22 @@ class ProjectController extends \My\Control\ProtectedController
     }
     
     public function _mark_complete($request) {
+        
+        $this->_response = new HttpResponse('json');
+        
         if($request->getParam('id') == null) {
             return;
         } else {
             $projectId = (int) $request->getParam('id');
             $projectService = \Timesheet\Project\Service::getInstance();
             if($projectService->markCompleted($projectId)) {
-                $this->_response->redirectTo('project/details?success=1&id=' . $projectId);
+                $this->_response->setBody(array(
+                    'success' => true,
+                ));
             } else {
-                $this->_response->redirectTo('project/details?error=1&id=' . $projectId);
+                $this->_response->setBody(array(
+                    'success' => false,
+                ));
             }
         }
     }
@@ -583,6 +790,26 @@ class ProjectController extends \My\Control\ProtectedController
             'unread_notification' => $notifications,
             'project' => true
         )); 
+    }
+    
+    public function _team_list_data($request) {
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        
+        $projectId = (int) $request->getParam('id');
+        $userService = \Timesheet\User\Service::getInstance();
+        $data = $userService->getUsersUnderProjectId($projectId);
+        $data = \Database\Converter::getArray($data);
+        
+        $this->_response->setBody(array(
+            'title' => 'Team',
+            'users' => $data,
+            'image_path' => IMAGE_PATH,
+            'email' => $this->user->getUserMail(),
+            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+        ));
+        
     }
 
 }//end class

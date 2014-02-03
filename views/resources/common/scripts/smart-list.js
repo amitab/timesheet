@@ -20,6 +20,10 @@ var app = (function (app, native5) {
         
     };
     
+    app.returnPath = function(args) {
+        return 'timesheet';  
+    };
+    
     return app;
 })(app || {}, native5 || {});
 

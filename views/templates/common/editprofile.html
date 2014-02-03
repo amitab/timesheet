@@ -8,16 +8,12 @@
                 
                 <form action="" method="post" enctype="multipart/form-data" class="edit-profile-form">
                     <div class="warnings">
-                        {% if items.message.success %}
-                            <p class="alert success">{{ items.message.success }}</p>
-                        {% elseif items.message.fail %}
-                            <p class="alert warning">{{ items.message.fail }}</p>
-                        {% endif %}
+                        
                     </div>
                     
                     
                     <div class="display-picture">
-                        <img src={{ items.image }} alt="" class="image">
+                        <img src="" alt="" class="image">
                     </div>
                     <div class="file" style="text-align: center; margin: 1rem 0;">
                         <input type="file" size="1000" name="user_image" value="">   
@@ -25,32 +21,24 @@
                     
                     
                     <div class="append field">
-                        <input class="input" type="text" placeholder="First Name" name="first_name" 
-                            value="{{ items.user.userFirstName }}"
-                        />
+                        <input class="input" type="text" placeholder="First Name" name="first_name" id="firstname" value=""/>
                         <span class="adjoined"><i class="fa fa-user"></i></span>
                     </div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="Last Name" name="last_name" 
-                            value="{{ items.user.userLastName }}"
-                        />
+                        <input class="input" type="text" placeholder="Last Name" name="last_name" id="lastname" value=""/>
                         <span class="adjoined"><i class="fa fa-user"></i></span>
                     </div>
                     <div class="field append">
-                        <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" 
-                            value="{{ items.user.userPhoneNumber }}"
-                        />
+                        <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" id="phonenumber"/>
                         <span class="adjoined"><i class="fa fa-phone"></i></span>
                     </div>
                     <div class="field append">
-                        <input class="input first-child" type="text" placeholder="Location" name="location" 
-                            value="{{ items.user.userLocation }}"
-                        />
+                        <input class="input first-child" type="text" placeholder="Location" name="location" id="location"/>
                         <span class="adjoined"><i class="fa fa-map-marker"></i></span>
                     </div>
                 </form>
                 <div style="text-align: center; margin-bottom: 10px;">
-                    <div class="medium primary btn"><a href="#" id="submit"><i class="fa fa-save"></i>&nbsp;Save Changes</a></div>
+                    <div class="medium primary btn"><a href="#" id="save-changes"><i class="fa fa-save"></i>&nbsp;Save Changes</a></div>
                 </div> 
                          
             </section>
@@ -59,10 +47,22 @@
     
     <script>
         $(document).ready(function() {
-            $(document).on('click', '#submit', function(e) {
+            
+            var successHandler = function(data) {
+                console.log(data);
+                
+            };
+            
+            var communicator = app.construct({
+                path : 'timesheet',
+                method : 'POST',
+                url : 'profile/edit_profile_data',
+                successHandler : successHandler
+            });
+            
+            $(document).hammer().on('tap', '#save-changes', function(e) {
                 e.preventDefault();
-                $('form').append('<input type="hidden" name="edit" value="1" />');
-                $('form').submit();
+                console.log($('form').serialize());
             });
         });
     </script>

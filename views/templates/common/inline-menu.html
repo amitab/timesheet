@@ -1,0 +1,50 @@
+
+{% if items.project_details_page == true %}
+
+    <li><a href={{ "project\\team_list" | nonce ~ "&id=" ~ items.project_details.projectId }} >View Team</a></li>
+        <li><a href={{ "project\\timesheets" | nonce ~ "&id="  ~ items.project_id }} >View All Timesheets</a></li>
+        
+        {% if items.is_employee == true %}
+            
+            <li><a href=
+                {% if items.project_details.projectState != 1 %}
+                    {{ "timer" | nonce ~ "&id="  ~ items.project_id }} 
+                {% else %}
+                    "#" style="color: #B1B1B1;"
+                {% endif %} 
+             >Start Working</a></li>
+        
+        {% endif %}
+        
+        {% if items.is_admin == true %}
+            
+            <li><a href=
+                {% if items.project_details.projectState != 1 %}
+                    {{ "project\\add_users" | nonce ~ "&id="  ~ items.project_id }} 
+                {% else %}
+                    "#" style="color: #B1B1B1;"
+                {% endif %} 
+            >Add Users</a></li>
+            <li><a href=
+            {% if items.project_details.projectState != 1 %}
+                {{ "project\\mark_complete" | nonce ~ "&id="  ~ items.project_id }}
+            {% else %}
+                "#" style="color: #B1B1B1;"
+            {% endif %}    
+            >Mark Completed</a></li>
+            <input type="hidden" id="edit_url" value={{ "project\\edit_project" | nonce ~ "&id="  ~ items.project_id }}>
+            <script>
+                $(document).ready(function() {
+                    $(document).on('click', 'div#edit_option' , function(e) {
+                        e.preventDefault();
+                        var url = $('input#edit_url').val();                            
+                        window.location.href = url;
+                    });
+                });
+            </script>
+            
+        {% endif %}
+        
+        <li><a href={{ "project" | nonce }} >Projects</a></li>
+
+{% endif %}

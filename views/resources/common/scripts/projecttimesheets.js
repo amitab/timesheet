@@ -62,6 +62,20 @@ $(document).ready(function() {
         emptyListCheck();
     };
     
+    function getJsonFromUrl() {
+        var query = location.search.substr(1);
+        var data = query.split("&");
+        var result = {};
+        for(var i=0; i<data.length; i++) {
+            var item = data[i].split("=");
+            result[item[0]] = item[1];
+        }
+        return result;
+    }
+    
+    var result = getJsonFromUrl();
+    var projectId = result['id'];
+    
     var communicator = app.construct({
         path : 'timesheet_iphone',
         method : 'POST',
@@ -70,7 +84,7 @@ $(document).ready(function() {
     });
     
     // load initial data
-    communicator.serviceObject.invoke({get_timesheets: $('input#project_id').val()});
+    communicator.serviceObject.invoke({get_timesheets: projectId});
     
     $(document).hammer().on('tap', 'tr.timesheet-details', function(e) {
         e.preventDefault();

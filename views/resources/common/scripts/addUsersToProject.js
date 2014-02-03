@@ -6,6 +6,19 @@ $(document).ready(function() {
     clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
     // success handler must be declared before app is constructed
     
+    function getJsonFromUrl() {
+        var query = location.search.substr(1);
+        var data = query.split("&");
+        var result = {};
+        for(var i=0; i<data.length; i++) {
+            var item = data[i].split("=");
+            result[item[0]] = item[1];
+        }
+        return result;
+    }
+    
+    var result = getJsonFromUrl();
+    
     var successHandler = function(data) {
         $('#search-results > ul').html('');
         var list = '';
@@ -88,7 +101,7 @@ $(document).ready(function() {
     
     var prevQuery = '';
     
-    $('#search-button').click(function(e){
+    $(document).hammer().on('tap', '#search-button', function(e){
         e.preventDefault();
         var searchBox = $($(this).attr('href'));
         
@@ -111,7 +124,7 @@ $(document).ready(function() {
             var args = {};
             args.q = query;
             args.ids = [];
-            args.project_id = parseInt($('input#project_id').val());
+            args.project_id = result.id;
             
             $('section#selected-users li').each(function(index) {
                 args.ids.push($(this).attr('userid'));
@@ -160,7 +173,7 @@ $(document).ready(function() {
         e.preventDefault();
         var args = {};
         args.add_users = true;
-        args.project_id = parseInt($('#project_id').val());
+        args.project_id = result.id;
         args.ids = [];
         
         $('section#selected-users li').each(function(index) {

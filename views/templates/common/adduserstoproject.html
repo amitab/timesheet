@@ -6,8 +6,6 @@
     <!--    Keep project id hidden here -->
     <div class="row">
         <div class="six columns centered card">
-
-            <input type="hidden" name="project_id" id="project_id" value="{{ items.project_id }}">
             <h5 class="left-padding" style="padding-top: 20px;">You have selected : </h5>
             
             <section class="list" id="selected-users">
@@ -35,5 +33,22 @@
     <script src={{ resolvePath("native5.notifications.js") }} ></script>
     <script src={{ resolvePath("smart-list.js") }} ></script>
     <script src={{ resolvePath("addUsersToProject.js") }} ></script>
+    
+    <script>
+        $(document).ready(function() {
+            var headerHandler = function(data) {
+                $('#header > .wrapper').append(data.message.header_options);
+            };
+            
+            var headerLoader = app.construct({
+                path : 'timesheet',
+                method : 'POST',
+                url : 'headerdata',
+                successHandler : headerHandler
+            });
+            
+            headerLoader.serviceObject.invoke({for: 'project/add_users'});
+        });
+    </script>
     
 {% include 'foot.html' %}

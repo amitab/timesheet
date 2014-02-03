@@ -1,20 +1,6 @@
-<div id="header" style="height: 68px;">
-        <div class="wrapper">
-            <div class="header-item">
-                
-                <div class="item">
-                    <i class="fa fa-angle-left" id="back"></i>
-                </div>
-                <div class="item logo">
-                    &nbsp;<img src={{ resolvePath("timesheet-logo.png") }} width="35" alt="">
-                </div>
-                <div class="item title">
-                    <h5>&nbsp;{{ items.title }}</h5>
-                    <p class="very-small">&nbsp;&nbsp;{{ items.email }}</p>
-                </div>
-            </div>
+
             
-            <!--{% if items.inline_menu == true %}
+            {% if items.inline_menu == true %}
                 <div class="header-item inline-menu-trigger" menu="#edit-inline-menu" style="height: 68px;">
                     <h5><i class="fa fa-ellipsis-v"></i></h5>
                 </div>
@@ -59,6 +45,15 @@
                             </tr>
                         </table>
                     </div> 
+                    
+                    <!--<div class="header-search-pack">
+                        <div class="append search field">
+                            <input type="search" class="input closed" id="search-box" name="search" placeholder="Search">
+                            <div class="medium btn header-search">
+                                <a href="#search-box" id="search-button"><i class="fa fa-search" style=" margin-left: -2px;"></i></a>
+                            </div>
+                        </div>
+                    </div> -->
                 
                 {% elseif items.form_save == true %}
                 
@@ -92,7 +87,5 @@
                         {% endif %}
                         <h5><i class="fa fa-globe"></i></h5>
                     </a>
-            </div>
-                {% endif %}-->
-        </div>
-    </div>
+                    
+                {% endif %}

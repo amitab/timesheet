@@ -5,46 +5,85 @@
     <div class="row">
         <div class="six columns centered card">
             <section class="list" id="search-results" style="margin: 10% 0;">
-                {% if items.users|length == 0 %}
-                    <ul class="empty-list">
-                {% else %}
-                    <ul>
-                {% endif %}
+                <ul>
                     
-                {% for user in items.users %}
-                    
-                    <li href={{ "profile\\view" | nonce ~ "&id=" ~ user.userId }} >
-                        <table><tbody><tr>
-                        <td>
-                            <img src={{ items.image_path ~ user.userImageUrl }}>
-                        </td>
-                        <td>
-                            <h5>{{ user.userFirstName ~ ' ' ~ user.userLastName }}</h5>
-                            <p class="small email">{{ user.userMail }}</p>
-                        </td>
-                        </tr></tbody></table>
-                    </li>
-                    
-                {% endfor %}
                     
                 </ul>
             </section>
         </div>
     </div>
     
-    
     <script src={{ resolvePath("native5.core.js") }} ></script>
     <script src={{ resolvePath("smart-list.js") }} ></script>
     <script>
         $(document).ready(function() {
+            
+            var headerHandler = function(data) {
+                $('#header > .wrapper').append(data.message.header_options);
+            };
+            
+            var headerLoader = app.construct({
+                path : 'timesheet',
+                method : 'POST',
+                url : 'headerdata',
+                successHandler : headerHandler
+            });
+            
+            headerLoader.serviceObject.invoke({for: 'project/team_list'});
+            
+            var searchList = smartList.createList({element : '#search-results'});
+            function getJsonFromUrl() {
+                var query = location.search.substr(1);
+                var data = query.split("&");
+                var result = {};
+                for(var i=0; i<data.length; i++) {
+                    var item = data[i].split("=");
+                    result[item[0]] = item[1];
+                }
+                return result;
+            }
+            
+            var result = getJsonFromUrl();
+            var successHandler = function(data) {
+                console.log(data);
+                
+                $.each(data.message.users, function(index, value) {
+                    var listitem = '';
+                    listitem += '<li href="/timesheet/profile/view?rand_token=' + result['rand_token'];
+                    listitem += '&id=' + value.userId +'">';
+                    listitem += '<table><tbody><tr>';
+                    listitem += '<td>';
+                    listitem += '<img src=' + data.message.image_path + value.userImageUrl + '>';
+                    listitem += '</td>';
+                    listitem += '<td>';
+                    listitem += '<h5>' + value.userFirstName + ' ' + value.userLastName + '</h5>';
+                    listitem += '<p class="small email">' + value.userMail + '</p>';
+                    listitem += '</td>';
+                    listitem += '</tr></tbody></table>';
+                    listitem += '</li>';
+                    $('#search-results > ul').append(listitem);
+                });
+                
+                searchList.activate();
+                searchList.emptyListCheck();
+            };
+            
+            var communicator = app.construct({
+                path : 'timesheet',
+                method : 'POST',
+                url : 'project/team_list_data',
+                successHandler : successHandler
+            });
+            
+            var id = result['id'];
+            
             $(document).hammer().on('tap', 'li.list-item', function(e) {
                 e.preventDefault();
                 var url = $(this).attr('href');
                 window.location.href = url;
             });
             
-            var searchList = smartList.createList({element : '#search-results'});
-            searchList.activate();
+            communicator.serviceObject.invoke({id: id});
             
         });
     </script>

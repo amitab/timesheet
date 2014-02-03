@@ -121,6 +121,47 @@ class TimesheetsController extends \My\Control\ProtectedController
         $this->_response->setBody($response); 
     }
     
+    public function _details_data($request) {
+        $this->_response = new HttpResponse('json');
+        
+        if($request->getParam('id') == null) {
+            return;
+        } else {
+            $id = $request->getParam('id');
+        }
+        
+        $taskService = \Timesheet\Task\Service::getInstance();
+        $timesheetService = \Timesheet\Timesheet\Service::getInstance();
+        
+        $tasks = $taskService->getAllTasksOfTimesheet($id);
+        $timesheet = $timesheetService->getTimesheetById($id);
+        $timesheet = $timesheet[0];
+        $date = $timesheet->makeAndGetDate();
+        $title = date('M', $date) . ' ' . date('Y', $date) . ', Week ' . date('W', $date);
+        $projectName = $timesheet->getTimesheetProjectName();
+        
+        $managerId = $timesheetService->getProjectManagerId($id);
+        
+        if($managerId == $this->user->getUserId()) {
+            $isAdmin = true;
+        } else {
+            $isAdmin = false;
+        }
+        
+        $tasks = \Database\Converter::getArray($tasks);
+        
+        $this->_response->setBody(array(
+            'title' => $title,
+            'add_task' => true,
+            'timesheet' => $timesheet,
+            'tasks' => $tasks,
+            'project_name' => $projectName,
+            'project_id' => $timesheetService->getTimesheetProjectId($id),
+            'timesheet_id' => $id,
+            'is_admin' => $isAdmin,
+        ));
+    }
+    
     private function _validate($request) {
         $taskName = trim($request->getParam('task_name'));
         if(!$taskName) {
@@ -173,7 +214,8 @@ class TimesheetsController extends \My\Control\ProtectedController
                 if($request->getParam('work_time') != null) {
                     $task->setTaskWorkTime($request->getParam('work_time'));
                     $workTime = $task->getTaskWorkTime();
-                } else {
+                } 
+                else {
                     $startTime = strtotime($request->getParam('start_time'));
                     $endTime = strtotime($request->getParam('end_time'));
                     $task->setTaskWorkTime($endTime - $startTime);
@@ -312,6 +354,142 @@ class TimesheetsController extends \My\Control\ProtectedController
         $this->_response->setBody($response); 
     }
     
+    public function _create_new_task_data($request) {
+        
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        $timesheetService = \Timesheet\Timesheet\Service::getInstance();
+        $taskService = \Timesheet\Task\Service::getInstance();
+        $userId = $this->user->getUserId();
+        $projectId = (int)$request->getParam('project_id');
+        $projectService = \Timesheet\Project\Service::getInstance();
+        $projectName = $projectService->getProjectNameById($projectId);
+        
+        if($request->getParam('new') != null) {
+            
+            $message = $this->_validate($request);
+            if(!isset($message['fail'])) {
+            
+                $task = new \Timesheet\Task\Task();
+                $task->setTaskName($request->getParam('task_name'));
+                $dateObject = new DateTime($request->getParam('start_time'));
+                $task->setTaskStartTime($dateObject->format('Y-m-d H:i:s'));
+                $dateObject = new DateTime($request->getParam('end_time'));
+                $task->setTaskEndTime($dateObject->format('Y-m-d H:i:s'));
+                
+                $notification = new \Timesheet\Notification\Notification();
+                $notification->setNotificationFromUser($userId);
+                $notification->setNotificationPriority(1);
+                $notification->setNotificationType(1);
+                $today = new DateTime('now');
+                $notification->setNotificationDate($today->format('Y-m-d H:i:s'));
+                $notification->setNotificationToUser(array($projectService->getProjectManagerId($projectId)));
+                
+                $notification->setNotificationBody('A new Task was added to ' . $projectName . '.');
+                
+                $task->setNotification($notification);
+                
+                if($request->getParam('work_time') != null) {
+                    $task->setTaskWorkTime($request->getParam('work_time'));
+                    $workTime = $task->getTaskWorkTime();
+                } 
+                else {
+                    $startTime = strtotime($request->getParam('start_time'));
+                    $endTime = strtotime($request->getParam('end_time'));
+                    $task->setTaskWorkTime($endTime - $startTime);
+                }
+                
+                $location = trim($request->getParam('location'));
+                if(!$location) {
+                    $task->setTaskLocation('Location Unknown.');
+                } else {
+                    $task->setTaskLocation($request->getParam('location'));
+                }
+                
+                $notes = trim($request->getParam('notes'));
+                if(!$notes) {
+                    $task->setTaskNotes('No notes written by user.');
+                } else {
+                    $task->setTaskNotes($request->getParam('notes'));
+                }
+                
+                // If new task being added to old timesheet
+                if($request->getParam('timesheet_id') != null) { 
+                    
+                    $timesheetId = (int) $request->getParam('timesheet_id');
+                    if($taskService->createTask($task, $timesheetId, false)) {
+                        $message['success'] = 'New Task created.';
+                        $this->_response->setBody(array(
+                            'success' => true,
+                        ));
+                        //$this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
+                    } else {
+                        $this->_response->setBody(array(
+                            'success' => false,
+                        ));
+                        $message['fail'] = 'Task could not be created.';
+                    }
+                } 
+                // Timesheet for this project this week present already
+                else if($timesheetId = $timesheetService->findThisWeekTimesheet($userId, $projectId)) { 
+                    $logger->info('Found Timesheet for this week.');
+                    if($taskService->createTask($task, $timesheetId, false)) {
+                        $message['success'] = 'New Task created.';
+                        $this->_response->setBody(array(
+                            'success' => true,
+                        ));
+                        //$this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
+                    } else {
+                        $this->_response->setBody(array(
+                            'success' => false,
+                        ));
+                        $message['fail'] = 'Task could not be created.';
+                    }
+                    
+                } 
+                // Make new timesheet and task in it
+                else {  
+                    
+                    $timesheet = new \Timesheet\Timesheet\Timesheet();
+                    $projectService = \Timesheet\Project\Service::getInstance();
+                    $timesheet->setTimesheetProjectName($projectService->getProjectNameById($projectId));
+                    $timesheet->setUserId($userId);
+                    $timesheet->setProjectId($projectId);
+                    $now = new DateTime('now');
+                    $timesheet->setTimesheetDate($now->format('Y-m-d'));
+                    
+                    $timesheetId = $timesheetService->createTimesheetAndTask($timesheet, $task);
+                    if($timesheetId) {
+                        $message['success'] = 'New Task created.';
+                        $this->_response->setBody(array(
+                            'success' => true,
+                        ));
+                        //$this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
+                    } else {
+                        $this->_response->setBody(array(
+                            'success' => false,
+                        ));
+                        $message['fail'] = 'Task could not be created.';
+                    }
+                    
+                }
+            
+            } else {
+                $this->_response->setBody(array(
+                    'success' => false,
+                    'message' => $message
+                ));
+            }
+            
+        } 
+        else {
+            $this->_response->setBody(array(
+                'project_name' => $projectName
+            ));
+        }
+        
+    }
+    
     public function _search($request) {
         global $logger;
         $this->_response = new HttpResponse('json');
@@ -420,14 +598,81 @@ class TimesheetsController extends \My\Control\ProtectedController
         )); 
     }
     
+    public function _task_details_data($request) {
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        
+        $userId = $this->user->getUserId();
+        
+        if($request->getParam('id') == null) {
+            return;
+        } else {
+            $id = $request->getParam('id');
+        }  
+        
+        if($request->getParam('mark') != null) {
+            
+            $markValue = (int) $request->getParam('mark');
+            $taskId = (int) $request->getParam('id');
+            
+            $returnValue = $this->_mark_task($taskId, $markValue);
+            if($returnValue) {
+                $this->_response->setBody(array(
+                    'success' => true,
+                    'marked' => $markValue
+                ));
+            } else {
+                $this->_response->setBody(array(
+                    'success' => false,
+                ));
+            }
+            
+        } else {
+        
+            $taskService  = \Timesheet\Task\Service::getInstance();
+            $timesheetService  = \Timesheet\Timesheet\Service::getInstance();
+            
+            $task = $taskService->getTaskById($id);
+            $task = $task[0];
+            
+            $managerId = $timesheetService->getProjectManagerId($task->getTaskTimesheetId());
+            
+            if($managerId == $userId) {
+                $isAdmin = true;
+            } else {
+                $isAdmin = false;
+            }
+            
+            $title = $task->getTaskName();
+            
+            $this->_response->setBody(array(
+                'title' => $title,
+                'task' => \Database\Converter::getSingleArray($task),
+                'is_admin' => $isAdmin,
+                'message' => $message,
+                'author' => $timesheetService->getAuthorOfTimesheet($task->getTaskTimesheetId()),
+                
+                'email' => $this->user->getUserMail(),
+                'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
+                'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
+                'unread_notification' => $notifications,
+                'timesheets' => true,
+            )); 
+            
+        }      
+        
+    }
+    
     private function _mark_task($taskId, $markValue) {
         global $logger;
         
         $taskService  = \Timesheet\Task\Service::getInstance();
         if($taskService->markTask($taskId, $markValue)) {
             $logger->info('DONE');
+            return true;
         } else {
             $logger->info('NOT DONE');
+            return false;
         }
     }
 

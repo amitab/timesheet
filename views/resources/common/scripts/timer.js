@@ -9,6 +9,19 @@ $(document).ready(function(){
     var workTime = 0;
     var seconds = 0;
     
+    var headerHandler = function(data) {
+        $('#header > .wrapper').append(data.message.header_options);
+    };
+    
+    var headerLoader = app.construct({
+        path : 'timesheet',
+        method : 'POST',
+        url : 'headerdata',
+        successHandler : headerHandler
+    });
+    
+    headerLoader.serviceObject.invoke({for: 'timer'});
+    
     var ua = navigator.userAgent,
     clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
     
@@ -73,6 +86,21 @@ $(document).ready(function(){
         clearInterval(interval);
     }
     
+    function getJsonFromUrl() {
+        var query = location.search.substr(1);
+        var data = query.split("&");
+        var result = {};
+        for(var i=0; i<data.length; i++) {
+            var item = data[i].split("=");
+            result[item[0]] = item[1];
+        }
+        return result;
+    }
+    
+    var result = getJsonFromUrl();
+    var projectId = result['id'];
+    $('#project_id').val(projectId); // Insert project id to form
+    
     function finish() {
         var minute = parseInt($('#minute').text());
         var hour = parseInt($('#hour').text());
@@ -81,8 +109,11 @@ $(document).ready(function(){
         $('input#work_time').val(time);
         $('input#start_time').val(startTime.getFullYear() + '-' + startTime.getDate() + '-' + startTime.getMonth() + ' ' + startTime.getHours() + ':' + startTime.getMinutes() + ':' + startTime.getSeconds());
         $('input#end_time').val(endTime.getFullYear() + '-' + endTime.getDate() + '-' + endTime.getMonth() + ' ' + endTime.getHours() + ':' + endTime.getMinutes() + ':' + endTime.getSeconds());
-        $('form').append('<input type="hidden" name="from_timer_page" value="1" />');
-        $('form').submit();
+        
+        var formData = $('form#timer').serialize();
+        var url = '/' + app.returnPath() + '/timesheets/new_task?rand_token=' + result['rand_token'] + '&' + formData;
+        window.location.href = url;
+        
     }
     
     $(document).on(clickevent, '#start-button', function(e) {
@@ -130,6 +161,10 @@ $(document).ready(function(){
         }
     });
     
-    
+    $(document).hammer().on('tap', '#add-task', function(e) {
+        e.preventDefault();
+        var url = '/' + app.returnPath() + '/timesheets/new_task?rand_token=' + result['rand_token'] + '&project_id=' + projectId;
+        window.location.href = url;
+    });
     
 });

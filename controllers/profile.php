@@ -87,6 +87,41 @@ class ProfileController extends \My\Control\ProtectedController
 
     }//end _default()
     
+    public function _default_data($request) {
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        
+        if($request->getParam('id') != null) {
+            
+            $userId = (int) $request->getParam('id');
+            $userService = \Timesheet\User\Service::getInstance();
+            $user = $userService->getUserById($userId);
+            $user = $user[0];
+            $user = \Database\Converter::getSingleArray($user);
+            $stats = $userService->getUserStats($userId);
+            
+            $this->_response->setBody(array(
+                'title' => 'Profile',
+                'image_path' => IMAGE_PATH,
+                'user' => $user,
+                'stats' => $stats,
+            )); 
+            
+        } else {
+            $userId = $this->user->getUserId(); // Get current user Id
+            $userService = \Timesheet\User\Service::getInstance();
+            $stats = $userService->getUserStats($userId);
+            $user = \Database\Converter::getSingleArray($this->user);
+            
+            $this->_response->setBody(array(
+                'title' => 'Profile',
+                'image_path' => IMAGE_PATH,
+                'user' => $user,
+                'stats' => $stats,        
+            )); 
+        }
+    }
+    
     public function _view($request) {
         global $logger;
         $skeleton =  new TwigRenderer('profile-test.html');
@@ -116,8 +151,7 @@ class ProfileController extends \My\Control\ProtectedController
         )); 
     }
     
-    public function _edit_profile($request)
-    {
+    public function _edit_profile($request) {
         
         global $logger;
         $skeleton =  new TwigRenderer('editprofile.html');
@@ -158,6 +192,46 @@ class ProfileController extends \My\Control\ProtectedController
             'profile' => true
         )); 
 
+    }
+    
+    public function _edit_profile_data($request) {
+        global $logger;
+        $this->_response = new HttpResponse('json');
+        
+        if($request->getParam('edit') != null) {
+            
+            $upload = $this->_save_image();
+            if(!$upload) {
+                $this->_response->setBody(array(
+                    'fail' => true        
+                )); 
+            }  else {
+                
+                $user = $this->user;
+                $user->setUserFirstName($request->getParam('first_name'));
+                $user->setUserLastName($request->getParam('last_name'));
+                $user->setUserPhoneNumber($request->getParam('phone_number'));
+                $user->setUserLocation($request->getParam('location'));
+                
+                $userService = \Timesheet\User\Service::getInstance();
+                if($userService->editUser($user)) {
+                    $this->_response->setBody(array(
+                        'success' => true        
+                    )); 
+                } else {
+                    $this->_response->setBody(array(
+                        'fail' => true     
+                    )); 
+                }
+                
+            }
+            
+        } else {
+            $user = \Database\Converter::getSingleArray($this->user);
+            $this->_response->setBody(array(
+                'user' => $user,  
+            )); 
+        }
     }
     
     private function _save_image() {
