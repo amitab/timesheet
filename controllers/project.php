@@ -397,8 +397,7 @@ class ProjectController extends \My\Control\ProtectedController
                 $projectId = $projectService->createProject($project);
                 if($projectId) {
                     //$this->_response->redirectTo('project/details?id=' . $projectId);
-                    $this->_response->setBody(array('success' => true, 'redirect' => 'project/details?rand_token=' . 
-                    $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId));
+                    $this->_response->setBody(array('success' => true, 'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId));
                     
                 } else {
                     $this->_response->setBody(array('success' => false));
@@ -460,8 +459,7 @@ class ProjectController extends \My\Control\ProtectedController
                         //$this->_response->redirectTo('project/details?id=' . $projectId);
                         $this->_response->setBody(array(
                         'success' => true, 
-                        'redirect' => 'project/details?rand_token=' . 
-                        $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId 
+                        'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId 
                         ));
                     } else {
                         $this->_response->setBody(array('success' => false, 'message' => $message));
@@ -614,7 +612,7 @@ class ProjectController extends \My\Control\ProtectedController
             if($projectService->addUsersToProject($projectId, $userIds, $notification)) {
                 $success = true;
                 $message['response'] = "Users successfully added";
-                $message['redirect'] = 'team_list?rand_token=' . $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&project_id=' . $projectId;
+                $message['rand_token'] = $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&project_id=' . $projectId;
                 $logger->info('added');
             } else {
                 $success = false;

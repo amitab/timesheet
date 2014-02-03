@@ -38,8 +38,8 @@
         $(document).ready(function (e) {
             
             var successHandler = function(data) {
-                if(data.success == true) {
-                    window.location.href = 'profile?rand_token=' + getParameterByName('rand_token');
+                if(data.message.success == true) {
+                    window.location.href = 'profile?rand_token=' + data.message.rand_token;
                 }
             };
             

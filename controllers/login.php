@@ -76,7 +76,8 @@ class LoginController extends DefaultController
                 
                 $this->_response = new HttpResponse('json');
                 $this->_response->setBody(array(
-                    'success' => true            
+                    'success' => true,
+                    'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce')
                 )); 
                 
                 //$this->_response->redirectTo('profile');
