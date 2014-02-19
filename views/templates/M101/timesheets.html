@@ -1,0 +1,31 @@
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="eight columns centered">
+            <input type="hidden" id="url" timesheet-details-path={{ "timesheets\\details" | nonce }}>
+            <section class="overview">
+                <div class="overview-head">
+                    <table class="header">
+                        <tr>
+                            <td class="heading"><h4>Timesheets</h4></td>
+                            <td class="refresh">
+                                <span class="icon-refresh" id="load-more"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="timesheet-list" class="empty-list">
+                    
+                </div>
+                
+            </section>
+            
+        </div>
+    </div>
+    
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("native5.notifications.js") }} ></script>
+    <script src={{ resolvePath("smart-list.js") }} ></script>
+    <script src={{ resolvePath("timesheetsearch.js") }} ></script>
+    
+{% include 'foot.html' %}

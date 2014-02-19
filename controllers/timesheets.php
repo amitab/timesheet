@@ -223,7 +223,7 @@ class TimesheetsController extends \My\Control\ProtectedController
                 
                 $location = trim($request->getParam('location'));
                 if(!$location) {
-                    $task->setTaskLocation('Location Unknown.');
+                    $task->setTaskLocation('Unknown.');
                 } else {
                     $task->setTaskLocation($request->getParam('location'));
                 }
@@ -421,6 +421,7 @@ class TimesheetsController extends \My\Control\ProtectedController
                         $message['success'] = 'New Task created.';
                         $this->_response->setBody(array(
                             'success' => true,
+                            'timesheet_id' => $timesheetId
                         ));
                         //$this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
                     } else {
@@ -437,6 +438,7 @@ class TimesheetsController extends \My\Control\ProtectedController
                         $message['success'] = 'New Task created.';
                         $this->_response->setBody(array(
                             'success' => true,
+                            'timesheet_id' => $timesheetId
                         ));
                         //$this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
                     } else {
@@ -463,6 +465,7 @@ class TimesheetsController extends \My\Control\ProtectedController
                         $message['success'] = 'New Task created.';
                         $this->_response->setBody(array(
                             'success' => true,
+                            'timesheet_id' => $timesheetId
                         ));
                         //$this->_response->redirectTo('timesheets/details?id=' . $timesheetId);
                     } else {

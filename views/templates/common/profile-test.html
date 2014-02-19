@@ -84,6 +84,10 @@
             
             var headerHandler = function(data) {
                 $('#header > .wrapper').append(data.message.header_options);
+                $('#headertitle').text(data.message.header_data.title);
+                $('.headeremail').text(data.message.header_data.email);
+                $('#headername').text(data.message.header_data.name);
+                $('#headerimage').attr({'src' : data.message.header_data.image});
             };
             
             var headerLoader = app.construct({

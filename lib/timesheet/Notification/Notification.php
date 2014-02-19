@@ -114,9 +114,9 @@ class Notification {
 	public function setNotificationType($notificationType){
 		$this->notificationType = $notificationType;
 		if($notificationType == self::TYPE_PROJECT) {
-		    $this->url = 'project\details?rand_token=' . $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce');
+		    $this->url = "projectdetails.html?id=";
 		} else if ($notificationType == self::TYPE_TASK) {
-		    $this->url = 'timesheets\task_details?rand_token=' . $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce');
+		    $this->url = "taskdetails.html?id=";
 		} 
 	}
 

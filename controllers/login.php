@@ -59,26 +59,72 @@ class LoginController extends DefaultController
         global $app;
 
         $subject = SecurityUtils::getSubject();
-        $logger->debug('Authentication Status '.$subject->isAuthenticated());
+        $headers = apache_request_headers();
 
         if ($subject->isAuthenticated() === true) {
-            $this->_response->redirectTo('profile');
+            //$this->_response->redirectTo('profile');
+            if (isset($headers["X-Requested-Native5-App"])){
+                $this->_response = new HttpResponse('json');
+                $principals = $subject->getPrincipals();
+                $email = $principals[1]['email'];
+
+                $userService = \Timesheet\User\Service::getInstance();
+                $user = $userService->getUserByEmail($email);
+
+                $user = $user[0];
+
+                $userData['first_name'] = $user->getUserFirstName(); 
+                $userData['last_name'] = $user->getUserLastName(); 
+                $userData['image'] = IMAGE_PATH . $user->getUserImageUrl();
+                $userData['email'] = $user->getUserMail(); 
+                $userData['location'] = $user->getUserLocation();
+                $userData['stats'] = $userService->getUserStats($user->getUserId());
+
+                $this->_response->setBody(array(
+                    'success' => true,
+                    'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce'),
+                    'user_data' => $userData
+                ));
+            } else {
+                $this->_response->redirectTo('profile');
+            }
+
+            
         } else {
             $token = new UsernamePasswordToken(
                 $request->getParam('email'),
                 $request->getParam('password')
             );
             
-            $logger->info($request->getParam('email') . ', ' . $request->getParam('password'));
             
             try {
                 $subject->login($token);
                 
-                $this->_response = new HttpResponse('json');
-                $this->_response->setBody(array(
-                    'success' => true,
-                    'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce')
-                )); 
+                if (isset($headers["X-Requested-Native5-App"])){
+                    $this->_response = new HttpResponse('json');
+                    $principals = $subject->getPrincipals();
+                    $email = $principals[1]['email'];
+
+                    $userService = \Timesheet\User\Service::getInstance();
+                    $user = $userService->getUserByEmail($email);
+
+                    $user = $user[0];
+
+                    $userData['first_name'] = $user->getUserFirstName(); 
+                    $userData['last_name'] = $user->getUserLastName(); 
+                    $userData['image'] = IMAGE_PATH . $user->getUserImageUrl();
+                    $userData['email'] = $user->getUserMail(); 
+                    $userData['location'] = $user->getUserLocation();
+                    $userData['stats'] = $userService->getUserStats($user->getUserId());
+
+                    $this->_response->setBody(array(
+                        'success' => true,
+                        'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce'),
+                        'user_data' => $userData
+                    ));
+                } else {
+                    $this->_response->redirectTo('profile');
+                }
                 
                 //$this->_response->redirectTo('profile');
             } catch (AuthenticationException $aex) {
@@ -102,10 +148,15 @@ class LoginController extends DefaultController
     private function _handleFailedAuthentication($subject, $token, $aex)
     {        
         global $logger;
-        $this->_response = new HttpResponse('json');
-        $this->_response->setBody(array(
-            'failure' => true            
-        ));
+        $headers = apache_request_headers();
+        if (isset($headers["X-Requested-Native5-App"])){
+            $this->_response = new HttpResponse('json');
+            $this->_response->setBody(array(
+                'success' => false            
+            ));
+        } else {
+            $this->_response->redirectTo('home');
+        }
 
     }//end _handleFailedAuthentication()
 

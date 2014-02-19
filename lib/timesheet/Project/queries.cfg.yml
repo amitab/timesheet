@@ -1,4 +1,5 @@
 ---
+get all incomplete working for of user: SELECT DISTINCT `project`.`project_id`, `project`.`project_name` FROM `project` WHERE (`project`.`project_manager_id` = :userId OR `project`.`project_id` IN (SELECT `user_project`.`project_id` FROM `user_project` WHERE `user_project`.`user_id` = :userId)) AND `project`.`project_state` = 0;
 
 get project handled by user id : SELECT DISTINCT `project`.* FROM `user`, `user_project`, `project` WHERE `user`.`user_id` = `user_project`.`user_id` AND `user_project`.`project_id` = `project`.`project_id` AND `user`.`user_id` = :userId;
 get project created by user id : SELECT DISTINCT `project`.* FROM `project` WHERE `project`.`project_manager_id` = :projectManagerId;
@@ -14,7 +15,7 @@ find project created in year : SELECT `project`.* FROM `project` WHERE EXTRACT(Y
 
 create new project : INSERT INTO `project` (project_name, project_description,  project_time_alloted, project_created_date, project_manager_id, project_salary, project_state) VALUES(:projectName, :projectDescription, :projectTimeAlloted, :projectCreatedDate, :projectManagerId, :projectSalary, :projectState);
 
-edit project : UPDATE `project` SET project_name = :projectName, project_description = :projectDescription, project_time_alloted = :projectTimeAlloted WHERE `project`.`project_id` = :projectId;
+edit project : UPDATE `project` SET project_name = :projectName, project_description = :projectDescription, project_time_alloted = :projectTimeAlloted, project_salary = :projectSalary WHERE `project`.`project_id` = :projectId;
 
 get project name by id : SELECT `project`.`project_name` AS `project_name` FROM `project` WHERE `project`.`project_id` = :projectId;
 

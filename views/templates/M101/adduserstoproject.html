@@ -1,0 +1,49 @@
+{% include 'head.html' %}
+    
+    <!--    Must set value of checkboxes to the userids -->
+    <!--    Keep project id hidden here -->
+    <div class="row">
+        <div class="add-users">
+            <div class="six columns centered card">
+
+                <input type="hidden" name="project_id" id="project_id" value="{{ items.project_id }}">
+                <div class="selected-head">
+                    <table class="header">
+                        <tr>
+                            <td class="heading"><h5>You have selected : </h5></td>
+                            <td class="add">
+                                <span class="icon-check" href={{ "project\\add_users" | nonce }} id="add_users"></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                    
+                    
+                <section class="list" id="selected-users" style="margin-top: 0;">
+                    <ul class="empty-list">
+                        
+                    </ul>
+                </section>
+                
+                <h5 class="left-padding">Search Results : </h5>
+                
+                <section class="list" id="search-results">
+                    <ul class="empty-list">
+                        
+                    </ul>
+                </section>
+                    
+                    
+                <!--<div class="submit" style="margin: 1rem 0; text-align: center;">
+                    <div class="medium primary btn"><a href={{ "project\\add_users" | nonce }} id="add_users">Add Users</a></div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("native5.notifications.js") }} ></script>
+    <script src={{ resolvePath("smart-list.js") }} ></script>
+    <script src={{ resolvePath("addUsersToProject.js") }} ></script>
+    
+{% include 'foot.html' %}

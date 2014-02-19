@@ -1,0 +1,94 @@
+
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="eight columns centered">
+            <section class="new-task">
+                
+                <form action="" method="post">
+                    {% if (items.old_timesheet_id != 0) and (items.coming_from_timesheet_details_page == true) %}
+                        <input type="hidden" name="timesheet_id" value="{{ items.old_timesheet_id }}">
+                    {% endif %}
+                    {% if items.coming_from_timer_page == true %}
+                        <input type="hidden" name="work_time" value="{{ items.sent_work_time }}">
+                    {% endif %}
+                    
+                    {% if items.work_time %}
+                        <input type="hidden" name="work_time" value="{{ items.work_time }}">
+                    {% endif %}
+                    
+                    <input type="hidden" name="project_id" value="{{ items.sent_project_id }}">
+                    
+                    <div class="title">
+                        <h5>{{ items.title }} for {{ items.project_name }}</h5>
+                    </div>
+                    <div class="warnings">
+                        {% if items.message.success %}
+                            <p class="alert success">{{ items.message.success }}</p>
+                        {% elseif items.message.fail %}
+                            
+                            {% for fail in items.message.fail %}
+                                <p class="alert warning">{{ fail }}</p>
+                            {% endfor %}
+                            
+                        {% endif %}
+                    </div>
+                    <div class="field append">
+                        <input class="input" type="text" placeholder="Task Name" name="task_name" 
+                        {% if items.edit == true %} 
+                            value="{{ items.task.taskName }}"
+                        {% endif %}/>
+                        <span class="adjoined"><i class="fa fa-pencil-square-o"></i></span>
+                    </div>
+                    
+                    <div class="field">
+                        <label class="medium" for="start_time"><i class="fa fa-clock-o"></i>&nbsp;Start Time : </label>
+                        <input name="start_time" type="datetime-local" 
+                        {% if items.edit == true %}
+                            value="{{ items.task.taskStartTime }}"
+                        {% elseif items.coming_from_timer_page == true %}
+                            value="{{ items.sent_start_time }}"
+                        {% endif %}>
+                    </div>
+                    <div class="field">
+                        <label class="medium" for="end_time"><i class="fa fa-clock-o"></i>&nbsp;End Time : </label>
+                        <input name="end_time" type="datetime-local" 
+                        {% if items.edit == true %}
+                            value="{{ items.task.taskEndTime }}"
+                        {% elseif items.coming_from_timer_page == true %}
+                            value="{{ items.sent_end_time }}"
+                        {% endif %}>
+                    </div>
+                    <div class="field">
+                        <textarea class="input textarea" placeholder="Notes" name="notes">{% if items.edit == true %}{{ items.task.taskNotes }}{% endif %}</textarea>
+                        
+                    </div>
+                        
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Location" name="location" 
+                        {% if items.edit == true %}
+                            value="{{ items.task.taskLocation }}"
+                        {% endif %}/>
+                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                    </div>
+                </form>
+                
+            </section>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            
+            var ua = navigator.userAgent,
+            clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
+            
+            $(document).on(clickevent, 'div#save-form', function(e) {
+                e.preventDefault();
+                $('form').append('<input type="hidden" name="{% if items.edit == true %}edit{% else %}new{% endif %}" value="1">');
+                $('form').submit();
+            });
+        });
+    </script>
+    
+{% include 'foot.html' %}

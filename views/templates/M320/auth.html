@@ -1,0 +1,35 @@
+{% include 'head.html' %}
+    <div class="row">
+        <div class="six columns centered login">
+            <div class="login-wrapper">
+                <div class="hello">
+                    <h1>TimeSheet</h1>
+                    <h6>Effective Work Management Tool</h6>
+                </div>
+                
+                <form action={{ "login" }} method="post" class="login-form" id="login">
+                    <h6>PLEASE LOG IN</h6>
+                    <div class="warnings">{{ items.message }}</div>
+                    <div class="append field">
+                        <input class="input" id="email" type="text" placeholder="Email" name="email" />
+                        <span class="adjoined"><i class="fa fa-user"></i></span>
+                    </div>
+                    <div class="append field">
+                        <input class="input" type="password" placeholder="Password" name="password" />
+                        <span class="adjoined"><i class="fa fa-lock"></i></span>
+                    </div>
+                    <div class="field form-submit-button">
+                        <div class="medium primary btn">
+                            <a href="#" id="submit">Login</a>
+                        </div>
+                        <div class="medium secondary btn">
+                            <a href={{ "home\\signup" }}>Signup</a>
+                        </div>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+    
+{% include 'foot.html' %}

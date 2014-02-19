@@ -199,6 +199,13 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
         );
         return $this->_executeObjectQuery('search all projects of user', $valArr, \Native5\Core\Database\DB::SELECT);
     }
+	
+	public function getAllIncompleteWorkingFor($userId) {
+        $valArr = array(
+            ':userId' => $userId
+        );
+        return $this->_executeObjectQuery('get all incomplete working for of user', $valArr, \Native5\Core\Database\DB::SELECT);
+	}
     
 	// WRITE FUNCTIONS
 	
@@ -237,6 +244,7 @@ class DAOImpl extends \Database\DBService implements \Timesheet\Project\DAO {
 	    $valArr = array(
             ':projectId' => $projectDetails->getProjectId(),
             ':projectName' => $projectDetails->getProjectName(),
+            ':projectSalary' => $projectDetails->getProjectSalary(),
             ':projectDescription' => $projectDetails->getProjectDescription(),
             ':projectTimeAlloted' => $projectDetails->getProjectTimeAlloted(),
         );

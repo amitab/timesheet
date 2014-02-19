@@ -38,22 +38,12 @@
                                    <input type="search" class="input closed" id="search-box" name="search" placeholder="Search"> 
                                 </td>
                                 <td>
-                                   <div class="medium btn header-search">
-                                        <a href="#search-box" id="search-button"><i class="fa fa-search" style=" margin-left: -2px;"></i></a>
-                                    </div> 
+                                   <a href="#search-box" id="search-button" style="">
+                                   <i class="fa fa-search" style="font-size: 20px!important;"></i></a> 
                                 </td>
                             </tr>
                         </table>
                     </div> 
-                    
-                    <!--<div class="header-search-pack">
-                        <div class="append search field">
-                            <input type="search" class="input closed" id="search-box" name="search" placeholder="Search">
-                            <div class="medium btn header-search">
-                                <a href="#search-box" id="search-button"><i class="fa fa-search" style=" margin-left: -2px;"></i></a>
-                            </div>
-                        </div>
-                    </div> -->
                 
                 {% elseif items.form_save == true %}
                 
@@ -81,11 +71,11 @@
                 
                 {% else %}
                     
-                    <a href={{ "notifications" | nonce }} >
+                    <a href="notifications.html" >
                         {% if items.unread_notification != 0 %}
                         <p class="notifications small">{{ items.unread_notification }}</p>
                         {% endif %}
-                        <h5><i class="fa fa-globe"></i></h5>
+                        <h5 style="margin-top: -3px;"><i class="fa fa-globe"></i></h5>
                     </a>
                     
                 {% endif %}

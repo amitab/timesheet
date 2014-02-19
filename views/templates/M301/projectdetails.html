@@ -1,0 +1,128 @@
+{% include 'head.html' %}
+
+    <div class="row">
+        <div class="eight columns centered">
+            <section class="project-details">
+                <div class="title">
+                    <h5>{{ items.project_details.projectName }}</h5>
+                </div>
+                <div class="wrapper">
+                <div class="messages">
+                    {% if items.message.success %}
+                        <p class="alert success">{{ items.message.success }}</p>
+                    {% elseif items.message.fail %}
+                        <p class="alert warning">{{ items.message.fail }}</p>
+                    {% endif %}
+                </div>
+                    <div class="overview" style="margin-bottom: 10px;">
+                        
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Total Time</td>
+                                    <td>{{ items.total_time }} hours</td>
+                                </tr>
+                                {% if items.is_employee == true %}
+                                    <tr>
+                                        <td>Total Salary</td>
+                                        <td>{{ items.total_salary }}$</td>
+                                    </tr>
+                                <tr>
+                                    <td>Pause Time</td>
+                                    <td>{{ items.pause_time }} hours</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <td>Expenses</td>
+                                    <td>{{ items.expenses }}$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="details" style="margin-bottom: 10px;">
+                        <h6>Details</h6>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td>Employer</td>
+                                    <td>
+                                    <a href={{ "profile\\view" | nonce ~ "&id=" ~ items.project_details.projectManagerId }}>
+                                    {{ items.employer_name }}</a></td>
+                                </tr>
+                                <tr>
+                                    <td>Created</td>
+                                    <td>{{ items.project_details.prettyCreatedDate }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Deadline</td>
+                                    <td>{{ items.project_details.prettyDeadline }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Salary/hr</td>
+                                    <td>{{ items.project_details.projectSalary }}$</td>
+                                </tr>
+                                <tr>
+                                    <td>Status</td>
+                                    <td>{{ items.project_details.readableProjectState }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="description">
+                            <h6>Description</h6>
+                            <p style="font-size: 14px; padding: 0 6px;">{{ items.project_details.projectDescription }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+            </section>
+        </div>
+    </div>
+    
+    <div id="options" style="display: none;">
+            
+            <li><a href={{ "project\\team_list" | nonce ~ "&id=" ~ items.project_details.projectId }} >View Team</a></li>
+			<li><a href={{ "project\\timesheets" | nonce ~ "&id="  ~ items.project_id }} >View All Timesheets</a></li>
+            
+            {% if items.is_employee == true %}
+                
+                <li><a href=
+                    {% if items.project_details.projectState != 1 %}
+                        {{ "timer" | nonce ~ "&id="  ~ items.project_id }} 
+                    {% else %}
+                        "#" style="color: #B1B1B1;"
+                    {% endif %} 
+                 >Start Working</a></li>
+            
+            {% endif %}
+            
+            {% if items.is_admin == true %}
+                
+                <li><a href=
+                    {% if items.project_details.projectState != 1 %}
+                        {{ "project\\add_users" | nonce ~ "&id="  ~ items.project_id }} 
+                    {% else %}
+                        "#" style="color: #B1B1B1;"
+                    {% endif %} 
+                >Add Users</a></li>
+                <li><a href=
+                {% if items.project_details.projectState != 1 %}
+                    {{ "project\\mark_complete" | nonce ~ "&id="  ~ items.project_id }}
+                {% else %}
+                    "#" style="color: #B1B1B1;"
+                {% endif %}    
+                >Mark Completed</a></li>
+                <input type="hidden" id="edit_url" value={{ "project\\edit_project" | nonce ~ "&id="  ~ items.project_id }}>
+                <script>
+                    $(document).ready(function() {
+                        $(document).on('click', 'div#edit_option' , function(e) {
+                            e.preventDefault();
+                            var url = $('input#edit_url').val();                            
+                            window.location.href = url;
+                        });
+                    });
+                </script>
+                
+            {% endif %}
+    </div>
+    
+{% include 'foot.html' %}

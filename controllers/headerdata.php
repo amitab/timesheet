@@ -62,42 +62,72 @@ class HeaderdataController extends \My\Control\ProtectedController
         $this->_response = new HttpResponse('json');
         $renderer =  new TwigRenderer('header-options.html');
         
+        
         switch($request->getParam('for')) {
             case 'profile' :
-            $headerOptions = $renderer->render(array());
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+            $headerMenu['notification'] = true;
+            $headerMenu['notification_count'] = $notifications;
             break;
             case 'notifications' :
-            $headerOptions = $renderer->render(array('refresh' => true));
+            $headerMenu['refresh'] = true;
             break;
             case 'project/timesheets' :
-            $headerOptions = $renderer->render(array());
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+            $headerMenu['notification'] = true;
+            $headerMenu['notification_count'] = $notifications;
+            break;
+            case 'profile/edit_profile' :
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+            $headerMenu['notification'] = true;
+            $headerMenu['notification_count'] = $notifications;
             break;
             case 'project/details' :
             
-            $projectId = $request->getParam('project_id');
+            $projectId = $request->getParam('id');
             $projectService = \Timesheet\Project\Service::getInstance();
+            $projectState = $projectService->getProjectState($projectId);
             $managerId = $projectService->getProjectManagerId($projectId);
             $isAdmin = ($this->user->getUserId() == $managerId) ? true: false;
-            $headerOptions = $renderer->render(array(
-                'is_admin' => $isAdmin,
-                'edit_option' => $isAdmin, // only if user is admin
-                'inline_menu' => true,
-            ));
+            
+            $inlineMenu = array();
+            $inlineMenu['View Team'] = 'teamlist.html?id=' . $projectId;
+            $inlineMenu['View All Timesheets'] = 'timesheetsunderproject.html?id=' . $projectId;
+            $inlineMenu['Back to Projects'] = 'projects-test.html';
+            $inlineMenu['Start Working'] = 'timer.html?id=' . $projectId;
+			
+            if($projectState == 0) {
+                if($isAdmin) {
+                    $inlineMenu['Add Users'] = 'adduserstoproject.html?id=' . $projectId;
+                }
+            }
+            
+            $headerMenu['is_admin'] = $isAdmin;
+            $headerMenu['inline_menu'] = true;
+            $headerMenu['team_list'] = true;
+            $headerMenu['edit'] = $isAdmin;
+            $headerMenu['menu'] = $inlineMenu;
             break;
             case 'project/create_new' :
-            $headerOptions = $renderer->render(array('form_save' => true));
+            $headerMenu['form_save'] = true;
             break;
             case 'project/add_users' :
-            $headerOptions = $renderer->render(array('search' => true));
+            $headerMenu['search'] = true;
             break;
             case 'project' :
-            $headerOptions = $renderer->render(array('search' => true));
+            $headerMenu['search'] = true;
             break;
             case 'project/team_list' :
-            $headerOptions = $renderer->render(array());
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+            $headerMenu['notification'] = true;
+            $headerMenu['notification_count'] = $notifications;
             break;
             case 'timesheets' :
-            $headerOptions = $renderer->render(array('search' => true));
+            $headerMenu['search'] = true;
             break;
             case 'timesheets/details' :
             
@@ -106,16 +136,21 @@ class HeaderdataController extends \My\Control\ProtectedController
             $managerId = $timesheetService->getProjectManagerId($timesheetId);
             $isAdmin = ($this->user->getUserId() == $managerId) ? true: false;
             
-            $headerOptions = $renderer->render(array('add_task' => true, 'is_admin' => $isAdmin));
+            $headerMenu['add_task'] = true;
+            $headerMenu['is_admin'] = $isAdmin;
             break;
             case 'timesheets/new_task' :
-            $headerOptions = $renderer->render(array('form_save' => true));
+            $headerMenu['form_save'] = true;
             break;
             case 'timesheets/task_details' :
-            $headerOptions = $renderer->render(array());
+            $notificationService = \Timesheet\Notification\Service::getInstance();
+            $notifications = $notificationService->getUnreadNotificationCountForUser($this->user->getUserId());
+            $headerMenu['notification'] = true;
+            $headerMenu['notification_count'] = $notifications;
             break;
             case 'timer' :
-            $headerOptions = $renderer->render(array('add_task' => true, 'timer' => true));
+            $headerMenu['add_task'] = true;
+            $headerMenu['timer'] = true;
             break;
             
             default:
@@ -126,7 +161,7 @@ class HeaderdataController extends \My\Control\ProtectedController
         
         
         $this->_response->setBody(array(
-            'header_options' => $headerOptions
+            'header_menu' => $headerMenu
         ));
         
     }

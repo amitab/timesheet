@@ -124,5 +124,11 @@ class Service {
     public function getAllProjectsOfUser($userId) {
         return $this->_dao->getAllProjectsOfUser($userId);
     }
+    public function getAllIncompleteWorkingFor($userId) {
+        return $this->_dao->getAllIncompleteWorkingFor($userId);
+    }
+    public function getProjectState($projectId) {
+        return $this->_dao->getProjectState($projectId);
+    }
 	
 }

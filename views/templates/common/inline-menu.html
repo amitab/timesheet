@@ -1,14 +1,14 @@
 
 {% if items.project_details_page == true %}
 
-    <li><a href={{ "project\\team_list" | nonce ~ "&id=" ~ items.project_details.projectId }} >View Team</a></li>
-        <li><a href={{ "project\\timesheets" | nonce ~ "&id="  ~ items.project_id }} >View All Timesheets</a></li>
+    <li><a href="teamlist.html?id={{ items.project_details.projectId }}" >View Team</a></li>
+        <li><a href="timesheetsunderproject.html?id={{ items.project_id }}" >View All Timesheets</a></li>
         
         {% if items.is_employee == true %}
             
             <li><a href=
                 {% if items.project_details.projectState != 1 %}
-                    {{ "timer" | nonce ~ "&id="  ~ items.project_id }} 
+                    "timer.html?id={{ items.project_id }}"
                 {% else %}
                     "#" style="color: #B1B1B1;"
                 {% endif %} 
@@ -20,19 +20,19 @@
             
             <li><a href=
                 {% if items.project_details.projectState != 1 %}
-                    {{ "project\\add_users" | nonce ~ "&id="  ~ items.project_id }} 
+                    "adduserstoproject.html?id={{ items.project_id }}"
                 {% else %}
                     "#" style="color: #B1B1B1;"
                 {% endif %} 
             >Add Users</a></li>
-            <li><a href=
+            <li><a href="#"
             {% if items.project_details.projectState != 1 %}
-                {{ "project\\mark_complete" | nonce ~ "&id="  ~ items.project_id }}
+                id="marker" url={{ "project\\mark_complete" ~ "?id="  ~ items.project_id }}
             {% else %}
-                "#" style="color: #B1B1B1;"
+                 style="color: #B1B1B1;"
             {% endif %}    
             >Mark Completed</a></li>
-            <input type="hidden" id="edit_url" value={{ "project\\edit_project" | nonce ~ "&id="  ~ items.project_id }}>
+            <input type="hidden" id="edit_url" value= "createproject.html?id={{ items.project_id }}">
             <script>
                 $(document).ready(function() {
                     $(document).on('click', 'div#edit_option' , function(e) {
@@ -45,6 +45,6 @@
             
         {% endif %}
         
-        <li><a href={{ "project" | nonce }} >Projects</a></li>
+        <li><a href="projects-test.html" >Projects</a></li>
 
 {% endif %}

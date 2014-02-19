@@ -53,7 +53,16 @@ class LogoutController extends DefaultController
     public function _default($request)
     {
         WebSessionManager::resetActiveSession();
-        header('Location: ./');
+        $headers = apache_request_headers();
+        if (isset($headers["X-Requested-Native5-App"])){
+            $this->_response = new HttpResponse('json');
+            $this->_response->setBody(array(
+                'success' => true
+            ));
+        } else {
+            $this->_response->redirectTo('home');
+        }
+        //header('Location: ./');
     }//end _default()
 
 

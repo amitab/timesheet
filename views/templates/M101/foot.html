@@ -1,0 +1,48 @@
+
+    </div>
+    
+    <!--<div id="sidebar" style="z-index: -2;">
+        <div class="nav-wrapper">
+            <div class="user">
+                <table border="0">
+                    <tr>
+                        <td class="user-image">
+                            <img class="image" src="{{ items.image }}" alt="" width="100">
+                        </td>
+                        <td class="user-details">
+                            <h5>{{ items.name }}</h5>
+                            <p class="small">{{ items.email }}</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href={{ "timesheets" | nonce }} class="page-link small"><span class="icon-clock-streamlinetime"></span>Timesheets</a>
+                    </li><li><a href={{ "project" | nonce }} class="page-link small"><i class="fa fa-coffee"></i>Projects</a>
+                    </li><li><a href={{ "profile" | nonce }} class="page-link small"><i class="fa fa-user"></i>Profile</a>
+                    </li><li><a href={{ "logout" | nonce }} class="page-link small"><i class="fa fa-sign-out"></i>Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>-->
+    
+{% if items.login != true %}
+    
+    <div id="footer-menu">
+        <nav class="nav">
+            <ul>
+                <li><a href={{ "timesheets" | nonce }} class="page-link small {% if items.timesheets == true %}active{% endif %}"><span class="icon-calendar"></span>Timesheets</a>
+                </li><li><a href={{ "project" | nonce }} class="page-link small {% if items.project == true %}active{% endif %}"><span class="icon-cup"></span>Projects</a>
+                </li><li><a href={{ "profile" | nonce }} class="page-link small {% if items.profile == true %}active{% endif %}"><span class="icon-user2"></span>Profile</a>
+                </li><li><a href={{ "logout" | nonce }} class="page-link small"><span class="icon-logout"></span>Logout</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+{% endif %}
+    
+  </body>
+</html>

@@ -33,14 +33,7 @@
                         </tr>
                     </table>
                 </div>
-                {% if items.view_profile != true %}
-                    <div class="options" style="padding: 10px; text-align: center;">
-                        <div class="medium primary btn">
-                            <a href={{ "profile\\edit_profile" | nonce }} style="font-size: 14px;" >
-                            <i class="fa fa-edit"></i>&nbsp;Edit Profile</a>
-                        </div>
-                    </div>
-                {% endif %}
+                
             </section>
         </div>
     </div>
@@ -84,6 +77,10 @@
             
             var headerHandler = function(data) {
                 $('#header > .wrapper').append(data.message.header_options);
+                $('#headertitle').text(data.message.header_data.title);
+                $('.headeremail').text(data.message.header_data.email);
+                $('#headername').text(data.message.header_data.name);
+                $('#headerimage').attr({'src' : data.message.header_data.image});
             };
             
             var headerLoader = app.construct({

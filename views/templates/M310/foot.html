@@ -1,0 +1,25 @@
+
+    </div>
+    
+    {% if items.login != true %}
+        <div id="footer">
+            <div class="wrapper">
+                <nav class="menu">
+                    <ul>
+                        <li><a href={{ "timesheets" | nonce }}><span class="icon-table2 circle"></span></a></li>
+                        <li><a href={{ "project" | nonce }}><span class="icon-tag-fill circle"></span></a></li>
+                        <li><a href={{ "profile" | nonce }} ><span class="icon-user4 circle"></span></a></li>
+                        <li><a href={{ "logout" | nonce }}><span class="icon-exit circle"></span></a></li>
+                    </ul>
+                </nav>
+                <div class="more" data-target="#more-menu">...</div>
+                <div id="more-menu" class="close">
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    
+  </body>
+</html>

@@ -1,0 +1,43 @@
+{% include 'head.html' %}
+
+    <div class="row">
+        <div class="six columns centered card">
+            <div class="timer">
+                <div class="flip-counter clock">
+                    <div class="duration">
+                        <div class="inn" id="hour">00</div>
+                    </div>
+                    <div class="duration">
+                        <div class="inn" id="minute">00</div>
+                    </div>
+                </div>
+            </div>
+            <section class="timer">
+                <div class="title" style="text-align:center;"><h4>{{ items.title }}</h4></div>
+                <p class="about">New Task for {{ items.title }}</p>
+                <p class="instruction">Click <span>Start</span> to start working on this project 
+                or <span>Add</span> to add an old Task from top.</p>
+                
+                <div style="text-align: center;" class="options">
+                    <a href="#">
+                        <span id="pause-button" class="icon-control-pause disabled" style="font-size: 30px;"></span>
+                    </a>
+                    <a href="#">
+                        <span id="start-button" class="icon-control-play stopped" style="font-size: 30px;"></span>
+                    </a>
+                </div>
+                
+            </section>
+        </div>
+    </div>
+    
+    <form action={{ "timesheets\\new_task" | nonce }} method="post">
+        <input type="hidden" id="project_id" name="project_id" value="{{ items.project_id }}" />
+        <input type="hidden" id="work_time" name="work_time" value="" />
+        <input type="hidden" id="start_time" name="start_time" value="" />
+        <input type="hidden" id="end_time" name="end_time" value="" />
+    </form>
+    
+    <script src={{ resolvePath("timer.js") }} ></script>
+
+{% include 'foot.html' %}

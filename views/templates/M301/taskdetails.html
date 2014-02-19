@@ -1,0 +1,77 @@
+
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="eight columns centered">
+            <section class="task-details">
+                <div class="warnings">
+                    {% if items.message.success %}
+                        <p class="alert success">{{ items.message.success }}</p>
+                    {% elseif items.message.fail %}
+                        <p class="alert warning">{{ items.message.fail }}</p>
+                    {% endif %}
+                </div>
+                
+                <div class="title">
+                    <h5>
+                        Details of {{ items.task.taskName }}
+                    </h5>
+                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>Task Name</td>
+                            <td>{{ items.task.taskName }}</td>
+                        </tr>
+                        <tr>
+                            <td>Author</td>
+                            <td>{{ items.author }}</td>
+                        </tr>
+                        <tr>
+                            <td>Start Time</td>
+                            <td>{{ items.task.prettyStartTime }}</td>
+                        </tr>
+                        <tr>
+                            <td>End Time</td>
+                            <td>{{ items.task.prettyEndTime }}</td>
+                        </tr>
+                        <tr>
+                            <td>Work Time</td>
+                            <td>{{ items.task.prettyWorkTime }}</td>
+                        </tr>
+                        <tr>
+                            <td>Location</td>
+                            <td>{{ items.task.taskLocation }}</td>
+                        </tr>
+    
+                        <tr>
+                            <td>Status</td>
+                        {% if items.task.taskStatus == 0 %}
+                                <td><i class="fa fa-circle" style="color: #FFCC5C;"></i>&nbsp;Not Checked</td>
+                        {% elseif items.task.taskStatus == 1 %}
+                                <td><i class="fa fa-check-circle" style="color: #00A388;"></i>&nbsp;Accepted</td>
+                        {% elseif items.task.taskStatus == 2 %}
+                                <td><i class="fa fa-times-circle" style="color: #FF6F69;"></i>&nbsp;Rejected</td>
+                        {% endif %}
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                <div class="notes">
+                    <h5 style="margin-bottom: 10px;">Notes</h5>
+                    <p>{{ items.task.taskNotes }}</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    {% if (items.task.taskStatus == 0) and (items.is_admin == true) %}
+            
+        <div id="options" style="display: none;">
+            <li><a href={{ "timesheets\\task_details" | nonce ~ "&mark=1&id=" ~ items.task.taskId }}>Accept Task</a></li>
+            <li><a href={{ "timesheets\\task_details" | nonce ~ "&mark=2&id=" ~ items.task.taskId }}>Reject Task</a></li>
+        </div>
+            
+    {% endif %}
+    
+{% include 'foot.html' %}

@@ -1,0 +1,57 @@
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="eight columns centered">
+            <input type="hidden" id="details-url" task-details-path={{ "timesheets\\task_details" | nonce }}>
+            <input type="hidden" id="add-task-url" task-details-path={{ "timesheets\\new_task" | nonce }}>
+            <input type="hidden" id="project_id" name="project_id" value="{{ items.project_id }}">
+            <input type="hidden" id="timesheet_id" name="timesheet_id" value="{{ items.timesheet_id }}">
+            <section class="add-timesheet">
+                
+                <h6 style="padding-bottom: 0.7rem; text-align: center; font-weight: bold;">{{ items.project_name }}</h6>
+                    <div class="warnings"></div>
+                    
+                    <table class="summary">
+                        <thead>
+                            <tr>
+                                <th>Task</th>
+                                <th>Duration</th>
+                            </tr>
+                        </thead>
+						{% if items.tasks|length == 0 %}
+                        <tbody class="empty">
+						{% else %}
+						<tbody>
+						{% endif %}
+						
+                            {% for task in items.tasks %}
+                                <tr class="task-details" id={{ task.taskId }}>
+                                    <td>{{ task.taskName }}</td>
+                                    <td>{{ task.prettyWorkTime }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+            </section>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            
+            $(document).hammer().on('tap', 'tr.task-details', function(e) {
+                e.preventDefault();
+                var url = $('input#details-url').attr('task-details-path') + '&id=' + $(this).attr('id');
+                window.location.href = url;
+            });
+            
+            $(document).hammer().on('tap', '#add-task', function(e) {
+                e.preventDefault();
+                window.location.href = $('input#add-task-url').attr('task-details-path') + '&old_timesheet_id=' + $('input#timesheet_id').attr('value') + '&project_id=' + $('input#project_id').attr('value') + '&from_timesheet_details_page=true';
+            });
+            
+        });
+    </script>
+    
+{% include 'foot.html' %}

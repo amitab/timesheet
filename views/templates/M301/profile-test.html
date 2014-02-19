@@ -1,0 +1,45 @@
+{% include 'head.html' %}
+
+
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="dashboard">
+                
+                <div class="display-picture">
+                    <img src={{ items.image_path ~ items.user.userImageUrl }} alt="" class="image">
+                </div>
+                <div class="details">
+                    <h4>{{ items.user.userFirstName ~ ' ' ~ items.user.userLastName }}</h4>
+                    <p class="small">{{ items.user.userMail }}</p>
+                    <p class="small"><i class="fa fa-map-marker"></i>&nbsp;{{ items.user.userLocation }}</p>
+                </div>
+                <div class="stats">
+                    <table>
+                        <tr>
+                            <td>
+                                <p class="time">{{ items.stats.projects }}</p>
+                                <p class="type">Projects</p>
+                            </td>
+                            <td>
+                                <p class="time">{{ items.stats.timesheets }}</p>
+                                <p class="type">Timesheets</p>
+                            </td>
+                            <td>
+                                <p class="time">{{ items.stats.hours }}</p>
+                                <p class="type">Hours</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    
+    {% if items.view_profile != true %}
+        <div id="options" style="display: none;">
+            <li><a href={{ "profile\\edit_profile" | nonce }}>Edit Profile</a></li>
+        </div>
+    {% endif %}
+
+{% include 'foot.html' %}

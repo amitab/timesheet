@@ -39,6 +39,8 @@
             
             var successHandler = function(data) {
                 if(data.message.success == true) {
+                    localStorage.setItem('rand_token', data.message.rand_token);
+                    alert(localStorage.getItem('rand_token'));
                     window.location.href = 'profile?rand_token=' + data.message.rand_token;
                 }
             };

@@ -1,0 +1,54 @@
+{% include 'head.html' %}
+    
+    
+    
+    <div class="row">
+        <div class="eight columns centered" style="margin-bottom: 100px;">
+            
+            <section class="filter">
+                        
+                    <table border="0">
+                        <tr>
+                            <td>
+                                <select name="filter" id="filter">
+                                    <option value="0">All</option>
+                                    <option value="1">Created</option>
+                                    <option value="2">Working For</option>
+                                    <option value="3">Completed</option>
+                                    <option value="4">In Progress</option>
+                                    <option value="5">Overdue</option>
+                                </select>
+                            </td>
+                            <td id="new-project" href={{ "project\\create_new" | nonce }}>
+                                <table>
+                                    <tr>
+                                        <td class="text">
+                                            <h5>NEW</h5>
+                                        </td>
+                                        <td class="icon">
+                                            <span class="icon-plus"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                        
+            </section>
+            
+            <input type="hidden" id="url" project-details-path={{ "project\\details" | nonce }}>
+            <section class="list" id="projects-list">
+                <ul>
+                    
+                    
+                    
+                </ul>
+            </section>
+        </div>
+    </div>
+    
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("smart-list.js") }} ></script>
+    <script src={{ resolvePath("projectssearch.js") }} ></script>
+    
+{% include 'foot.html' %}

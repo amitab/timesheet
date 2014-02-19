@@ -230,9 +230,9 @@ class ProjectController extends \My\Control\ProtectedController
         $projectData = $projectData[0];
         
         $userId = $this->user->getUserId();
-        
+        $projectManagerId = $projectData->getProjectManagerId();
         // Check if user owns this project or is working for this project
-        if($projectData->getProjectManagerId() == $userId) {
+        if($projectManagerId == $userId) {
             $isAdmin = true;
             $isEmployee = false;
         } else {
@@ -309,12 +309,7 @@ class ProjectController extends \My\Control\ProtectedController
             'inline_menu' => true,
             'message' => $message,
             'inlinemenu' => $inlineMenu,
-            
-            'email' => $this->user->getUserMail(),
-            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
-            'unread_notification' => $notifications,
-            'project' => true
+            'manager_id' => $projectManagerId,
         );
         
         $this->_response->setBody($response);
@@ -397,7 +392,10 @@ class ProjectController extends \My\Control\ProtectedController
                 $projectId = $projectService->createProject($project);
                 if($projectId) {
                     //$this->_response->redirectTo('project/details?id=' . $projectId);
-                    $this->_response->setBody(array('success' => true, 'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId));
+                    $this->_response->setBody(array(
+                    'success' => true, 
+                    'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId,                             'project_id' => $projectId
+                    ));
                     
                 } else {
                     $this->_response->setBody(array('success' => false));
@@ -408,7 +406,6 @@ class ProjectController extends \My\Control\ProtectedController
             
         } // new project
         else if ($request->getParam('edit') != null) {
-            
             $projectId = intval($request->getParam('project_id'));
             if($projectId > 0) {
                 $projectService = \Timesheet\Project\Service::getInstance();
@@ -436,12 +433,11 @@ class ProjectController extends \My\Control\ProtectedController
                     }
                 }
                 
-                $salary = intval($request->getParam('salary'));
-                $logger->info('SALARY : ' . $salary);
+                $salary = $request->getParam('salary');
                 if(!$salary) {
                     $message['fail'][] = 'Salary input is invalid.';
                 } else {
-                    $project->setProjectSalary($request->getParam('salary'));
+                    $project->setProjectSalary($salary);
                 }
                 
                 $description = $request->getParam('description');
@@ -459,7 +455,7 @@ class ProjectController extends \My\Control\ProtectedController
                         //$this->_response->redirectTo('project/details?id=' . $projectId);
                         $this->_response->setBody(array(
                         'success' => true, 
-                        'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId 
+                        'rand_token' => $GLOBALS['app']->getSessionManager()->getActiveSession()->getAttribute('nonce') . '&id=' . $projectId,                           'project_id' => $projectId
                         ));
                     } else {
                         $this->_response->setBody(array('success' => false, 'message' => $message));
@@ -732,6 +728,10 @@ class ProjectController extends \My\Control\ProtectedController
                     $data = $projectService->getProjectsOverdue($userId);
                 }
             break;
+			
+			case 6:
+				$data = $projectService->getAllIncompleteWorkingFor($userId);
+			break;
         }        
         
         $data = \Database\Converter::getArray($data);
@@ -800,12 +800,8 @@ class ProjectController extends \My\Control\ProtectedController
         $data = \Database\Converter::getArray($data);
         
         $this->_response->setBody(array(
-            'title' => 'Team',
             'users' => $data,
             'image_path' => IMAGE_PATH,
-            'email' => $this->user->getUserMail(),
-            'name' => $this->user->getUserFirstName() . ' ' . $this->user->getUserLastName(),
-            'image' => IMAGE_PATH . $this->user->getUserImageUrl(),
         ));
         
     }

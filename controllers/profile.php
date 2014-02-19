@@ -60,6 +60,9 @@ class ProfileController extends \My\Control\ProtectedController
     public function _default($request)
     {
         global $logger;
+		
+		
+		
         $skeleton =  new TwigRenderer('profile-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
@@ -124,7 +127,7 @@ class ProfileController extends \My\Control\ProtectedController
     
     public function _view($request) {
         global $logger;
-        $skeleton =  new TwigRenderer('profile-test.html');
+        $skeleton =  new TwigRenderer('viewprofile.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
         $userId = (int) $request->getParam('id');
@@ -200,38 +203,66 @@ class ProfileController extends \My\Control\ProtectedController
         
         if($request->getParam('edit') != null) {
             
-            $upload = $this->_save_image();
-            if(!$upload) {
+            $user = $this->user;
+            $user->setUserFirstName($request->getParam('first_name'));
+            $user->setUserLastName($request->getParam('last_name'));
+            $user->setUserPhoneNumber($request->getParam('phone_number'));
+            
+            $userService = \Timesheet\User\Service::getInstance();
+            if($userService->editUser($user)) {
+            
+                $userObj['first_name'] = $request->getParam('first_name');
+                $userObj['last_name'] = $request->getParam('last_name');
                 $this->_response->setBody(array(
-                    'fail' => true        
+                    'success' => true,
+                    'user' => $userObj   
                 )); 
-            }  else {
-                
-                $user = $this->user;
-                $user->setUserFirstName($request->getParam('first_name'));
-                $user->setUserLastName($request->getParam('last_name'));
-                $user->setUserPhoneNumber($request->getParam('phone_number'));
-                $user->setUserLocation($request->getParam('location'));
-                
-                $userService = \Timesheet\User\Service::getInstance();
-                if($userService->editUser($user)) {
-                    $this->_response->setBody(array(
-                        'success' => true        
-                    )); 
-                } else {
-                    $this->_response->setBody(array(
-                        'fail' => true     
-                    )); 
-                }
-                
+            } else {
+                $this->_response->setBody(array(
+                    'success' => false  
+                )); 
             }
             
+        } else if($request->getParam('image') != null) {
+        
+            $data = base64_decode($request->getParam('imageData'));
+            $filename = $this->_generateRandomString() . time();
+            $file = UPLOAD_PATH . $filename;
+            $success = file_put_contents($file, $data);
+            
+            if($success > 0) {
+                $userService = \Timesheet\User\Service::getInstance();
+                if(!$userService->uploadUserImage($filename, $this->user->getUserId())) {
+                    $success = 0;
+                    unlink($file);
+                }
+            }
+            
+            $this->_response->setBody(array(
+                'image_success' => $success,
+                'file_name' => IMAGE_PATH . $filename      
+            )); 
+        
         } else {
             $user = \Database\Converter::getSingleArray($this->user);
             $this->_response->setBody(array(
                 'user' => $user,  
             )); 
         }
+    }
+    
+    private function _generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, strlen($characters) - 1)];
+        }
+        return $randomString;
+    }
+    
+    public function _photo_upload($request) {
+        global $logger;
+        $logger->info(print_r($_FILES, 1));
     }
     
     private function _save_image() {
@@ -273,7 +304,7 @@ class ProfileController extends \My\Control\ProtectedController
             }
             
         } else {
-            return false;
+            return true;
         }
     }
     

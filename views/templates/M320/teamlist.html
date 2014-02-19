@@ -1,0 +1,50 @@
+{% include 'head.html' %}
+
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="list" id="search-results" style="margin: 10% 0;">
+                {% if items.users|length == 0 %}
+                    <ul class="empty-list">
+                {% else %}
+                    <ul>
+                {% endif %}
+                    
+                {% for user in items.users %}
+                    
+                    <li href={{ "profile\\view" | nonce ~ "&id=" ~ user.userId }} >
+                        <table><tbody><tr>
+                        <td>
+                            <img src={{ items.image_path ~ user.userImageUrl }}>
+                        </td>
+                        <td>
+                            <h5>{{ user.userFirstName ~ ' ' ~ user.userLastName }}</h5>
+                            <p class="small email">{{ user.userMail }}</p>
+                        </td>
+                        </tr></tbody></table>
+                    </li>
+                    
+                {% endfor %}
+                    
+                </ul>
+            </section>
+        </div>
+    </div>
+    
+    
+    <script src={{ resolvePath("native5.core.js") }} ></script>
+    <script src={{ resolvePath("smart-list.js") }} ></script>
+    <script>
+        $(document).ready(function() {
+            $(document).hammer().on('tap', 'li.list-item', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+                window.location.href = url;
+            });
+            
+            var searchList = smartList.createList({element : '#search-results'});
+            searchList.activate();
+            
+        });
+    </script>
+    
+{% include 'foot.html' %}

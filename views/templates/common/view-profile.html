@@ -1,0 +1,77 @@
+{% include 'head.html' %}
+{% include 'header.html' %}
+    <div id="page-wrap">
+
+
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="dashboard">
+                
+                <div class="display-picture">
+                    <img src="" id="userimage" alt="" class="image">
+                </div>
+                <div class="details">
+                    <h4 id="fullname"></h4>
+                    <p class="small" id="email"></p>
+                    <p class="small"><i class="fa fa-map-marker"></i>&nbsp;<span id="location"></span></p>
+                </div>
+                <div class="stats">
+                    <table>
+                        <tr>
+                            <td>
+                                <p class="time"><span id="projects"></span></p>
+                                <p class="type">Projects</p>
+                            </td>
+                            <td>
+                                <p class="time"><span id="timesheets"></span></p>
+                                <p class="type">Timesheets</p>
+                            </td>
+                            <td>
+                                <p class="time"><span id="hours"></span></p>
+                                <p class="type">Hours</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                {% if items.view_profile != true %}
+                    <div class="options" style="padding: 10px; text-align: center;">
+                        <div class="medium primary btn">
+                            <a href={{ "profile\\edit_profile" | nonce }} style="font-size: 14px;" >
+                            <i class="fa fa-edit"></i>&nbsp;Edit Profile</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function (e) {
+            
+            var successHandler = function(data) {
+                console.log(data);
+                $('#hours').text(data.message.stats.hours);
+                $('#timesheets').text(data.message.stats.timesheets);
+                $('#projects').text(data.message.stats.projects);
+                
+                $('#email').text(data.message.user.userMail);
+                $('#fullname').text(data.message.user.userFirstName + ' ' + data.message.user.userLastName);
+                $('#location').text(data.message.user.userLocation);
+                
+                $('#userimage').attr({'src' : data.message.image_path + data.message.user.userImageUrl});
+            };
+            
+            var communicator = app.construct({
+                path : 'timesheet',
+                method : 'POST',
+                url : 'profile/default_data',
+                successHandler : successHandler
+            });
+            
+            communicator.serviceObject.invoke({default_page:true});
+            
+            
+        });
+    </script>
+    
+{% include 'foot.html' %}

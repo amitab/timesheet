@@ -1,0 +1,74 @@
+{% include 'head.html' %}
+    
+    <div class="row">
+        <div class="six columns centered card">
+            <section class="edit-profile">
+                
+                <form action="" method="post" enctype="multipart/form-data" class="edit-profile-form">
+                    <div class="warnings">
+                        {% if items.message.success %}
+                            <p class="alert success">{{ items.message.success }}</p>
+                        {% elseif items.message.fail %}
+                            <p class="alert warning">{{ items.message.fail }}</p>
+                        {% endif %}
+                    </div>
+                    
+                    
+                    <div class="display-picture">
+                        <img src={{ items.image }} alt="" class="image">
+                    </div>
+                    <div class="file" style="text-align: center; margin: 1rem 0;">
+                        <input type="file" size="1000" name="user_image" value="">   
+                    </div>
+                    
+                    
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="First Name" name="first_name" 
+                            value="{{ items.user.userFirstName }}"
+                        />
+                        <span class="adjoined"><i class="fa fa-user"></i></span>
+                    </div>
+                    <div class="append field">
+                        <input class="input" type="text" placeholder="Last Name" name="last_name" 
+                            value="{{ items.user.userLastName }}"
+                        />
+                        <span class="adjoined"><i class="fa fa-user"></i></span>
+                    </div>
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Phone Number" name="phone_number" 
+                            value="{{ items.user.userPhoneNumber }}"
+                        />
+                        <span class="adjoined"><i class="fa fa-phone"></i></span>
+                    </div>
+                    <div class="field append">
+                        <input class="input first-child" type="text" placeholder="Location" name="location" 
+                            value="{{ items.user.userLocation }}"
+                        />
+                        <span class="adjoined"><i class="fa fa-map-marker"></i></span>
+                    </div>
+                </form>
+                
+                <div style="text-align: center;" class="options">
+                    <a href="#" id="submit">
+                        <span class="icon-check" style="font-size: 30px;"></span>
+                    </a>
+                    <a href={{ "profile\\change_password" | nonce }}>
+                        <span class="icon-lock2" style="font-size: 30px;"></span>
+                    </a>
+                </div>
+                         
+            </section>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '#submit', function(e) {
+                e.preventDefault();
+                $('form').append('<input type="hidden" name="edit" value="1" />');
+                $('form').submit();
+            });
+        });
+    </script>
+
+{% include 'foot.html' %}

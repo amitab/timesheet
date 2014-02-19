@@ -44,5 +44,7 @@ interface DAO {
     public function searchByNameUnderComplete($projectName, $userId);
     public function searchByNameUnderOverdue($projectName, $userId);
     public function searchAllProjects($projectName, $userId);
+	
+	public function getAllIncompleteWorkingFor($userId);
         
 }
