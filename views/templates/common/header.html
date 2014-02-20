@@ -1,5 +1,5 @@
-<div id="header" style="height: 68px;">
-        <div class="wrapper">
+<div id="header">
+        <div class="">
             <div class="header-item">
                 
                 <div class="item">
@@ -9,11 +9,100 @@
                     &nbsp;<img src={{ resolvePath("timesheet-logo.png") }} width="35" alt="">
                 </div>
                 <div class="item title">
-                    <h5>&nbsp;<span id="headertitle"></span></h5>
-                    <p class="very-small">&nbsp;&nbsp;<span class="headeremail"></span></p>
+                    <h5>&nbsp;{{ items.title }}</h5>
+                    <p class="very-small">&nbsp;&nbsp;{{ items.email }}</p>
                 </div>
             </div>
             
-           
+            {% if items.inline_menu == true %}
+                <div class="header-item inline-menu-trigger" menu="#edit-inline-menu" style="height: 68px;">
+                    <h5><i class="fa fa-ellipsis-v"></i></h5>
+                </div>
+            {% else %}
+                <div class="header-item trigger" style="height: 68px;">
+                    <h5><i class="fa fa-bars"></i></h5>
+                </div>
+            {% endif %}
+            
+            {% if items.search == true %}
+                <div class="header-item option wide" style="height: 68px; position: relative">
+            {% elseif items.form_save == true %}
+            <div class="header-item option" id="save-form" style="height: 68px; position: relative">
+            {% elseif items.add_task == true and ((items.is_admin != true) or (items.timer == true)) %}
+            <div class="header-item option" id="add-task" style="height: 68px; position: relative">
+            {% elseif (items.edit_option == true) and (items.is_admin == true) %}
+            <div class="header-item option" id="edit_option" style="height: 68px; position: relative">
+            {% elseif items.refresh == true %}
+            <div class="header-item option" id="load-notitfications" onclick="return false;" style="height: 68px; position: relative">
+            {% else %}
+                <div class="header-item option" style="height: 68px; position: relative">
+            {% endif %}
+                {% if items.add_task == true and ((items.is_admin != true) or (items.timer == true)) %}
+                    
+                    <a href="#">
+                        <h5><i class="fa fa-plus"></i></h5>
+                    </a>
+                    
+                {% elseif items.search == true %}
+                       
+                    <div class="search">
+                        <table class="search">
+                            <tr>
+                                <td>
+                                   <input type="search" class="input closed" id="search-box" name="search" placeholder="Search"> 
+                                </td>
+                                <td>
+                                   <div class="medium btn header-search">
+                                        <a href="#search-box" id="search-button"><i class="fa fa-search" style=" margin-left: -2px;"></i></a>
+                                    </div> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div> 
+                    
+                    <!--<div class="header-search-pack">
+                        <div class="append search field">
+                            <input type="search" class="input closed" id="search-box" name="search" placeholder="Search">
+                            <div class="medium btn header-search">
+                                <a href="#search-box" id="search-button"><i class="fa fa-search" style=" margin-left: -2px;"></i></a>
+                            </div>
+                        </div>
+                    </div> -->
+                
+                {% elseif items.form_save == true %}
+                
+                    <div target="form">
+                        <a href="#" >
+                            <h5><i class="fa fa-check"></i></h5>
+                        </a>
+                    </div>
+                    
+                {% elseif (items.edit_option == true) and (items.is_admin == true) %}
+                
+                    <div>
+                        <a href="#" >
+                            <h5><i class="fa fa-pencil"></i></h5>
+                        </a>
+                    </div>
+                
+                {% elseif items.refresh == true %}
+                
+                    <div>
+                        <a href="#" >
+                            <h5><i class="fa fa-refresh"></i></h5>
+                        </a>
+                    </div>
+                
+                {% else %}
+                    
+                    <a href={{ "notifications" | nonce }} >
+                        {% if items.unread_notification != 0 %}
+                        <p class="notifications small">{{ items.unread_notification }}</p>
+                        {% endif %}
+                        <h5><i class="fa fa-globe"></i></h5>
+                    </a>
+                    
+                {% endif %}
+            </div>
         </div>
     </div>

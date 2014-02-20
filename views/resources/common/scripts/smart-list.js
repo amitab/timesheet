@@ -9,7 +9,8 @@ var app = (function (app, native5) {
     
     app.construct = function(args) {
         this.config = {
-            path : 'http://apps.sandbox.native5.com/zbdGs8Z2U1389602848',
+            //path : 'http://apps.sandbox.native5.com/zbdGs8Z2U1389602848',
+			path : 'timesheet_final',
             method : args.method,
             mode : 'ui'
         };

@@ -8,26 +8,26 @@
             <section class="dashboard">
                 
                 <div class="display-picture">
-                    <img src="" id="userimage" alt="" class="image">
+                    <img src={{ items.image_path ~ items.user.userImageUrl }} alt="" class="image">
                 </div>
                 <div class="details">
-                    <h4 id="fullname"></h4>
-                    <p class="small" id="email"></p>
-                    <p class="small"><i class="fa fa-map-marker"></i>&nbsp;<span id="location"></span></p>
+                    <h4>{{ items.user.userFirstName ~ ' ' ~ items.user.userLastName }}</h4>
+                    <p class="small">{{ items.user.userMail }}</p>
+                    <p class="small"><i class="fa fa-map-marker"></i>&nbsp;{{ items.user.userLocation }}</p>
                 </div>
                 <div class="stats">
                     <table>
                         <tr>
                             <td>
-                                <p class="time"><span id="projects"></span></p>
+                                <p class="time">{{ items.stats.projects }}</p>
                                 <p class="type">Projects</p>
                             </td>
                             <td>
-                                <p class="time"><span id="timesheets"></span></p>
+                                <p class="time">{{ items.stats.timesheets }}</p>
                                 <p class="type">Timesheets</p>
                             </td>
                             <td>
-                                <p class="time"><span id="hours"></span></p>
+                                <p class="time">{{ items.stats.hours }}</p>
                                 <p class="type">Hours</p>
                             </td>
                         </tr>
@@ -45,70 +45,5 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function (e) {
-            
-            function getJsonFromUrl() {
-                var query = location.search.substr(1);
-                var data = query.split("&");
-                var result = {};
-                for(var i=0; i<data.length; i++) {
-                    var item = data[i].split("=");
-                    result[item[0]] = item[1];
-                }
-                return result;
-            }
-            
-            var successHandler = function(data) {
-                console.log(data);
-                
-                //$('#header > .wrapper').append(data.message.header_options);
-                
-                $('#hours').text(data.message.stats.hours);
-                $('#timesheets').text(data.message.stats.timesheets);
-                $('#projects').text(data.message.stats.projects);
-                
-                $('#email').text(data.message.user.userMail);
-                $('#fullname').text(data.message.user.userFirstName + ' ' + data.message.user.userLastName);
-                $('#location').text(data.message.user.userLocation);
-                
-                $('#userimage').attr({'src' : data.message.image_path + data.message.user.userImageUrl});
-            };
-            
-            var communicator = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'profile/default_data',
-                successHandler : successHandler
-            });
-            
-            var headerHandler = function(data) {
-                $('#header > .wrapper').append(data.message.header_options);
-                $('#headertitle').text(data.message.header_data.title);
-                $('.headeremail').text(data.message.header_data.email);
-                $('#headername').text(data.message.header_data.name);
-                $('#headerimage').attr({'src' : data.message.header_data.image});
-            };
-            
-            var headerLoader = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'headerdata',
-                successHandler : headerHandler
-            });
-            
-            headerLoader.serviceObject.invoke({for: 'profile'});
-            
-            var result = getJsonFromUrl();
-            var id = result['id'];
-            if(typeof id === 'undefined') {
-                id = 0;
-                communicator.serviceObject.invoke({default: true});
-            } else {
-                communicator.serviceObject.invoke({id: id});
-            }
-            
-        });
-    </script>
-    
+
 {% include 'foot.html' %}

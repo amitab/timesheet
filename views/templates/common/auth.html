@@ -16,12 +16,12 @@
                         <span class="adjoined"><i class="fa fa-user"></i></span>
                     </div>
                     <div class="append field">
-                        <input class="input" type="password" id="password" placeholder="Password" name="password" />
+                        <input class="input" type="password" placeholder="Password" name="password" />
                         <span class="adjoined"><i class="fa fa-lock"></i></span>
                     </div>
                     <div class="field form-submit-button">
                         <div class="medium primary btn">
-                            <a href="#" id="login-button">Login</a>
+                            <a href="#" id="submit">Login</a>
                         </div>
                         <div class="medium secondary btn">
                             <a href={{ "home\\signup" }}>Signup</a>
@@ -32,35 +32,5 @@
             </div>
         </div>
     </div>
-    
-    <script>
-        
-        $(document).ready(function (e) {
-            
-            var successHandler = function(data) {
-                if(data.message.success == true) {
-                    localStorage.setItem('rand_token', data.message.rand_token);
-                    alert(localStorage.getItem('rand_token'));
-                    window.location.href = 'profile?rand_token=' + data.message.rand_token;
-                }
-            };
-            
-            var communicator = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'login',
-                successHandler : successHandler
-            });
-            
-            $(document).hammer().on('tap', '#login-button', function(e) {
-                e.preventDefault();
-                communicator.serviceObject.invoke({email:$('#email').val(), password:$('#password').val() });
-                return false;
-            });
-            
-            
-        });
-        
-    </script>
     
 {% include 'foot.html' %}

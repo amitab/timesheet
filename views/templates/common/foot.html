@@ -7,20 +7,20 @@
                 <table border="0">
                     <tr>
                         <td class="user-image">
-                            <img class="image" src="" alt="" width="100" id="headerimage">
+                            <img class="image" src="{{ items.image }}" alt="" width="100">
                         </td>
                         <td class="user-details">
-                            <h5><span id="headername"></span></h5>
-                            <p class="small"><span class="headeremail"></span></p>
+                            <h5>{{ items.name }}</h5>
+                            <p class="small">{{ items.email }}</p>
                         </td>
                     </tr>
                 </table>
             </div>
             <nav class="nav">
                 <ul>
-                    <li><a href={{ "timesheets" | nonce  }} class="page-link small"><i class="fa fa-puzzle-piece"></i>Timesheets</a>
+                    <li><a href={{ "timesheets" | nonce }} class="page-link small"><i class="fa fa-puzzle-piece"></i>Timesheets</a>
                     </li><li><a href={{ "project" | nonce }} class="page-link small"><i class="fa fa-coffee"></i>Projects</a>
-                    </li><li><a href={{ "profile" | nonce  }} class="page-link small"><i class="fa fa-user"></i>Profile</a>
+                    </li><li><a href={{ "profile" | nonce }} class="page-link small"><i class="fa fa-user"></i>Profile</a>
                     </li><li><a href={{ "logout" | nonce }} class="page-link small"><i class="fa fa-sign-out"></i>Logout</a>
                     </li>
                 </ul>

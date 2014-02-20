@@ -7,32 +7,70 @@
         <div class="eight columns centered">
             <section class="new-task">
                 
-                <form action="" method="post" id="new-task">
+                <form action="" method="post">
+                    {% if (items.old_timesheet_id != 0) and (items.coming_from_timesheet_details_page == true) %}
+                        <input type="hidden" name="timesheet_id" value="{{ items.old_timesheet_id }}">
+                    {% endif %}
+                    {% if items.coming_from_timer_page == true %}
+                        <input type="hidden" name="work_time" value="{{ items.sent_work_time }}">
+                    {% endif %}
+                    
+                    {% if items.work_time %}
+                        <input type="hidden" name="work_time" value="{{ items.work_time }}">
+                    {% endif %}
+                    
+                    <input type="hidden" name="project_id" value="{{ items.sent_project_id }}">
                     
                     <div class="title">
-                        <h5>New Task for <span id="projectname"></span></h5>
+                        <h5>{{ items.title }} for {{ items.project_name }}</h5>
                     </div>
                     <div class="warnings">
-                        
+                        {% if items.message.success %}
+                            <p class="alert success">{{ items.message.success }}</p>
+                        {% elseif items.message.fail %}
+                            
+                            {% for fail in items.message.fail %}
+                                <p class="alert warning">{{ fail }}</p>
+                            {% endfor %}
+                            
+                        {% endif %}
                     </div>
                     <div class="field append">
-                        <input class="input" type="text" placeholder="Task Name" name="task_name" id="taskname" >
+                        <input class="input" type="text" placeholder="Task Name" name="task_name" 
+                        {% if items.edit == true %} 
+                            value="{{ items.task.taskName }}"
+                        {% endif %}/>
                         <span class="adjoined"><i class="fa fa-pencil-square-o"></i></span>
                     </div>
                     
                     <div class="field">
                         <label class="medium" for="start_time"><i class="fa fa-clock-o"></i>&nbsp;Start Time : </label>
-                        <input name="start_time" type="text" id="starttime">
+                        <input name="start_time" type="datetime-local" 
+                        {% if items.edit == true %}
+                            value="{{ items.task.taskStartTime }}"
+                        {% elseif items.coming_from_timer_page == true %}
+                            value="{{ items.sent_start_time }}"
+                        {% endif %}>
                     </div>
                     <div class="field">
                         <label class="medium" for="end_time"><i class="fa fa-clock-o"></i>&nbsp;End Time : </label>
-                        <input name="end_time" type="text" id="endtime">
+                        <input name="end_time" type="datetime-local" 
+                        {% if items.edit == true %}
+                            value="{{ items.task.taskEndTime }}"
+                        {% elseif items.coming_from_timer_page == true %}
+                            value="{{ items.sent_end_time }}"
+                        {% endif %}>
                     </div>
                     <div class="field">
-                        <textarea class="input textarea" placeholder="Notes" name="notes" id="notes"></textarea>
+                        <textarea class="input textarea" placeholder="Notes" name="notes">{% if items.edit == true %}{{ items.task.taskNotes }}{% endif %}</textarea>
+                        
                     </div>
+                        
                     <div class="field append">
-                        <input class="input first-child" type="text" placeholder="Location" name="location" id="location"/>
+                        <input class="input first-child" type="text" placeholder="Location" name="location" 
+                        {% if items.edit == true %}
+                            value="{{ items.task.taskLocation }}"
+                        {% endif %}/>
                         <span class="adjoined"><i class="fa fa-map-marker"></i></span>
                     </div>
                 </form>
@@ -44,124 +82,14 @@
     <script>
         $(document).ready(function() {
             
-            var headerHandler = function(data) {
-                $('#header > .wrapper').append(data.message.header_options);
-                $('#headertitle').text(data.message.header_data.title);
-                $('.headeremail').text(data.message.header_data.email);
-                $('#headername').text(data.message.header_data.name);
-                $('#headerimage').attr({'src' : data.message.header_data.image});
-            };
+            var ua = navigator.userAgent,
+            clickevent = (ua.match(/iPad/i) || ua.match(/iPhone/i) || ua.match(/Android/i)) ? "touchstart" : "click";
             
-            var headerLoader = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'headerdata',
-                successHandler : headerHandler
-            });
-            
-            headerLoader.serviceObject.invoke({for: 'timesheets/new_task'});
-            
-             $.fn.serializeObject = function() {
-                var o = {};
-                var a = this.serializeArray();
-                $.each(a, function() {
-                    if (o[this.name] !== undefined) {
-                        if (!o[this.name].push) {
-                            o[this.name] = [o[this.name]];
-                        }
-                        o[this.name].push(this.value || '');
-                    } else {
-                        o[this.name] = this.value || '';
-                    }
-                });
-                return o;
-            };
-                        
-            function getJsonFromUrl() {
-                var query = location.search.substr(1);
-                var data = query.split("&");
-                var result = {};
-                for(var i=0; i<data.length; i++) {
-                    var item = data[i].split("=");
-                    result[item[0]] = item[1];
-                }
-                return result;
-            }
-            
-            var result = getJsonFromUrl();
-            var successHandler = function(data) {
-               if(data.message.success == true) {
-                    native5.Notifications.show( "Task successfuly created.", {
-                        notificationType:'toast',
-                        title:'Success',
-                        position:'bottom',
-                        distance:'0px',
-                        timeout: 5000,
-                        persistent:false
-                    });
-                    return;
-                } else if (data.message.success == false) {
-                    native5.Notifications.show( "Task creation failed.", {
-                        notificationType:'toast',
-                        title:'Error',
-                        position:'bottom',
-                        distance:'0px',
-                        timeout: 5000,
-                        persistent:false
-                    });
-                    return;
-                } else {
-                    $('#projectname').text(data.message.project_name);
-                }
-            };
-            
-            var communicator = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'timesheets/create_new_task_data',
-                successHandler : successHandler
-            });
-            
-            var timesheetId = result['old_timesheet_id']; // OLD TIMESHEET ID
-            if(typeof timesheetId === 'undefined') {
-                timesheetId = null;
-            }
-            var projectId = result['project_id'];  // PROJECT ID
-            
-            var workTime = result['work_time'];  // WORK TIME
-            if(typeof workTime === 'undefined') {
-                workTime = null;
-            }
-            
-            var startTime = decodeURIComponent(result['start_time']);
-            if(typeof startTime === 'undefined') {
-                startTime = null;
-            } else {
-                startTime = startTime.replace(/\+/g, ' ');
-                $('#starttime').val(startTime);
-            }
-            var endTime = decodeURIComponent(result['end_time']);
-            if(typeof endTime === 'undefined') {
-                endTime = null;
-            } else {
-                endTime = endTime.replace(/\+/g, ' ');
-                $('#endtime').val(endTime);
-            }
-            
-            communicator.serviceObject.invoke({project_id: projectId});
-            
-            $(document).hammer().on('tap', 'div#save-form', function(e) {
+            $(document).on(clickevent, 'div#save-form', function(e) {
                 e.preventDefault();
-                var formData = $('form#new-task').serializeObject();
-                formData.project_id = projectId;
-                formData.timesheet_id = timesheetId;
-                formData.work_time = workTime;
-                //formData.start_time = startTime;
-                //formData.end_time = endTime;
-                formData.new = true;
-                communicator.serviceObject.invoke(formData);
+                $('form').append('<input type="hidden" name="{% if items.edit == true %}edit{% else %}new{% endif %}" value="1">');
+                $('form').submit();
             });
-            
         });
     </script>
     

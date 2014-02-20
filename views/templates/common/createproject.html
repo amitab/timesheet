@@ -6,24 +6,45 @@
         <div class="eight columns centered">
             <section class="new-project">
                 
-                <form action="" method="post" class="project-form">
-                    <input type="hidden" id="project_id" name="project_id" />
+                <form action="" method="post" class="timesheet-form">
+                    {% if items.edit == true %}
+                        <input type="hidden" value={{ items.project.projectId }} name="project_id" />
+                    {% endif %}
                     <div class="warnings">
+                        {% if items.message.success %}
+                            <p class="alert success">{{ items.message.success }}</p>
+                        {% elseif items.message.fail %}
+                            {% for fail in items.message.fail %}
+                                <p class="alert warning">{{ fail }}</p>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="Project Name" name="project_name" id="projectname"/>
+                        <input class="input" type="text" placeholder="Project Name" name="project_name" 
+                               {% if items.edit == true %}
+                                   value="{{ items.project.projectName }}"
+                               {% endif %}
+                        />
                         <span class="adjoined"><i class="fa fa-file"></i></span>
                     </div>
                     <div class="field">
                         <label class="medium" for="end_date"><i class="fa fa-clock-o"></i>&nbsp;Deadline : </label>
-                        <input name="deadline" type="datetime-local" id="deadline">
+                        <input name="deadline" type="datetime-local" 
+                            {% if items.edit == true %}
+                               value="{{ items.project.projectTimeAlloted }}"
+                            {% endif %}
+                        >
                     </div>
                     <div class="append field">
-                        <input class="input" type="text" placeholder="Salary" name="salary"  id="salary"/>
+                        <input class="input" type="text" placeholder="Salary" name="salary" 
+                            {% if items.edit == true %}
+                               value="{{ items.project.projectSalary }}"
+                            {% endif %} 
+                        />
                         <span class="adjoined"><i class="fa fa-money"></i></span>
                     </div>
                     <div class="field">
-                        <textarea class="input textarea" placeholder="Description" name="description" id="description"></textarea>
+                        <textarea class="input textarea" placeholder="Description" name="description">{% if items.edit == true %}{{ items.project.projectDescription }}{% endif %}</textarea>
                     </div>
                 </form>
                 
@@ -33,109 +54,11 @@
     
     <script>
         $(document).ready(function() {
-            
-            $.fn.serializeObject = function() {
-                var o = {};
-                var a = this.serializeArray();
-                $.each(a, function() {
-                    if (o[this.name] !== undefined) {
-                        if (!o[this.name].push) {
-                            o[this.name] = [o[this.name]];
-                        }
-                        o[this.name].push(this.value || '');
-                    } else {
-                        o[this.name] = this.value || '';
-                    }
-                });
-                return o;
-            };
-                        
-            function getJsonFromUrl() {
-                var query = location.search.substr(1);
-                var data = query.split("&");
-                var result = {};
-                for(var i=0; i<data.length; i++) {
-                    var item = data[i].split("=");
-                    result[item[0]] = item[1];
-                }
-                return result;
-            }
-            
-            var successHandler = function(data) {
-                
-                if(data.message.success == true) {
-                    native5.Notifications.show( "Project successfuly created.", {
-                        notificationType:'toast',
-                        title:'Success',
-                        position:'bottom',
-                        distance:'0px',
-                        timeout: 5000,
-                        persistent:false
-                    });
-                } else if(data.message.success == false) {
-                    native5.Notifications.show( "Project creation Failed.", {
-                        notificationType:'toast',
-                        title:'Error',
-                        position:'bottom',
-                        distance:'0px',
-                        timeout: 5000,
-                        persistent:false
-                    });
-                } else {
-                    console.log(data);
-                    $('#projectname').val(data.message.project.projectName);
-                    $('#deadline').val(data.message.project.projectTimeAlloted);
-                    $('#salary').val(data.message.project.projectSalary);
-                    $('#description').text(data.message.project.projectDescription);
-                }
-                
-            };
-            
-            var communicator = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'project/create_new_data',
-                successHandler : successHandler
-            });
-            
-            var result = getJsonFromUrl();
-            var id = result['id'];
-            if(typeof id === 'undefined') {
-                id = 0;
-                // its a new project
-            } else {
-                $('#project_id').val(id);
-                communicator.serviceObject.invoke({id: id});
-            }
-            
-            $(document).hammer().on('tap', 'div#save-form', function(e) {
+            $(document).on('click', 'div#save-form', function(e) {
                 e.preventDefault();
-                
-                var formData = $('form.project-form').serializeObject();
-                if(id == 0)
-                formData.new = true;
-                else formData.edit = true;
-                communicator.serviceObject.invoke(formData);
-                //console.log(formData);
+                $('form').append('<input type="hidden" name="{% if items.edit == true %}edit{% else %}new{% endif %}" value="1">');
+                $('form').submit();
             });
-            
-            var headerHandler = function(data) {
-                $('#header > .wrapper').append(data.message.header_options);
-                $('#headertitle').text(data.message.header_data.title);
-                $('.headeremail').text(data.message.header_data.email);
-                $('#headername').text(data.message.header_data.name);
-                $('#headerimage').attr({'src' : data.message.header_data.image});
-            };
-            
-            var headerLoader = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'headerdata',
-                successHandler : headerHandler
-            });
-            
-            headerLoader.serviceObject.invoke({for: 'project/create_new'});
-            
         });
     </script>
 

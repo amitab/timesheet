@@ -72,8 +72,6 @@ $(document).ready(function() {
         successHandler : successHandler
     });
     
-    console.log(communicator);
-    
     function openSearchBox(searchBox) {
         searchBox.removeClass('closed');
         $('div.header-item:first').addClass('fade-out');

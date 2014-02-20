@@ -20,7 +20,17 @@
                                 <th>Duration</th>
                             </tr>
                         </thead>
+                        {% if items.tasks|length == 0 %}
+                        <tbody class="empty">
+						{% else %}
 						<tbody>
+						{% endif %}
+                            {% for task in items.tasks %}
+                                <tr class="task-details" id={{ task.taskId }}>
+                                    <td>{{ task.taskName }}</td>
+                                    <td>{{ task.prettyWorkTime }}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                     
@@ -30,42 +40,6 @@
     
     <script>
         $(document).ready(function() {
-            
-            function getJsonFromUrl() {
-                var query = location.search.substr(1);
-                var data = query.split("&");
-                var result = {};
-                for(var i=0; i<data.length; i++) {
-                    var item = data[i].split("=");
-                    result[item[0]] = item[1];
-                }
-                return result;
-            }
-            
-            var successHandler = function(data) {
-                console.log(data);
-                
-                $.each(data.message.tasks, function(index, value) {
-                    var listItem = '';
-                    listItem += '<tr class="task-details" id=' + value.taskId + '>';
-                    listItem += '<td>' + value.taskName + '</td>';
-                    listItem += '<td>' + value.prettyWorkTime + '</td>';
-                    listItem += '</tr>';
-                    $('table.summary > tbody').append(listItem);
-                });
-                
-            };
-            
-            var communicator = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'timesheets/details_data',
-                successHandler : successHandler
-            });
-            
-            var result = getJsonFromUrl();
-            var id = result['id'];
-            communicator.serviceObject.invoke({id: id});
             
             $(document).hammer().on('tap', 'tr.task-details', function(e) {
                 e.preventDefault();
@@ -77,23 +51,6 @@
                 e.preventDefault();
                 window.location.href = $('input#add-task-url').attr('task-details-path') + '&old_timesheet_id=' + $('input#timesheet_id').attr('value') + '&project_id=' + $('input#project_id').attr('value') + '&from_timesheet_details_page=true';
             });
-            
-            var headerHandler = function(data) {
-                $('#header > .wrapper').append(data.message.header_options);
-                $('#headertitle').text(data.message.header_data.title);
-                $('.headeremail').text(data.message.header_data.email);
-                $('#headername').text(data.message.header_data.name);
-                $('#headerimage').attr({'src' : data.message.header_data.image});
-            };
-            
-            var headerLoader = app.construct({
-                path : 'timesheet',
-                method : 'POST',
-                url : 'headerdata',
-                successHandler : headerHandler
-            });
-            
-            headerLoader.serviceObject.invoke({for: 'timesheets/details', timesheet_id: id});
             
         });
     </script>

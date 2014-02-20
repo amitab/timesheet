@@ -85,9 +85,9 @@ var native5 = {};
             data.mode = this.config.mode;
             data.count = this.config.count;
             if (app.loader) app.loader.showLoadingMessage();
-            // data.rand_token = getParameterByName('rand_token');
+             data.rand_token = getParameterByName('rand_token');
             
-            data.rand_token = localStorage.getItem('rand_token');
+            // data.rand_token = localStorage.getItem('rand_token');
             
             // Handling history
             if (app && app.currentService) data['N5_NAME'] = app.currentService;

@@ -61,8 +61,6 @@ class ProfileController extends \My\Control\ProtectedController
     {
         global $logger;
 		
-		
-		
         $skeleton =  new TwigRenderer('profile-test.html');
         $this->_response = new HttpResponse('none', $skeleton);
         
